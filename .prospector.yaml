@@ -1,0 +1,31 @@
+strictness: veryhigh
+max-line-length: 110
+
+pylint:
+  disable:
+    - wrong-import-order
+    - too-many-arguments
+    - too-many-branches
+    - too-many-locals
+    - too-many-statements
+    - too-many-nested-blocks
+    - too-few-public-methods
+
+pep8:
+  options:
+    max-line-length: 110
+  disable:
+    - E203 # whitespace before ':'
+
+mypy:
+  run: true
+  options:
+    python_version: 3.8
+    ignore-missing-imports: True
+    warn-redundant-casts: True
+    warn-unused-ignores: True
+    check-untyped-defs: True
+    skip-version-check: True
+
+mccabe:
+  run: false

@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/dependabot-2.0.json
+
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: '/'
+    schedule:
+      interval: daily
+      time: '02:00'
+    ignore:
+      - dependency-name: none

@@ -1,0 +1,42 @@
+---
+name: Rebuild
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-20.04
+    name: Rebuild
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - '1.0'
+          - master
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
+
+      - uses: camptocamp/initialise-gopass-summon-action@v2
+        with:
+          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
+          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
+          patterns: pypi docker
+
+      - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
+      - run: python3 -m pip install --user --requirement=ci/requirements.txt
+
+      - name: Checks
+        run: c2cciutils-checks
+
+      - name: Build
+        run: docker build --tag=${GITHUB_REPOSITORY} .
+
+      - name: Publish
+        run: c2cciutils-publish --type=rebuild --branch=${{ matrix.branch }}
