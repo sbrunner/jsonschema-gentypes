@@ -1,2 +1,5 @@
 /*.egg-info/
 __pycache__
+/.*.timestamps
+/tests/jsonschema_*.py
+/.coverage

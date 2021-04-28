@@ -9,23 +9,18 @@ pylint:
     - too-many-locals
     - too-many-statements
     - too-many-nested-blocks
+    - too-many-return-statements
     - too-few-public-methods
+    - no-else-return
+    - line-too-long
 
 pep8:
-  options:
-    max-line-length: 110
   disable:
     - E203 # whitespace before ':'
+    - E501 # line too long
 
 mypy:
   run: true
-  options:
-    python_version: 3.8
-    ignore-missing-imports: True
-    warn-redundant-casts: True
-    warn-unused-ignores: True
-    check-untyped-defs: True
-    skip-version-check: True
 
 mccabe:
   run: false

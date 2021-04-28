@@ -1,16 +1,16 @@
-GITHUB_REPOSITORY ?= camptocamp/project
 
-.PHONY: build
-build: checks
-		docker build --tag=$(GITHUB_REPOSITORY) .
-
-.PHONY: build-checker
-build-checker:
-	docker build --target=checker --tag=$(GITHUB_REPOSITORY)-checker .
-
-.PHONY: checks
-checks: prospector
+.pipenv.timestamps: Pipfile.lock
+	pipenv sync --dev
+	touch $@
 
 .PHONY: prospector
-prospector: build-checker
-	docker run --volume=${PWD}:/app $(GITHUB_REPOSITORY)-checker prospector
+prospector: .pipenv.timestamps
+	pipenv run prospector --output=pylint
+
+.PHONY: pyprest
+pytest: .pipenv.timestamps
+	pipenv run pytest --verbose --cov=jsonschema_gentypes -vv --cov-report=term-missing
+
+.PHONY: jsonschema-gentypes
+jsonschema-gentypes: .pipenv.timestamps
+	pipenv run jsonschema-gentypes
