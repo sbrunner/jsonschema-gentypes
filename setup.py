@@ -12,7 +12,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 config = configparser.ConfigParser()
 config.read(os.path.join(HERE, "Pipfile"))
-INSTALL_REQUIRES = list(config["packages"].keys())
+INSTALL_REQUIRES = [pkg.strip('"') for pkg in config["packages"].keys()]
 
 
 def long_description() -> str:

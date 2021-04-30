@@ -2,15 +2,12 @@ import re
 
 import pytest
 from jsonschema import RefResolver
-from typing_extensions import TypedDict
 
 import jsonschema_gentypes
 
 
 def get_types(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
-    schema_ref = schema.get("$schema", "default")
-    schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
     api = jsonschema_gentypes.APIv7(resolver)
     return api.get_type(schema)
 
