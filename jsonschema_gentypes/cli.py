@@ -1,20 +1,16 @@
 import argparse
 import json
 import os
-import pkgutil
 import random
 import re
 import subprocess
-import sys
 from typing import Dict, Set
 
-import jsonschema
 import requests
-import yaml
 from jsonschema import RefResolver
 
 import jsonschema_gentypes
-from jsonschema_gentypes import configuration
+from jsonschema_gentypes import configuration, validate
 
 
 def main() -> None:
@@ -23,22 +19,7 @@ def main() -> None:
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     args = parser.parse_args()
 
-    with open(args.config) as config_file:
-        config: configuration.Configuration = yaml.load(config_file, Loader=yaml.SafeLoader)
-
-    schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
-    assert schema_data is not None
-    validator = jsonschema.Draft7Validator(schema=json.loads(schema_data))
-    errors = sorted(
-        [
-            f' - {".".join([str(i) for i in e.path] if e.path else "/")}: {e.message}'
-            for e in validator.iter_errors(config)
-        ]
-    )
-    if errors:
-        print("The config file is invalid.\n{}".format("\n".join(errors)))
-        if not args.skip_config_errors:
-            sys.exit(1)
+    config = validate.validate_package(args.config, "jsonschema_gentypes", "schema.json")
 
     for gen in config["generate"]:
         source = gen["source"]
