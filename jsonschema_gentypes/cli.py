@@ -10,6 +10,7 @@ import pkgutil
 import random
 import re
 import subprocess
+import sys
 from typing import Dict, Set
 
 import requests
@@ -28,14 +29,26 @@ def main() -> None:
     parser = argparse.ArgumentParser(usage="Generate the Python type files from the JSON schema files")
     parser.add_argument("--config", default="jsonschema-gentypes.yaml", help="The configuration file")
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
+    parser.add_argument("--json-schema", help="The JSON schema")
+    parser.add_argument("--python", help="The generated python file")
     args = parser.parse_args()
 
-    schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
-    assert schema_data
-    try:
-        config = validate.load(args.config, json.loads(schema_data))
-    except validate.ValidationError as error:
-        LOG.error(error)
+    if args.python is not None or args.json_schema is not None:
+        if args.python is None or args.json_schema is None:
+            print("If you specify the argument --python or --json-schema the other one is required")
+            sys.exit(1)
+        config: configuration.Configuration = {
+            "generate": [{"source": args.json_schema, "destination": args.python}]
+        }
+    else:
+        schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
+        assert schema_data
+        try:
+            config = validate.load(args.config, json.loads(schema_data))
+        except validate.ValidationError as error:
+            LOG.error(error)
+            if not args.skip_config_errors:
+                sys.exit(1)
 
     for gen in config["generate"]:
         source = gen["source"]

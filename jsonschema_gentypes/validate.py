@@ -148,7 +148,9 @@ def load(
         default: Should fill the data with the default provided in the JSON schema
     """
     with open(filename) as data_file:
-        errors, data = validate(filename, ruamel.yaml.round_trip_load(data_file), schema, default)  # type: ignore
+        yaml = ruamel.yaml.YAML()  # type: ignore
+        data = yaml.load(data_file)
+        errors, data = validate(filename, data, schema, default)
 
     if errors:
         raise ValidationError("The config file is invalid:\n{}".format("\n".join(errors)))

@@ -5,6 +5,7 @@ Generate the type structure based on the Type class from the JSON schema file.
 from abc import abstractmethod
 from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple, Union, cast
 
+import yaml
 from jsonschema import RefResolver
 from unidecode import unidecode
 
@@ -456,6 +457,21 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
                     result.append("")
                 first = False
             result.append(f"{key}: {value}")
+        elif key in (
+            "not",
+            "default",
+            "examples",
+            "contains",
+            "patternProperties",
+            "dependencies",
+            "propertyNames",
+        ):
+            if first:
+                if result:
+                    result.append("")
+                first = False
+            result.append(f"{key}:")
+            result += [f"  {line}" for line in yaml.dump(value).split("\n") if line]
 
     return result
 
@@ -588,17 +604,27 @@ class API:
             return CombinedType(NativeType("Union"), inner_types)
         elif schema_type is None:
             if "allOf" in schema:
-                return self.all_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["allOf"]), proposed_name
+                type_ = self.any_of(
+                    schema, cast(List[jsonschema.JSONSchemaItem], schema["allOf"]), proposed_name, "allof"
                 )
+                if type_.comments():
+                    type_.comments().append("")
+                type_.comments().append("WARNING: PEP 544 does not support an Intersection type,")
+                type_.comments().append("so `allOf` is interpreted as a `Union` for now.")
+                type_.comments().append("See: https://github.com/camptocamp/jsonschema-gentypes/issues/8")
+                return type_
             elif "anyOf" in schema:
                 return self.any_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["anyOf"]), proposed_name
+                    schema, cast(List[jsonschema.JSONSchemaItem], schema["anyOf"]), proposed_name, "anyof"
                 )
             elif "oneOf" in schema:
-                return self.any_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["oneOf"]), proposed_name
+                type_ = self.any_of(
+                    schema, cast(List[jsonschema.JSONSchemaItem], schema["oneOf"]), proposed_name, "oneof"
                 )
+                if type_.comments():
+                    type_.comments().append("")
+                type_.comments().append("oneOf")
+                return type_
             elif "enum" in schema:
                 return self.enum(schema, proposed_name)
             elif "default" in schema:
@@ -651,27 +677,15 @@ class API:
         """
 
     @abstractmethod
-    def all_of(
-        self,
-        schema: jsonschema.JSONSchemaItem,
-        subschema: List[jsonschema.JSONSchemaItem],
-        proposed_name: str,
-    ) -> Type:
-        """
-        Treat the allOf  keyword.
-
-        See: https://json-schema.org/understanding-json-schema/reference/combining.html#allof.
-        """
-
-    @abstractmethod
     def any_of(
         self,
         schema: jsonschema.JSONSchemaItem,
         subschema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
+        sub_name: str,
     ) -> Type:
         """
-        Treat the anyOf  keyword.
+        Treat the anyOf keyword.
 
         See: https://json-schema.org/understanding-json-schema/reference/combining.html#anyof.
         """
@@ -758,8 +772,6 @@ class APIv4(API):
                 for prop, subschema in properties.items()
             }
 
-            # With Python 3.10 this can be better.
-            # See: https://www.python.org/dev/peps/pep-0655/
             type_: Type = TypedDictType(
                 name if std_dict is None else name + "Typed",
                 struct,
@@ -768,7 +780,7 @@ class APIv4(API):
 
             comments = [
                 "WARNING: The required are not correctly taken in account,",
-                "See: https://www.python.org/dev/peps/pep-0655/",
+                "See: https://github.com/camptocamp/jsonschema-gentypes/issues/6",
             ]
 
             if std_dict is not None:
@@ -776,7 +788,7 @@ class APIv4(API):
                 comments += [
                     "",
                     "WARNING: the Normally the types should be mised each other instead of Union.",
-                    "See: https://github.com/python/mypy/issues/6131",
+                    "See: https://github.com/camptocamp/jsonschema-gentypes/issues/7",
                 ]
 
             type_.set_comments(comments)
@@ -815,51 +827,19 @@ class APIv4(API):
             type_.set_comments(["WARNING: we get an array without any items"])
             return type_
 
-    def all_of(
-        self,
-        schema: jsonschema.JSONSchemaItem,
-        subschema: List[jsonschema.JSONSchemaItem],
-        proposed_name: str,
-    ) -> Type:
-        """
-        Generate a ``Union`` annotation with the allowed types.
-
-        Unfortunately PEP 544 currently does not support an Intersection type;
-        see `this issue <https://github.com/python/typing/issues/213>`_ for
-        some context.
-        """
-        inner_types = list(
-            filter(
-                lambda o: o is not None,
-                [
-                    self.get_type(subs, f"{proposed_name} allof{index}")
-                    for index, subs in enumerate(subschema)
-                ],
-            )
-        )
-
-        type_ = CombinedType(NativeType("Union"), inner_types)
-        type_.set_comments(
-            [
-                "WARNING: PEP 544 does not support an Intersection type,",
-                "so `allOf` is interpreted as a `Union` for now.",
-                "See: https://github.com/python/typing/issues/213",
-            ]
-        )
-        return type_
-
     def any_of(
         self,
         schema: jsonschema.JSONSchemaItem,
         subschema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
+        sub_name: str,
     ) -> Type:
         """Generate a ``Union`` annotation with the allowed types."""
         inner_types = list(
             filter(
                 lambda o: o is not None,
                 [
-                    self.get_type(subs, f"{proposed_name} anyof{index}")
+                    self.get_type(subs, f"{proposed_name} {sub_name}{index}")
                     for index, subs in enumerate(subschema)
                 ],
             )
@@ -887,7 +867,7 @@ class APIv4(API):
             type_.set_comments(
                 [
                     "WARNING: Forward references may not be supported.",
-                    "See: https://github.com/python/mypy/issues/731",
+                    "See: https://github.com/camptocamp/jsonschema-gentypes/issues/9",
                 ]
             )
             return type_
@@ -948,10 +928,6 @@ class APIv4(API):
         See: https://json-schema.org/understanding-json-schema/reference/generic.html
         """
 
-        comments = [
-            "WARNING: `default` keyword not supported.",
-            "See: https://github.com/python/mypy/issues/6131",
-        ]
         type_ = "Any"
         for test_type, type_name in [
             (str, "str"),
@@ -962,7 +938,6 @@ class APIv4(API):
             if isinstance(schema["default"], test_type):
                 type_ = type_name
         the_type = BuiltinType(type_)
-        the_type.set_comments(comments)
         return the_type
 
 

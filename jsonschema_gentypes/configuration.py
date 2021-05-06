@@ -15,6 +15,8 @@ ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
 
 
 # API arguments
+#
+# The argument passed to the API
 ApiArguments = TypedDict(
     "ApiArguments",
     {
@@ -43,13 +45,18 @@ Configuration = TypedDict(
 GenerateItem = TypedDict(
     "GenerateItem",
     {
+        # The JSON schema file name
+        #
         # required
         "source": str,
+        # The generated Python file name
+        #
         # required
         "destination": str,
+        # The name of the root element
         "root_name": str,
         # WARNING: The required are not correctly taken in account,
-        # See: https://www.python.org/dev/peps/pep-0655/
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/6
         "api_arguments": "ApiArguments",
         # Name mapping
         #
