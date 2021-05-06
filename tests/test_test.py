@@ -163,10 +163,10 @@ def test_additional_properties_mixed():
 # test basic types
 #
 # WARNING: The required are not correctly taken in account,
-# See: https://www.python.org/dev/peps/pep-0655/
+# See: https://github.com/camptocamp/jsonschema-gentypes/issues/6
 #
 # WARNING: the Normally the types should be mised each other instead of Union.
-# See: https://github.com/python/mypy/issues/6131
+# See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
 TestBasicTypes = Union[Dict[str, str], "TestBasicTypesTyped"]"""
     )
     assert len(type_.depends_on()) == 1
@@ -342,7 +342,7 @@ def test_all_of() -> None:
 #
 # WARNING: PEP 544 does not support an Intersection type,
 # so `allOf` is interpreted as a `Union` for now.
-# See: https://github.com/python/typing/issues/213
+# See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
 TestBasicTypes = Union["_TestBasicTypesAllof0", "_TestBasicTypesAllof1"]"""
     )
     assert len(type_.depends_on()) == 1
@@ -391,7 +391,9 @@ def test_one_of() -> None:
         == """
 
 # test basic types
-TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]"""
+#
+# oneOf
+TestBasicTypes = Union["_TestBasicTypesOneof0", "_TestBasicTypesOneof1"]"""
     )
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
@@ -399,7 +401,7 @@ TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]"""
         "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition()])
         == """
 
-_TestBasicTypesAnyof0 = TypedDict('_TestBasicTypesAnyof0', {
+_TestBasicTypesOneof0 = TypedDict('_TestBasicTypesOneof0', {
     'string1': str,
 }, total=False)"""
     )
@@ -407,7 +409,7 @@ _TestBasicTypesAnyof0 = TypedDict('_TestBasicTypesAnyof0', {
         "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
         == """
 
-_TestBasicTypesAnyof1 = TypedDict('_TestBasicTypesAnyof1', {
+_TestBasicTypesOneof1 = TypedDict('_TestBasicTypesOneof1', {
     'string2': str,
 }, total=False)"""
     )
@@ -541,9 +543,6 @@ def test_default(value, expected_type) -> None:
 # test basic types
 #
 # default: {value}
-#
-# WARNING: `default` keyword not supported.
-# See: https://github.com/python/mypy/issues/6131
 TestBasicTypes = {expected_type}"""
     )
 
