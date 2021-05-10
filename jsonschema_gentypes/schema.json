@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/camptocamp/jsonschema-gentypes/master/jsonschema_gentypes/schema.json",
+  "type": "object",
+  "title": "Configuration",
+  "description": "The JSON Schema generate Python types configuration",
+  "additionalProperties": false,
+  "definitions": {},
+  "properties": {
+    "headers": { "type": "string" },
+    "callbacks": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+    "generate": {
+      "type": "array",
+      "items": {
+        "title": "Generate item",
+        "type": "object",
+        "properties": {
+          "source": { "type": "string" },
+          "destination": { "type": "string" },
+          "root_name": { "type": "string" },
+          "api_arguments": {
+            "type": "object",
+            "title": "API arguments",
+            "properties": {
+              "additional_properties": {
+                "type": "string",
+                "title": "Additional properties",
+                "description": "Describe how to deal with additional properties",
+                "enum": ["Always", "Only explicit"]
+              }
+            }
+          },
+          "name_mapping": {
+            "title": "Name mapping",
+            "comment": "Used to map the name of an aleternate name",
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["source", "destination"]
+      }
+    }
+  },
+  "required": ["generate"]
+}

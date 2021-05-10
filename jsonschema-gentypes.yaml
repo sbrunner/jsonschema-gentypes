@@ -1,0 +1,26 @@
+headers: >
+  # Automatically generated file from a JSON schema
+callbacks:
+  - - black
+  - - isort
+generate:
+  - source: jsonschema_gentypes/schema.json
+    destination: jsonschema_gentypes/configuration.py
+    api_arguments:
+      additional_properties: Only explicit
+  - source: https://json-schema.org/draft-07/schema
+    destination: jsonschema_gentypes/jsonschema.py
+    root_name: JSONSchema
+    api_arguments:
+      additional_properties: Only explicit
+    name_mapping:
+      _CoreSchemaMetaSchemaObject: JSONSchemaItem
+  - source: https://json-schema.org/draft-07/schema
+    destination: tests/jsonschema_draft_07.py
+    root_name: JSONSchema
+  - source: https://json-schema.org/draft-06/schema
+    destination: tests/jsonschema_draft_06.py
+    root_name: JSONSchema
+  - source: https://json-schema.org/draft-04/schema
+    destination: tests/jsonschema_draft_04.py
+    root_name: JSONSchema

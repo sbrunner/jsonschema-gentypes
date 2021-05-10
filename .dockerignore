@@ -1,0 +1,5 @@
+*
+!jsonschema_gentypes/*
+!setup.py
+!Pipfile*
+!README.md

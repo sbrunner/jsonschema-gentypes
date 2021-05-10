@@ -33,8 +33,14 @@ jobs:
       - name: Checks
         run: c2cciutils-checks
 
-      - name: Build
-        run: docker build --tag=${GITHUB_REPOSITORY} .
+      - run: make prospector
+      - run: make pytest
+      - run: make jsonschema-gentypes
+      - run: docker build --tag=camptocamp/jsonschema-gentypes .
+      - run: docker run --rm --user=$(id --user) --volume=$(pwd):/src camptocamp/jsonschema-gentypes
+      - run: git diff --quiet
+      - run: git diff
+        if: failure()
 
       - name: Publish
         run: c2cciutils-publish
