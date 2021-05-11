@@ -1,6 +1,12 @@
+"""
+Generate the Python type files from the JSON schema files.
+"""
+
 import argparse
 import json
+import logging
 import os
+import pkgutil
 import random
 import re
 import subprocess
@@ -12,14 +18,24 @@ from jsonschema import RefResolver
 import jsonschema_gentypes
 from jsonschema_gentypes import configuration, validate
 
+LOG = logging.getLogger(__name__)
+
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    """
+    Generate the Python type files from the JSON schema files.
+    """
+    parser = argparse.ArgumentParser(usage="Generate the Python type files from the JSON schema files")
     parser.add_argument("--config", default="jsonschema-gentypes.yaml", help="The configuration file")
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     args = parser.parse_args()
 
-    config = validate.validate_package(args.config, "jsonschema_gentypes", "schema.json")
+    schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
+    assert schema_data
+    try:
+        config = validate.load(args.config, json.loads(schema_data))
+    except validate.ValidationError as error:
+        LOG.error(error)
 
     for gen in config["generate"]:
         source = gen["source"]
