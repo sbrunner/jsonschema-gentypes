@@ -488,8 +488,10 @@ def test_enum() -> None:
         "\n".join([d.rstrip() for d in type_.definition()])
         == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     RED = "red"
     AMBER = "amber"
     GREEN = "green"'''
@@ -500,13 +502,15 @@ def test_enum_int() -> None:
     type_ = get_types({"title": "test basic types", "enum": [1, 2, 3]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == """
+        == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     NUM_1 = 1
     NUM_2 = 2
-    NUM_3 = 3"""
+    NUM_3 = 3'''
     )
 
 
@@ -514,12 +518,14 @@ def test_enum_bool() -> None:
     type_ = get_types({"title": "test basic types", "enum": [True, False]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == """
+        == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     TRUE_NAME = True
-    FALSE_NAME = False"""
+    FALSE_NAME = False'''
     )
 
 

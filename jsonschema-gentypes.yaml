@@ -1,5 +1,7 @@
-headers: >
-  # Automatically generated file from a JSON schema
+headers: |
+  """
+  Automatically generated file from a JSON schema.
+  """
 callbacks:
   - - black
   - - isort

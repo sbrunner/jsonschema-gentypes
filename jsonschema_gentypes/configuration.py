@@ -1,14 +1,19 @@
-# Automatically generated file from a JSON schema
+"""
+Automatically generated file from a JSON schema.
+"""
 
 
 from enum import Enum
 from typing import Dict, List, TypedDict
 
 
-# Additional properties
-#
-# Describe how to deal with additional properties
 class AdditionalProperties(Enum):
+    """
+    Additional properties.
+
+    Describe how to deal with additional properties
+    """
+
     ALWAYS = "Always"
     ONLY_EXPLICIT = "Only explicit"
 
