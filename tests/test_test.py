@@ -2,15 +2,12 @@ import re
 
 import pytest
 from jsonschema import RefResolver
-from typing_extensions import TypedDict
 
 import jsonschema_gentypes
 
 
 def get_types(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
-    schema_ref = schema.get("$schema", "default")
-    schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
     api = jsonschema_gentypes.APIv7(resolver)
     return api.get_type(schema)
 
@@ -491,8 +488,10 @@ def test_enum() -> None:
         "\n".join([d.rstrip() for d in type_.definition()])
         == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     RED = "red"
     AMBER = "amber"
     GREEN = "green"'''
@@ -503,13 +502,15 @@ def test_enum_int() -> None:
     type_ = get_types({"title": "test basic types", "enum": [1, 2, 3]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == """
+        == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     NUM_1 = 1
     NUM_2 = 2
-    NUM_3 = 3"""
+    NUM_3 = 3'''
     )
 
 
@@ -517,12 +518,14 @@ def test_enum_bool() -> None:
     type_ = get_types({"title": "test basic types", "enum": [True, False]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == """
+        == '''
 
-# test basic types
 class TestBasicTypes(Enum):
+    """
+    test basic types.
+    """
     TRUE_NAME = True
-    FALSE_NAME = False"""
+    FALSE_NAME = False'''
     )
 
 

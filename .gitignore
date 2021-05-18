@@ -3,3 +3,5 @@ __pycache__
 /.*.timestamps
 /tests/jsonschema_*.py
 /.coverage
+/build
+/dist

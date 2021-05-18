@@ -1,5 +1,6 @@
 *
 !jsonschema_gentypes/*
 !setup.py
+!requirements.txt
 !Pipfile*
 !README.md
