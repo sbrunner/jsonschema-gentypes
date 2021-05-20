@@ -484,17 +484,17 @@ TestBasicTypes = Literal[{expected_type}]"""
 
 def test_enum() -> None:
     type_ = get_types({"title": "test basic types", "enum": ["red", "amber", "green"]})
+
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
         == '''
 
-class TestBasicTypes(Enum):
-    """
-    test basic types.
-    """
-    RED = "red"
-    AMBER = "amber"
-    GREEN = "green"'''
+# test basic types
+TestBasicTypes = Union[Literal["red"], Literal["amber"], Literal["green"]]
+# The values for the enum
+TESTBASICTYPES_RED: Literal["red"] = "red"
+TESTBASICTYPES_AMBER: Literal["amber"] = "amber"
+TESTBASICTYPES_GREEN: Literal["green"] = "green"'''
     )
 
 
@@ -502,15 +502,14 @@ def test_enum_int() -> None:
     type_ = get_types({"title": "test basic types", "enum": [1, 2, 3]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == '''
+        == """
 
-class TestBasicTypes(Enum):
-    """
-    test basic types.
-    """
-    NUM_1 = 1
-    NUM_2 = 2
-    NUM_3 = 3'''
+# test basic types
+TestBasicTypes = Union[Literal[1], Literal[2], Literal[3]]
+# The values for the enum
+TESTBASICTYPES_1: Literal[1] = 1
+TESTBASICTYPES_2: Literal[2] = 2
+TESTBASICTYPES_3: Literal[3] = 3"""
     )
 
 
@@ -518,14 +517,13 @@ def test_enum_bool() -> None:
     type_ = get_types({"title": "test basic types", "enum": [True, False]})
     assert (
         "\n".join([d.rstrip() for d in type_.definition()])
-        == '''
+        == """
 
-class TestBasicTypes(Enum):
-    """
-    test basic types.
-    """
-    TRUE_NAME = True
-    FALSE_NAME = False'''
+# test basic types
+TestBasicTypes = Union[Literal[True], Literal[False]]
+# The values for the enum
+TESTBASICTYPES_TRUE: Literal[True] = True
+TESTBASICTYPES_FALSE: Literal[False] = False"""
     )
 
 
