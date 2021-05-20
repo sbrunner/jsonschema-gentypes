@@ -13,9 +13,9 @@ pytest-cov = "==2.11.1"
 
 [packages]
 jsonschema = "==3.2.0"
-pyyaml = "==5.4.1"
 requests = "==2.25.1"
 unidecode = "==1.2.0"
+"ruamel.yaml" = "==0.17.4"
 
 [requires]
 python_version = "3.8"

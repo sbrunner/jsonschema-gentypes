@@ -1,44 +1,41 @@
+"""
+Generate the Python type files from the JSON schema files.
+"""
+
 import argparse
 import json
+import logging
 import os
 import pkgutil
 import random
 import re
 import subprocess
-import sys
 from typing import Dict, Set
 
-import jsonschema
 import requests
-import yaml
 from jsonschema import RefResolver
 
 import jsonschema_gentypes
-from jsonschema_gentypes import configuration
+from jsonschema_gentypes import configuration, validate
+
+LOG = logging.getLogger(__name__)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    """
+    Generate the Python type files from the JSON schema files.
+    """
+    parser = argparse.ArgumentParser(usage="Generate the Python type files from the JSON schema files")
     parser.add_argument("--config", default="jsonschema-gentypes.yaml", help="The configuration file")
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     args = parser.parse_args()
 
-    with open(args.config) as config_file:
-        config: configuration.Configuration = yaml.load(config_file, Loader=yaml.SafeLoader)
-
     schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
-    assert schema_data is not None
-    validator = jsonschema.Draft7Validator(schema=json.loads(schema_data))
-    errors = sorted(
-        [
-            f' - {".".join([str(i) for i in e.path] if e.path else "/")}: {e.message}'
-            for e in validator.iter_errors(config)
-        ]
-    )
-    if errors:
-        print("The config file is invalid.\n{}".format("\n".join(errors)))
-        if not args.skip_config_errors:
-            sys.exit(1)
+    assert schema_data
+    try:
+        config = validate.load(args.config, json.loads(schema_data))
+    except validate.ValidationError as error:
+        LOG.error(error)
 
     for gen in config["generate"]:
         source = gen["source"]

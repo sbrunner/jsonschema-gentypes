@@ -1,3 +1,7 @@
+"""
+Generate the type structure based on the Type class from the JSON schema file.
+"""
+
 from abc import abstractmethod
 from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple, Union, cast
 
@@ -11,125 +15,231 @@ ISSUE_URL = "https://github.com/camptcamp/jsonschema-gentypes"
 
 
 class Type:
+    """
+    The base Type object.
+    """
+
     _comments: Optional[List[str]] = None
 
     def name(self) -> str:
         """
-        Return what we need to use the type
+        Return what we need to use the type.
         """
         raise NotImplementedError
 
     def imports(self) -> List[Tuple[str, str]]:  # pylint: disable=no-self-use
         """
-        Return the needed imports
+        Return the needed imports.
         """
         return []
 
     def definition(self) -> List[str]:  # pylint: disable=no-self-use
         """
-        Return the type declaration
+        Return the type declaration.
         """
         return []
 
     def depends_on(self) -> List["Type"]:  # pylint: disable=no-self-use
         """
-        Return the needed sub types
+        Return the needed sub types.
         """
         return []
 
     def comments(self) -> List[str]:
         """
-        Additional comments shared by the type
+        Additional comments shared by the type.
         """
         if self._comments is None:
             self._comments = []
         return self._comments
 
     def set_comments(self, comments: List[str]) -> None:
+        """
+        Set comment on the type.
+        """
         self._comments = comments
 
 
 class NamedType(Type):
+    """
+    The based type of named type.
+    """
+
     def __init__(self, name: str) -> None:
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+        """
         self._name = name
 
     def postfix_name(self, postfix: str) -> None:
         """
-        Set a new name (Not available every time)
+        Set a new name (Not available every time).
         """
         self._name += postfix
 
     def set_name(self, name: str) -> None:
         """
-        Set a new name (Not available every time)
+        Set a new name (Not available every time).
         """
         self._name = name
 
     def unescape_name(self) -> str:
+        """
+        Return the unscaped name.
+        """
         return self._name
 
     def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
         return f'"{self._name}"'
 
 
 class LiteralType(Type):
+    """
+    A literal type like: `Literal["text"]`.
+    """
+
     def __init__(self, const: Union[int, float, bool, str, None]) -> None:
+        """
+        Init.
+
+        Arguments:
+            const: the constant
+        """
         self.const = const
 
     def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
         if isinstance(self.const, str):
             return f'Literal["{self.const}"]'
         else:
             return f"Literal[{self.const}]"
 
     def imports(self) -> List[Tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
         return [("typing", "Literal")]
 
 
 class BuiltinType(Type):
+    """
+    Python builtin type, e.g.: str.
+    """
+
     def __init__(self, name: str) -> None:
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+        """
         self._name = name
 
     def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
         return self._name
 
 
 class NativeType(Type):
+    """
+    Native Type that will essencially generates a Python import.
+    """
+
     def __init__(self, name: str, package: str = "typing") -> None:
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+            package: the package of the type
+        """
         self.package = package
         self._name = name
 
     def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
         return self._name
 
     def imports(self) -> List[Tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
         return [(self.package, self._name)]
 
 
 class CombinedType(Type):
+    """
+    A combined type.
+
+    e.g.: Union[str, int] is an Combined type of `str` and `int` with `Union` as base.
+    """
+
     def __init__(self, base: Type, sub_types: List[Type]) -> None:
+        """
+        Init.
+
+        Arguments:
+            base: the base type (e.-g. for `Union[str, int]` the base type is `Union`)
+            sub_types: the sub types (e.-g. for `Union[str]` the sub types are `str` and `int`)
+        """
         self.base = base
         self.sub_types = sub_types
         self.name()
 
     def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
         assert isinstance(self.base, Type)
         return f"{self.base.name()}[{', '.join([sub_type.name() for sub_type in self.sub_types])}]"
 
     def depends_on(self) -> List[Type]:
+        """
+        Return the needed sub types.
+        """
         return [self.base] + self.sub_types
 
 
 class TypeAlias(NamedType):
+    """
+    An alias on a type, essentially to add a description.
+    """
+
     def __init__(self, name: str, sub_type: Type, descriptions: Optional[List[str]] = None):
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+            sub_type: the type that should be aliazed
+            descriptions: the type description
+        """
         super().__init__(name)
         self.sub_type = sub_type
         self.descriptions = [] if descriptions is None else descriptions
 
     def depends_on(self) -> List[Type]:
+        """
+        Return the needed sub types.
+        """
         return [self.sub_type]
 
     def definition(self) -> List[str]:
+        """
+        Return the type declaration.
+        """
         result = ["", ""]
         result += ["# " + d for d in self.descriptions]
         result.append(f"{self._name} = {self.sub_type.name()}")
@@ -137,24 +247,53 @@ class TypeAlias(NamedType):
 
 
 class TypeEnum(NamedType):
+    """
+    The Type that represent an Enum in Python.
+    """
+
     def __init__(
         self,
         name: str,
         values: List[Union[int, float, bool, str, None]],
         descriptions: Optional[List[str]] = None,
     ):
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+            values: the values of the enum
+            descriptions: the type description
+        """
         super().__init__(name)
         assert len(values) > 0
         self.values = values
         self.descriptions = [] if descriptions is None else descriptions
 
     def imports(self) -> List[Tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
         return [("enum", "Enum")]
 
     def definition(self) -> List[str]:
+        """
+        Return the type declaration.
+        """
         result = ["", ""]
-        result += ["# " + d for d in self.descriptions]
         result.append(f"class {self._name}(Enum):")
+        if self.descriptions:
+            descriptions = list(self.descriptions)
+            # The first line should ends with a .
+            if descriptions[0][-1] != ".":
+                descriptions[0] += "."
+            # The second line should be empty
+            if len(descriptions) > 1 and descriptions[1]:
+                descriptions = [descriptions[0], ""] + descriptions[1:]
+
+            result.append('    """')
+            result += ["    " + d for d in descriptions]
+            result.append('    """')
         for value in self.values:
             if isinstance(value, str):
                 result.append(f'    {get_name({"title": value}, upper=True)} = "{value}"')
@@ -164,24 +303,39 @@ class TypeEnum(NamedType):
 
 
 class TypedDictType(NamedType):
+    """
+    The Type that represent a TypeDict in Python.
+    """
+
     def __init__(
         self,
         name: str,
         struct: Dict[str, Type],
         descriptions: List[str],
     ):
+        """
+        Init.
+
+        Arguments:
+            name: name of the type
+            struct: the struct of the subtypes
+            descriptions: the description
+        """
         super().__init__(name)
         self.descriptions = descriptions
         self.struct = struct
 
     def depends_on(self) -> List[Type]:
+        """
+        Get the types that we requires to be valid.
+        """
         result: List[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
         return result
 
     def definition(self) -> List[str]:
         """
-        Get the definition based on a dict
+        Get the definition based on a dict.
         """
         result = ["", ""]
         result += ["# " + d for d in self.descriptions]
@@ -195,7 +349,13 @@ class TypedDictType(NamedType):
 
 
 def char_range(char1: str, char2: str) -> Iterator[str]:
-    """Generates the characters from `char1` to `char2`, inclusive."""
+    """
+    Generate the characters range from `char1` to `char2`, inclusive.
+
+    Arguments:
+        char1: the first char of the range
+        char2: the last char of the range
+    """
     for char in range(ord(char1), ord(char2) + 1):
         yield chr(char)
 
@@ -205,6 +365,14 @@ def get_name(
     proposed_name: Optional[str] = None,
     upper: bool = False,
 ) -> str:
+    """
+    Get the name for an element.
+
+    Arguments:
+        schema: the concerned schema
+        proposed_name: a name that we will use it the scheema hasn't any title
+        upper: should we use an upper cass (For constants)
+    """
     # Get the base name
     has_title = isinstance(schema, dict) and "title" in schema
     name = schema["title"] if has_title else proposed_name  # type: ignore
@@ -268,6 +436,12 @@ def get_name(
 
 
 def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
+    """
+    Get the standard description for an element.
+
+    Arguments:
+        schema: the concerned schema
+    """
     result: List[str] = []
     for key in ("title", "description"):
         if key in schema:
@@ -485,7 +659,11 @@ class API:
 
     @abstractmethod
     def ref(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        pass
+        """
+        Treat the ref keyword.
+
+        See: https://json-schema.org/understanding-json-schema/structuring.html.
+        """
 
     @abstractmethod
     def all_of(
@@ -494,7 +672,11 @@ class API:
         subschema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
     ) -> Type:
-        pass
+        """
+        Treat the allOf  keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/combining.html#allof.
+        """
 
     @abstractmethod
     def any_of(
@@ -503,19 +685,35 @@ class API:
         subschema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
     ) -> Type:
-        pass
+        """
+        Treat the anyOf  keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/combining.html#anyof.
+        """
 
     @abstractmethod
     def const(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        pass
+        """
+        Treat the const  keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/generic.html#constant-values
+        """
 
     @abstractmethod
     def enum(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        pass
+        """
+        Treat enum.
+
+        See: https://json-schema.org/understanding-json-schema/reference/generic.html#enumerated-values
+        """
 
     @abstractmethod
     def default(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        pass
+        """
+        Treat the default  keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/generic.html
+        """
 
 
 class APIv4(API):
@@ -760,10 +958,11 @@ class APIv4(API):
 
     def default(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
-        The ``default`` keyword is not supported.
+        Treat the default keyword.
 
-        But see: `https://github.com/python/mypy/issues/6131`_.
+        See: https://json-schema.org/understanding-json-schema/reference/generic.html
         """
+
         comments = [
             "WARNING: `default` keyword not supported.",
             "See: https://github.com/python/mypy/issues/6131",
@@ -783,8 +982,12 @@ class APIv4(API):
 
 
 class APIv6(APIv4):
-    """JSON Schema draft 6."""
+    """
+    JSON Schema draft 6.
+    """
 
 
 class APIv7(APIv6):
-    """JSON Schema draft 7."""
+    """
+    JSON Schema draft 7.
+    """

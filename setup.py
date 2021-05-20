@@ -1,3 +1,6 @@
+"""
+Package setup.
+"""
 import configparser
 import os
 import site
@@ -12,10 +15,13 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 config = configparser.ConfigParser()
 config.read(os.path.join(HERE, "Pipfile"))
-INSTALL_REQUIRES = list(config["packages"].keys())
+INSTALL_REQUIRES = [pkg.strip('"') for pkg in config["packages"].keys()]
 
 
 def long_description() -> str:
+    """
+    Get the long description from the readme.
+    """
     try:
         with open("README.md") as readme_file:
             return readme_file.read()
