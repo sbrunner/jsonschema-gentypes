@@ -3,19 +3,15 @@ Automatically generated file from a JSON schema.
 """
 
 
-from enum import Enum
-from typing import Dict, List, TypedDict
+from typing import Dict, List, Literal, TypedDict, Union
 
-
-class AdditionalProperties(Enum):
-    """
-    Additional properties.
-
-    Describe how to deal with additional properties
-    """
-
-    ALWAYS = "Always"
-    ONLY_EXPLICIT = "Only explicit"
+# Additional properties
+#
+# Describe how to deal with additional properties
+AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
+# The values for the enum
+ADDITIONALPROPERTIES_ALWAYS: Literal["Always"] = "Always"
+ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
 
 
 # API arguments

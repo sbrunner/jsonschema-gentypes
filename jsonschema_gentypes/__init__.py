@@ -251,12 +251,7 @@ class TypeEnum(NamedType):
     The Type that represent an Enum in Python.
     """
 
-    def __init__(
-        self,
-        name: str,
-        values: List[Union[int, float, bool, str, None]],
-        descriptions: Optional[List[str]] = None,
-    ):
+    def __init__(self, name: str, values: List[Union[int, float, bool, str, None]], descriptions: List[str]):
         """
         Init.
 
@@ -265,40 +260,30 @@ class TypeEnum(NamedType):
             values: the values of the enum
             descriptions: the type description
         """
-        super().__init__(name)
         assert len(values) > 0
+        super().__init__(name)
         self.values = values
-        self.descriptions = [] if descriptions is None else descriptions
+        self.descriptions = descriptions
+        self.sub_type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
 
-    def imports(self) -> List[Tuple[str, str]]:
+    def depends_on(self) -> List["Type"]:
         """
-        Return the needed imports.
+        Return the needed sub types.
         """
-        return [("enum", "Enum")]
+        return [self.sub_type]
 
     def definition(self) -> List[str]:
         """
         Return the type declaration.
         """
         result = ["", ""]
-        result.append(f"class {self._name}(Enum):")
-        if self.descriptions:
-            descriptions = list(self.descriptions)
-            # The first line should ends with a .
-            if descriptions[0][-1] != ".":
-                descriptions[0] += "."
-            # The second line should be empty
-            if len(descriptions) > 1 and descriptions[1]:
-                descriptions = [descriptions[0], ""] + descriptions[1:]
-
-            result.append('    """')
-            result += ["    " + d for d in descriptions]
-            result.append('    """')
+        result += ["# " + d for d in self.descriptions]
+        result.append(f"{self._name} = {self.sub_type.name()}")
+        result += ["# The values for the enum"]
         for value in self.values:
-            if isinstance(value, str):
-                result.append(f'    {get_name({"title": value}, upper=True)} = "{value}"')
-            else:
-                result.append(f'    {get_name({"title": str(value)}, upper=True)} = {value}')
+            name = get_name({"title": f"{self._name} {value}"}, upper=True)
+            formated_value = f'"{value}"' if isinstance(value, str) else str(value)
+            result.append(f"{name}: {LiteralType(value).name()} = {formated_value}")
         return result
 
 
@@ -481,7 +466,7 @@ class API:
     def __init__(
         self,
         resolver: RefResolver,
-        additional_properties: configuration.AdditionalProperties = configuration.AdditionalProperties.ONLY_EXPLICIT,
+        additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
     ) -> None:
         """Initialize with a resolver."""
         self.resolver = resolver
@@ -747,7 +732,7 @@ class APIv4(API):
         additional_properties = cast(jsonschema.JSONSchema, schema.get("additionalProperties"))
         if (
             additional_properties is True
-            and self.additional_properties == configuration.AdditionalProperties.ALWAYS
+            and self.additional_properties == configuration.ADDITIONALPROPERTIES_ALWAYS
         ):
             std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), NativeType("Any")])
         elif isinstance(additional_properties, dict):

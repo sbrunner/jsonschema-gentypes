@@ -3,8 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from enum import Enum
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, Literal, TypedDict, Union
 
 # Core schema meta-schema
 #
@@ -157,14 +156,23 @@ _CoreSchemaMetaSchemaObjectPropertiesAdditionalproperties = Dict[str, Any]
 _CoreSchemaMetaSchemaObjectRequired = List[str]
 
 
-class _CoreSchemaMetaSchemaObjectTypeAnyof0(Enum):
-    ARRAY = "array"
-    BOOLEAN = "boolean"
-    INTEGER = "integer"
-    NULL = "null"
-    NUMBER = "number"
-    OBJECT = "object"
-    STRING = "string"
+_CoreSchemaMetaSchemaObjectTypeAnyof0 = Union[
+    Literal["array"],
+    Literal["boolean"],
+    Literal["integer"],
+    Literal["null"],
+    Literal["number"],
+    Literal["object"],
+    Literal["string"],
+]
+# The values for the enum
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_ARRAY: Literal["array"] = "array"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_BOOLEAN: Literal["boolean"] = "boolean"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_INTEGER: Literal["integer"] = "integer"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_NULL: Literal["null"] = "null"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_NUMBER: Literal["number"] = "number"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_OBJECT: Literal["object"] = "object"
+_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_STRING: Literal["string"] = "string"
 
 
 # minItems: 1
