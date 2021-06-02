@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 
 site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
-VERSION = os.environ.get("VERSION", "1.0.0")
+VERSION = os.environ.get("VERSION", "0.9.1")
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 config = configparser.ConfigParser()
