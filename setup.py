@@ -58,4 +58,5 @@ setup(
             "jsonschema-gentypes = jsonschema_gentypes.cli:main",
         ]
     },
+    package_data={"jsonschema_gentypes": ["py.typed"]},
 )
