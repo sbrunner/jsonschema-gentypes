@@ -15,12 +15,13 @@
         "title": "Generate item",
         "type": "object",
         "properties": {
-          "source": { "type": "string" },
-          "destination": { "type": "string" },
-          "root_name": { "type": "string" },
+          "source": { "type": "string", "description": "The JSON schema file name" },
+          "destination": { "type": "string", "description": "The generated Python file name" },
+          "root_name": { "type": "string", "description": "The name of the root element" },
           "api_arguments": {
             "type": "object",
             "title": "API arguments",
+            "description": "The argument passed to the API",
             "properties": {
               "additional_properties": {
                 "type": "string",

@@ -14,3 +14,7 @@ pytest: .pipenv.timestamps
 .PHONY: jsonschema-gentypes
 jsonschema-gentypes: .pipenv.timestamps
 	pipenv run jsonschema-gentypes
+
+.PHONY: build-docker
+build-docker:
+	docker build --tag=camptocamp/jsonschema-gentypes .
