@@ -101,7 +101,7 @@ def validate(
 
     validator = Validator(schema)
 
-    def format_error(error: jsonschema.exceptions.ValidationError) -> str:
+    def format_error(error: jsonschema.exceptions.ValidationError) -> List[str]:
         position = filename
 
         if hasattr(error.instance, "lc"):
@@ -111,21 +111,29 @@ def validate(
             parent = None
             if hasattr(curent_data, "lc"):
                 parent = curent_data
-            for path in error.path:
+            for path in error.absolute_path:
                 curent_data = curent_data[path]
                 if hasattr(curent_data, "lc"):
                     parent = curent_data
             if parent is not None:
                 position = f"{filename}:{parent.lc.line + 1}:{parent.lc.col + 1}"  # type: ignore
 
-        return (
-            f" - {position} "
-            f'({".".join([str(i) for i in error.path] if error.path else "/")}): '
-            f"{error.message} (rule: "
-            f'{".".join([str(i) for i in error.schema_path] if error.schema_path else "/")})'
-        )
+        if error.context:
+            results = []
+            for context in error.context:
+                results += format_error(context)
+            return results
+        else:
+            return [
+                f"-- {position} "
+                f'{".".join([str(i) for i in error.absolute_path] if error.absolute_path else "/")}: '
+                f"{error.message}"
+            ]
 
-    return sorted([format_error(e) for e in validator.iter_errors(data)]), data
+    results = []
+    for error in validator.iter_errors(data):
+        results += format_error(error)
+    return sorted(results), data
 
 
 class ValidationError(Exception):
