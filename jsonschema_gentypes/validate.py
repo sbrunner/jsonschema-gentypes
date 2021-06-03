@@ -133,6 +133,17 @@ class ValidationError(Exception):
     Exception thrown on validation issue.
     """
 
+    def __init__(self, message: str, data: Any) -> None:
+        """
+        Construct.
+
+        Arguments:
+            message: The error message
+            data: The validated data
+        """
+        super().__init__(message)
+        self.data = data
+
 
 def load(
     filename: str,
@@ -153,6 +164,6 @@ def load(
         errors, data = validate(filename, data, schema, default)
 
     if errors:
-        raise ValidationError("The config file is invalid:\n{}".format("\n".join(errors)))
+        raise ValidationError("The config file is invalid:\n{}".format("\n".join(errors)), data)
 
     return data
