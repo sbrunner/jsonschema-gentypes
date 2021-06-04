@@ -47,6 +47,7 @@ def main() -> None:
             config = validate.load(args.config, json.loads(schema_data))
         except validate.ValidationError as error:
             LOG.error(error)
+            config = error.data
             if not args.skip_config_errors:
                 sys.exit(1)
 
