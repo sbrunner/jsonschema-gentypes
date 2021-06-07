@@ -4,7 +4,7 @@ Module that offer some useful functions to validate the data against a JSON sche
 
 import logging
 import re
-from typing import Any, Dict, Iterator, List, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import jsonschema
 import ruamel.yaml
@@ -31,7 +31,7 @@ def _extend_with_default(
     def set_defaults(
         validator: "jsonschema.validators._DefaultTypesDeprecatingMetaClass",
         properties: Dict[str, jsonschema_gentypes.jsonschema.JSONSchemaItem],
-        instance: Dict[str, Any],
+        instance: Optional[Dict[str, Any]],
         schema: jsonschema_gentypes.jsonschema.JSONSchemaItem,
     ) -> Iterator[jsonschema.exceptions.ValidationError]:
         """
@@ -55,7 +55,7 @@ def _extend_with_default(
                     _, resolved = validator.resolver.resolve(ref)
                     subschema = dict(subschema)  # type: ignore
                     subschema.update(resolved)
-            if "default" in subschema:
+            if "default" in subschema and instance is not None:
                 instance.setdefault(prop, subschema["default"])
 
         for error in validate_properties(
