@@ -55,6 +55,30 @@ And just run:
 jsonschema-gentype
 ```
 
+# Validation
+
+This package also provide some validations features for YAML file based on `jsonschema`.
+
+Additional features:
+
+-   Have the line and columns number in the errors, it the file is loaded with `ruamel.yaml`.
+-   Fill with the default provides in the JSON schema, disabled by default because it have some issue with `OneOf` and `AnyOf`.
+
+```python
+    import ruamel.yaml
+    import pkgutil
+    import jsonschema_gentypes.validate
+
+    schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
+    with open(filename) as data_file:
+        yaml = ruamel.yaml.YAML()  # type: ignore
+        data = yaml.load(data_file)
+    errors, data = jsonschema_gentypes.validate.validate(filename, data, schema, default)
+    if errors:
+        print("\n".join(errors))
+        sys.exit(1)
+```
+
 ## Limitations
 
 Requires Python 3.8

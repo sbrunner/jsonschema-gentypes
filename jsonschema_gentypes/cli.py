@@ -11,9 +11,10 @@ import random
 import re
 import subprocess
 import sys
-from typing import Dict, Set
+from typing import Dict, Set, cast
 
 import requests
+import ruamel.yaml
 from jsonschema import RefResolver
 
 import jsonschema_gentypes
@@ -43,11 +44,14 @@ def main() -> None:
     else:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
         assert schema_data
-        try:
-            config = validate.load(args.config, json.loads(schema_data))
-        except validate.ValidationError as error:
-            LOG.error(error)
-            config = error.data
+        with open(args.config) as data_file:
+            yaml = ruamel.yaml.YAML()  # type: ignore
+            data = yaml.load(data_file)
+        errors, data = validate.validate(args.config, data, json.loads(schema_data), True)
+        config = cast(configuration.Configuration, data)
+
+        if errors:
+            LOG.error("The config file is invalid:\n%s", "\n".join(errors))
             if not args.skip_config_errors:
                 sys.exit(1)
 
