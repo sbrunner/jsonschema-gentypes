@@ -28,11 +28,13 @@ def _add_type(
     imports: Dict[str, Set[str]],
     types: Dict[str, jsonschema_gentypes.Type],
     gen: configuration.GenerateItem,
+    config: configuration.Configuration,
 ) -> None:
     if (
         isinstance(type_, jsonschema_gentypes.NamedType)
         and type_.unescape_name() in types
-        and type_.definition() == types[type_.unescape_name()].definition()
+        and type_.definition(config.get("lineLength"))
+        == types[type_.unescape_name()].definition(config.get("lineLength"))
     ):
         return
     name_mapping = gen.get("name_mapping", {})
@@ -42,7 +44,7 @@ def _add_type(
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
         print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
         type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
-        _add_type(type_, imports, types, gen)
+        _add_type(type_, imports, types, gen, config)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
             types[type_.unescape_name()] = type_
@@ -51,7 +53,7 @@ def _add_type(
                 imports[package] = set()
             imports[package].add(imp)
         for sub_type in type_.depends_on():
-            _add_type(sub_type, imports, types, gen)
+            _add_type(sub_type, imports, types, gen, config)
 
 
 def main() -> None:
@@ -117,14 +119,14 @@ def main() -> None:
         if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
             assert gen["root_name"] is not None
             base_type.set_name(gen["root_name"])
-        _add_type(base_type, imports, types, gen)
+        _add_type(base_type, imports, types, gen, config)
 
         lines = []
         for imp, names in imports.items():
             lines.append(f'from {imp} import {", ".join(names)}')
 
         for type_ in sorted(types.values(), key=lambda type_: type_.name()):
-            lines += type_.definition()
+            lines += type_.definition(config.get("lineLength"))
 
         with open(gen["destination"], "w", encoding="utf-8") as destination_file:
             headers = config.get("headers")
