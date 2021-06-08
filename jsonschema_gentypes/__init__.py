@@ -2,6 +2,7 @@
 Generate the type structure based on the Type class from the JSON schema file.
 """
 
+import textwrap
 from abc import abstractmethod
 from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple, Union, cast
 
@@ -34,10 +35,14 @@ class Type:
         """
         return []
 
-    def definition(self) -> List[str]:  # pylint: disable=no-self-use
+    def definition(self, line_length: Optional[int] = None) -> List[str]:  # pylint: disable=no-self-use
         """
         Return the type declaration.
+
+        Arguments:
+            line_length: the maximum line length
         """
+        del line_length
         return []
 
     def depends_on(self) -> List["Type"]:  # pylint: disable=no-self-use
@@ -237,12 +242,14 @@ class TypeAlias(NamedType):
         """
         return [self.sub_type]
 
-    def definition(self) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
         Return the type declaration.
         """
         result = ["", ""]
-        result += ["# " + d for d in self.descriptions]
+        result += [
+            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+        ]
         result.append(f"{self._name} = {self.sub_type.name()}")
         return result
 
@@ -273,12 +280,14 @@ class TypeEnum(NamedType):
         """
         return [self.sub_type]
 
-    def definition(self) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
         Return the type declaration.
         """
         result = ["", ""]
-        result += ["# " + d for d in self.descriptions]
+        result += [
+            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+        ]
         result.append(f"{self._name} = {self.sub_type.name()}")
         result += ["# The values for the enum"]
         for value in self.values:
@@ -319,12 +328,14 @@ class TypedDictType(NamedType):
         result += self.struct.values()
         return result
 
-    def definition(self) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
         Get the definition based on a dict.
         """
         result = ["", ""]
-        result += ["# " + d for d in self.descriptions]
+        result += [
+            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+        ]
         result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
         for property_, type_obj in self.struct.items():
             for comment in type_obj.comments():
@@ -332,6 +343,27 @@ class TypedDictType(NamedType):
             result.append(f"    '{property_}': {type_obj.name()},")
         result.append("}, total=False)")
         return result
+
+
+def split_comment(text: List[str], line_length: Optional[int]) -> List[str]:
+    """
+    Split the text at line length.
+
+    Arguments:
+        text: the lines to split
+        line_length: the maximum line length
+    """
+    if not line_length:
+        return text
+
+    result = []
+    for line in text:
+        # Don't remove empty lines
+        if line:
+            result += textwrap.wrap(line, width=line_length, break_long_words=False)
+        else:
+            result.append(line)
+    return result
 
 
 def char_range(char1: str, char2: str) -> Iterator[str]:
@@ -433,7 +465,7 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
         if key in schema:
             if result:
                 result.append("")
-            result.append(schema[key])  # type: ignore
+            result += schema[key].split("\n")  # type: ignore
     first = True
     for key, value in schema.items():
         if (

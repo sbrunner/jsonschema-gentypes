@@ -87,7 +87,8 @@ def main() -> None:
             if (
                 isinstance(type_, jsonschema_gentypes.NamedType)
                 and type_.unescape_name() in types
-                and type_.definition() == types[type_.unescape_name()].definition()
+                and type_.definition(config.get("lineLength"))
+                == types[type_.unescape_name()].definition(config.get("lineLength"))
             ):
                 return
             name_mapping = gen.get("name_mapping", {})
@@ -119,7 +120,7 @@ def main() -> None:
             lines.append(f'from {imp} import {", ".join(names)}')
 
         for type_ in sorted(types.values(), key=lambda type_: type_.name()):
-            lines += type_.definition()
+            lines += type_.definition(config.get("lineLength"))
 
         with open(gen["destination"], "w") as destination_file:
             headers = config.get("headers")

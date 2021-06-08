@@ -34,6 +34,8 @@ Configuration = TypedDict(
     {
         "headers": str,
         "callbacks": List[List[str]],
+        # The maximum line length
+        "lineLength": int,
         # required
         "generate": List["GenerateItem"],
     },
