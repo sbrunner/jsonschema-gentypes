@@ -4,7 +4,7 @@ import tempfile
 import ruamel.yaml
 import yaml
 
-from jsonschema_gentypes.validate import load, validate
+from jsonschema_gentypes.validate import validate
 
 
 def test_validate_ruamel():
@@ -100,12 +100,10 @@ root:
     ]
 
 
-def test_load_default():
-    yaml_file = tempfile.NamedTemporaryFile(delete=False)
-    yaml_file.write("{}".encode())
-    yaml_file.close()
-    data = load(
-        yaml_file.name,
+def test_default():
+    errors, data = validate(
+        "test.yaml",
+        {},
         {
             "type": "object",
             "properties": {
@@ -114,6 +112,6 @@ def test_load_default():
                 },
             },
         },
+        default=True,
     )
-    assert dict(data) == {"root": "abc"}
-    os.unlink(yaml_file.name)
+    assert data == {"root": "abc"}

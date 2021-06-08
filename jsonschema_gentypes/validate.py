@@ -7,7 +7,6 @@ import re
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import jsonschema
-import ruamel.yaml
 
 import jsonschema_gentypes.jsonschema
 
@@ -73,7 +72,7 @@ def _extend_with_default(
 
 
 def validate(
-    filename: str, data: Dict[str, Any], schema: Dict[str, Any], default: bool = True
+    filename: str, data: Dict[str, Any], schema: Dict[str, Any], default: bool = False
 ) -> Tuple[List[str], Dict[str, Any]]:
     """
     Validate the YAML, with it's JSON schema.
@@ -82,7 +81,7 @@ def validate(
         filename: Name used to generate the error messages
         data: The data structure to be validated (should be loaded with ruamel.yaml to have the lines numbers)
         schema: The loaded JSON schema
-        default: If true, fill the data with the defaults provided in the JSON schema
+        default: If true, fill the data with the defaults provided in the JSON schema, not working as expected with AnyOf and OneOf
     """
     schema_ref = schema.get("$schema", "default")
     schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
@@ -156,27 +155,3 @@ class ValidationError(Exception):
         """
         super().__init__(message)
         self.data = data
-
-
-def load(
-    filename: str,
-    schema: Dict[str, Any],
-    default: bool = True,
-) -> Any:
-    """
-    Load and validate the YAML, with it's JSON schema.
-
-    Arguments:
-        filename: Path of the file that should be loaded
-        schema: The JSON schema
-        default: Should fill the data with the default provided in the JSON schema
-    """
-    with open(filename) as data_file:
-        yaml = ruamel.yaml.YAML()  # type: ignore
-        data = yaml.load(data_file)
-        errors, data = validate(filename, data, schema, default)
-
-    if errors:
-        raise ValidationError("The config file is invalid:\n{}".format("\n".join(errors)), data)
-
-    return data
