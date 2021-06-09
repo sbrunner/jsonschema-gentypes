@@ -29,7 +29,7 @@ def test_basic_types():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -65,7 +65,7 @@ def test_ref():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -86,7 +86,7 @@ def test_array():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -107,7 +107,7 @@ def test_array_true():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -133,7 +133,7 @@ def test_array_tuple():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -157,7 +157,7 @@ def test_additional_properties_mixed():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -172,7 +172,7 @@ TestBasicTypes = Union[Dict[str, str], "TestBasicTypesTyped"]"""
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
         == """
 
 TestBasicTypesTyped = TypedDict('TestBasicTypesTyped', {
@@ -190,7 +190,7 @@ def test_additional_properties():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -207,7 +207,7 @@ def test_additional_properties_true():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -224,7 +224,7 @@ def test_boolean_const():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -244,7 +244,7 @@ def test_enum():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -255,7 +255,7 @@ TestBasicTypes = TypedDict('TestBasicTypes', {
 
     assert len(type_.depends_on()) == 2
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
         == '''
 
 class _TestBasicTypesEnum(Enum):
@@ -287,7 +287,7 @@ def test_any_of():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -296,7 +296,7 @@ TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]"""
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition(None)])
         == """
 
 _TestBasicTypesAnyof0 = TypedDict('_TestBasicTypesAnyof0', {
@@ -304,7 +304,7 @@ _TestBasicTypesAnyof0 = TypedDict('_TestBasicTypesAnyof0', {
 }, total=False)"""
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
         == """
 
 _TestBasicTypesAnyof1 = TypedDict('_TestBasicTypesAnyof1', {
@@ -335,7 +335,7 @@ def test_all_of() -> None:
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -348,7 +348,7 @@ TestBasicTypes = Union["_TestBasicTypesAllof0", "_TestBasicTypesAllof1"]"""
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition(None)])
         == """
 
 _TestBasicTypesAllof0 = TypedDict('_TestBasicTypesAllof0', {
@@ -356,7 +356,7 @@ _TestBasicTypesAllof0 = TypedDict('_TestBasicTypesAllof0', {
 }, total=False)"""
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
         == """
 
 _TestBasicTypesAllof1 = TypedDict('_TestBasicTypesAllof1', {
@@ -387,7 +387,7 @@ def test_one_of() -> None:
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -398,7 +398,7 @@ TestBasicTypes = Union["_TestBasicTypesOneof0", "_TestBasicTypesOneof1"]"""
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition(None)])
         == """
 
 _TestBasicTypesOneof0 = TypedDict('_TestBasicTypesOneof0', {
@@ -406,7 +406,7 @@ _TestBasicTypesOneof0 = TypedDict('_TestBasicTypesOneof0', {
 }, total=False)"""
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
         == """
 
 _TestBasicTypesOneof1 = TypedDict('_TestBasicTypesOneof1', {
@@ -423,7 +423,7 @@ def test_type_list() -> None:
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -442,7 +442,7 @@ def test_it_the_else() -> None:  # 395
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -452,7 +452,7 @@ TestBasicTypes = Union["_TestBasicTypesThen", "_TestBasicTypesElse"]"""
     assert len(type_.depends_on()) == 1
     assert len(type_.depends_on()[0].depends_on()) == 3
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition(None)])
         == """
 
 _TestBasicTypesThen = TypedDict('_TestBasicTypesThen', {
@@ -461,7 +461,7 @@ _TestBasicTypesThen = TypedDict('_TestBasicTypesThen', {
 }, total=False)"""
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition()])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
         == """
 
 _TestBasicTypesElse = TypedDict('_TestBasicTypesElse', {
@@ -476,7 +476,7 @@ _TestBasicTypesElse = TypedDict('_TestBasicTypesElse', {
 def test_const(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == f"""
 
 # test basic types
@@ -488,7 +488,7 @@ def test_enum() -> None:
     type_ = get_types({"title": "test basic types", "enum": ["red", "amber", "green"]})
 
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == '''
 
 # test basic types
@@ -503,7 +503,7 @@ TESTBASICTYPES_GREEN: Literal["green"] = "green"'''
 def test_enum_int() -> None:
     type_ = get_types({"title": "test basic types", "enum": [1, 2, 3]})
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -518,7 +518,7 @@ TESTBASICTYPES_3: Literal[3] = 3"""
 def test_enum_bool() -> None:
     type_ = get_types({"title": "test basic types", "enum": [True, False]})
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -535,7 +535,7 @@ TESTBASICTYPES_FALSE: Literal[False] = False"""
 def test_default(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "default": value})
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == f"""
 
 # test basic types
@@ -558,7 +558,7 @@ def test_typeddict_mixrequired():
         }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.definition()])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == """
 
 # test basic types
@@ -567,6 +567,41 @@ TestBasicTypes = TypedDict('TestBasicTypes', {
     'text1': str,
     'text2': str,
 }, total=False)"""
+    )
+
+
+def test_multiline() -> None:
+    type_ = get_types({"title": "test basic types", "description": "first\nsecond", "const": 111})
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == f"""
+
+# test basic types
+#
+# first
+# second
+TestBasicTypes = Literal[111]"""
+    )
+
+
+def test_linesplit() -> None:
+    type_ = get_types(
+        {
+            "title": "test basic types",
+            "description": "The JSON Schema project intends to shepherd all three draft series to either: RFC status, the equivalent within another standards body, and/or join a foundation and establish self publication rules.",
+            "const": 111,
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(line_length=80)])
+        == f"""
+
+# test basic types
+#
+# The JSON Schema project intends to shepherd all three draft series to either:
+# RFC status, the equivalent within another standards body, and/or join a
+# foundation and establish self publication rules.
+TestBasicTypes = Literal[111]"""
     )
 
 
