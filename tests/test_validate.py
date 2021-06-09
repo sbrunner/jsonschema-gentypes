@@ -32,9 +32,9 @@ root:
         },
     )
     assert errors == [
-        "-- test.yaml:3:3 root.0: 8 is not of type 'object'",
-        "-- test.yaml:4:5 root.1.test: 8 is not of type 'string'",
-        "-- test.yaml:5:5 root.2: 'test' is a required property",
+        "-- test.yaml:3:3 root.0: 8 is not of type 'object' (rule: properties.root.items.type)",
+        "-- test.yaml:4:5 root.1.test: 8 is not of type 'string' (rule: properties.root.items.properties.test.type)",
+        "-- test.yaml:5:5 root.2: 'test' is a required property (rule: properties.root.items.required)",
     ]
 
 
@@ -63,9 +63,9 @@ root:
         },
     )
     assert errors == [
-        "-- test.yaml root.0: 8 is not of type 'object'",
-        "-- test.yaml root.1.test: 8 is not of type 'string'",
-        "-- test.yaml root.2: 'test' is a required property",
+        "-- test.yaml root.0: 8 is not of type 'object' (rule: properties.root.items.type)",
+        "-- test.yaml root.1.test: 8 is not of type 'string' (rule: properties.root.items.properties.test.type)",
+        "-- test.yaml root.2: 'test' is a required property (rule: properties.root.items.required)",
     ]
 
 
@@ -96,7 +96,7 @@ root:
         },
     )
     assert errors == [
-        "-- test.yaml root.level2.test: 8 is not of type 'string'",
+        "-- test.yaml root.level2.test: 8 is not of type 'string' (rule: properties.root.properties.level2.properties.test.type)",
     ]
 
 

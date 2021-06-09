@@ -123,10 +123,15 @@ def validate(
                 results += format_error(context)
             return results
         else:
+            rule = (
+                f" (rule: {'.'.join([str(i) for i in error.absolute_schema_path])})"
+                if error.absolute_schema_path
+                else ""
+            )
             return [
                 f"-- {position} "
                 f'{".".join([str(i) for i in error.absolute_path] if error.absolute_path else "/")}: '
-                f"{error.message}"
+                f"{error.message}{rule}"
             ]
 
     results = []
