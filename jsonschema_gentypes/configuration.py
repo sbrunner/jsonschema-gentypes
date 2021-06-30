@@ -18,7 +18,7 @@ ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
 #
 # The argument passed to the API
 class ApiArguments(TypedDict, total=False):
-    additional_properties: 'AdditionalProperties'
+    additional_properties: "AdditionalProperties"
 
 
 # Configuration
@@ -27,7 +27,7 @@ class ApiArguments(TypedDict, total=False):
 class Configuration(TypedDict, total=False):
     headers: str
     callbacks: List[List[str]]
-    generate: List['GenerateItem']
+    generate: List["GenerateItem"]
 
 
 # Generate item
@@ -35,5 +35,5 @@ class GenerateItem(TypedDict, total=False):
     source: str
     destination: str
     root_name: str
-    api_arguments: 'ApiArguments'
+    api_arguments: "ApiArguments"
     name_mapping: Dict[str, str]
