@@ -16,6 +16,7 @@ jsonschema = "==3.2.0"
 requests = "==2.25.1"
 unidecode = "==1.2.0"
 "ruamel.yaml" = "==0.17.4"
+pyupgrade = "==2.19.4"
 
 [requires]
 python_version = "3.8"
