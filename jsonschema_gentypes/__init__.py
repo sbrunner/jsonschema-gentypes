@@ -477,21 +477,27 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
 
 
 class API:
-    """Base class for JSON schema types API."""
+    """
+    Base class for JSON schema types API.
+    """
 
     def __init__(
         self,
         resolver: RefResolver,
         additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
     ) -> None:
-        """Initialize with a resolver."""
+        """
+        Initialize with a resolver.
+        """
         self.resolver = resolver
         self.additional_properties = additional_properties
         # types by reference
         self.ref_type: Dict[str, Type] = {}
 
     def get_type_handler(self, schema_type: str) -> Callable[[jsonschema.JSONSchemaItem, str], Type]:
-        """Get a handler from this schema draft version."""
+        """
+        Get a handler from this schema draft version.
+        """
         if schema_type.startswith("_"):
             raise AttributeError("No way friend")
         handler = cast(Callable[[jsonschema.JSONSchemaItem, str], Type], getattr(self, schema_type, None))
@@ -505,7 +511,9 @@ class API:
     def get_type(
         self, schema: jsonschema.JSONSchema, proposed_name: str = "Base", auto_alias: bool = True
     ) -> Type:
-        """Get a :class:`.Type` for a JSON schema."""
+        """
+        Get a :class:`.Type` for a JSON schema.
+        """
         if schema is True:
             return NativeType("Any")
         if schema is False:
@@ -534,7 +542,9 @@ class API:
         return schema
 
     def _get_type_internal(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Get a :class:`.Type` for a JSON schema."""
+        """
+        Get a :class:`.Type` for a JSON schema.
+        """
 
         scope = schema.get("$id", "")
         if scope:
@@ -716,15 +726,21 @@ class API:
 
 
 class APIv4(API):
-    """JSON Schema draft 4."""
+    """
+    JSON Schema draft 4.
+    """
 
     def const(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Generate a ``Literal`` for a const value."""
+        """
+        Generate a ``Literal`` for a const value.
+        """
         const_: Union[int, float, str, bool, None] = schema["const"]
         return LiteralType(const_)
 
     def enum(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Generate an enum."""
+        """
+        Generate an enum.
+        """
         return TypeEnum(
             get_name(schema, proposed_name),
             cast(List[Union[int, float, bool, str, None]], schema["enum"]),
@@ -734,12 +750,16 @@ class APIv4(API):
     def boolean(  # pylint: disable=no-self-use
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
-        """Generate a ``bool`` annotation for a boolean object."""
+        """
+        Generate a ``bool`` annotation for a boolean object.
+        """
         del schema, proposed_name
         return BuiltinType("bool")
 
     def object(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Generate an annotation for an object, usually a TypedDict."""
+        """
+        Generate an annotation for an object, usually a TypedDict.
+        """
 
         std_dict = None
         name = get_name(schema, proposed_name)
@@ -798,7 +818,9 @@ class APIv4(API):
         return CombinedType(NativeType("Dict"), [BuiltinType("str"), NativeType("Any")])
 
     def array(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Generate a ``List[]`` annotation with the allowed types."""
+        """
+        Generate a ``List[]`` annotation with the allowed types.
+        """
         items = schema.get("items")
         if items is True:  # type: ignore
             return CombinedType(NativeType("List"), [NativeType("Any")])
@@ -834,7 +856,9 @@ class APIv4(API):
         proposed_name: str,
         sub_name: str,
     ) -> Type:
-        """Generate a ``Union`` annotation with the allowed types."""
+        """
+        Generate a ``Union`` annotation with the allowed types.
+        """
         inner_types = list(
             filter(
                 lambda o: o is not None,
@@ -847,7 +871,9 @@ class APIv4(API):
         return CombinedType(NativeType("Union"), inner_types)
 
     def ref(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
-        """Handle a `$ref`."""
+        """
+        Handle a `$ref`.
+        """
         ref = schema["$ref"]
         schema = cast(jsonschema.JSONSchemaItem, dict(schema))
         del schema["$ref"]
@@ -896,28 +922,36 @@ class APIv4(API):
     def string(  # pylint: disable=no-self-use
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
-        """Generate a ``str`` annotation."""
+        """
+        Generate a ``str`` annotation.
+        """
         del schema, proposed_name
         return BuiltinType("str")
 
     def number(  # pylint: disable=no-self-use
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
-        """Generate a ``Union[int, float]`` annotation."""
+        """
+        Generate a ``Union[int, float]`` annotation.
+        """
         del schema, proposed_name
         return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
 
     def integer(  # pylint: disable=no-self-use
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
-        """Generate an ``int`` annotation."""
+        """
+        Generate an ``int`` annotation.
+        """
         del schema, proposed_name
         return BuiltinType("int")
 
     def null(  # pylint: disable=no-self-use
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
-        """Generate an ``None`` annotation."""
+        """
+        Generate an ``None`` annotation.
+        """
         del schema, proposed_name
         return BuiltinType("None")
 
