@@ -48,8 +48,7 @@ def _extend_with_default(
                 resolve = getattr(validator.resolver, "resolve", None)
                 if resolve is None:
                     with validator.resolver.resolving(ref) as resolved:
-                        for error in validator.descend(instance, resolved):
-                            yield error
+                        yield from validator.descend(instance, resolved)
                 else:
                     _, resolved = validator.resolver.resolve(ref)
                     subschema = dict(subschema)  # type: ignore
@@ -57,13 +56,12 @@ def _extend_with_default(
             if "default" in subschema and instance is not None:
                 instance.setdefault(prop, subschema["default"])
 
-        for error in validate_properties(
+        yield from validate_properties(
             validator,
             properties,
             instance,
             schema,
-        ):
-            yield error
+        )
 
     return jsonschema.validators.extend(
         validator_class,

@@ -3,6 +3,8 @@ doc-warnings: true
 
 ignore-paths:
   - build
+  - jsonschema_gentypes/configuration.py
+  - jsonschema_gentypes/jsonschema.py
 
 pep257:
   disable:
