@@ -9,7 +9,7 @@ mypy = "==0.812"
 flake8 = "==3.8.4"
 pytest = "==6.2.5"
 jsonschema-gentypes = {editable = true, path = "."}
-pytest-cov = "==2.12.1"
+pytest-cov = "==3.0.0"
 
 [packages]
 jsonschema = "==4.0.1"
