@@ -165,7 +165,7 @@ def test_additional_properties_mixed():
 # WARNING: The required are not correctly taken in account,
 # See: https://github.com/camptocamp/jsonschema-gentypes/issues/6
 #
-# WARNING: the Normally the types should be mised each other instead of Union.
+# WARNING: Normally the types should be a mix of each other instead of Union.
 # See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
 TestBasicTypes = Union[Dict[str, str], "TestBasicTypesTyped"]"""
     )
