@@ -807,7 +807,7 @@ class APIv4(API):
                 type_ = CombinedType(NativeType("Union"), [std_dict, type_])
                 comments += [
                     "",
-                    "WARNING: the Normally the types should be mised each other instead of Union.",
+                    "WARNING: Normally the types should be a mix of each other instead of Union.",
                     "See: https://github.com/camptocamp/jsonschema-gentypes/issues/7",
                 ]
 
