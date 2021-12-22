@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.3.1"}
-mypy = "==0.812"
+mypy = "==0.921"
 flake8 = "==3.8.4"
 pytest = "==6.2.5"
 jsonschema-gentypes = {editable = true, path = "."}
