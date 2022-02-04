@@ -20,4 +20,5 @@ RUN	pipenv sync --system --dev
 
 CMD ["jsonschema-gentypes"]
 COPY . ./
+RUN python3 -m pip install --no-cache-dir --disable-pip-version-check --no-deps --editable .
 WORKDIR /src

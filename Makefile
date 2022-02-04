@@ -1,6 +1,7 @@
 
 .pipenv.timestamps: Pipfile.lock
 	pipenv sync --dev
+	pipenv install --skip-lock --editable .
 	touch $@
 
 .PHONY: prospector
