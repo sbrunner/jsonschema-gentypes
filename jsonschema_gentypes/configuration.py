@@ -27,6 +27,7 @@ class ApiArguments(TypedDict, total=False):
 class Configuration(TypedDict, total=False):
     headers: str
     callbacks: List[List[str]]
+    lineLength: int
     generate: List["GenerateItem"]
 
 

@@ -25,6 +25,7 @@ pylint:
     - too-many-statements
     - too-many-nested-blocks
     - too-many-return-statements
+    - too-many-lines
     - too-few-public-methods
     - no-else-return
     - line-too-long
