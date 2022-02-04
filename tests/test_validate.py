@@ -46,7 +46,8 @@ def test_validate_yaml():
 root:
   - 8
   - test: 8
-  - toto: 8"""
+  - toto: 8""",
+            Loader=yaml.SafeLoader,
         ),
         {
             "type": "object",
@@ -76,7 +77,8 @@ def test_validate_deep():
             """
 root:
   level2:
-    test: 8"""
+    test: 8""",
+            Loader=yaml.SafeLoader,
         ),
         {
             "type": "object",
