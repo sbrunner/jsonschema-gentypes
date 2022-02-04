@@ -23,6 +23,37 @@ from jsonschema_gentypes import configuration, validate
 LOG = logging.getLogger(__name__)
 
 
+def _add_type(
+    type_: jsonschema_gentypes.Type,
+    imports: Dict[str, Set[str]],
+    types: Dict[str, jsonschema_gentypes.Type],
+    gen: configuration.GenerateItem,
+) -> None:
+    if (
+        isinstance(type_, jsonschema_gentypes.NamedType)
+        and type_.unescape_name() in types
+        and type_.definition() == types[type_.unescape_name()].definition()
+    ):
+        return
+    name_mapping = gen.get("name_mapping", {})
+    assert name_mapping is not None
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in name_mapping:
+        type_.set_name(name_mapping[type_.unescape_name()])
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
+        print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
+        type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
+        _add_type(type_, imports, types, gen)
+    else:
+        if isinstance(type_, jsonschema_gentypes.NamedType):
+            types[type_.unescape_name()] = type_
+        for package, imp in type_.imports():
+            if package not in imports:
+                imports[package] = set()
+            imports[package].add(imp)
+        for sub_type in type_.depends_on():
+            _add_type(sub_type, imports, types, gen)
+
+
 def main() -> None:
     """
     Generate the Python type files from the JSON schema files.
@@ -44,7 +75,7 @@ def main() -> None:
     else:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
         assert schema_data
-        with open(args.config) as data_file:
+        with open(args.config, encoding="utf-8") as data_file:
             yaml = ruamel.yaml.YAML()  # type: ignore
             data = yaml.load(data_file)
         errors, data = validate.validate(args.config, data, json.loads(schema_data), True)
@@ -62,7 +93,7 @@ def main() -> None:
             response.raise_for_status()
             schema = response.json()
         else:
-            with open(os.path.abspath(source)) as source_file:
+            with open(os.path.abspath(source), encoding="utf-8") as source_file:
                 schema = json.load(source_file)
 
         resolver: RefResolver = RefResolver.from_schema(schema)
@@ -80,43 +111,13 @@ def main() -> None:
         api = api_version(resolver, **api_args)
 
         types: Dict[str, jsonschema_gentypes.Type] = {}
-        imports: Dict[str, Set[str]] = dict()
-
-        def add_type(
-            type_: jsonschema_gentypes.Type,
-            imports: Dict[str, Set[str]],
-            types: Dict[str, jsonschema_gentypes.Type],
-            gen: configuration.GenerateItem,
-        ) -> None:
-            if (
-                isinstance(type_, jsonschema_gentypes.NamedType)
-                and type_.unescape_name() in types
-                and type_.definition() == types[type_.unescape_name()].definition()
-            ):
-                return
-            name_mapping = gen.get("name_mapping", {})
-            assert name_mapping is not None
-            if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in name_mapping:
-                type_.set_name(name_mapping[type_.unescape_name()])
-            if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
-                print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
-                type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
-                add_type(type_, imports, types, gen)
-            else:
-                if isinstance(type_, jsonschema_gentypes.NamedType):
-                    types[type_.unescape_name()] = type_
-                for package, imp in type_.imports():
-                    if package not in imports:
-                        imports[package] = set()
-                    imports[package].add(imp)
-                for sub_type in type_.depends_on():
-                    add_type(sub_type, imports, types, gen)
+        imports: Dict[str, Set[str]] = {}
 
         base_type = api.get_type(schema, gen.get("root_name", "Root"))
         if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
             assert gen["root_name"] is not None
             base_type.set_name(gen["root_name"])
-        add_type(base_type, imports, types, gen)
+        _add_type(base_type, imports, types, gen)
 
         lines = []
         for imp, names in imports.items():
@@ -125,7 +126,7 @@ def main() -> None:
         for type_ in sorted(types.values(), key=lambda type_: type_.name()):
             lines += type_.definition()
 
-        with open(gen["destination"], "w") as destination_file:
+        with open(gen["destination"], "w", encoding="utf-8") as destination_file:
             headers = config.get("headers")
             if headers:
                 destination_file.write(headers)
