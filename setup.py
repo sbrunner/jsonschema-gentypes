@@ -23,7 +23,7 @@ def long_description() -> str:
     Get the long description from the readme.
     """
     try:
-        with open("README.md") as readme_file:
+        with open("README.md", encoding="utf-8") as readme_file:
             return readme_file.read()
     except FileNotFoundError:
         return ""

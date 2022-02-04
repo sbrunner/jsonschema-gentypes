@@ -1,6 +1,3 @@
-import os
-import tempfile
-
 import ruamel.yaml
 import yaml
 
@@ -8,9 +5,10 @@ from jsonschema_gentypes.validate import validate
 
 
 def test_validate_ruamel():
+    ruamel_yaml = ruamel.yaml.YAML()
     errors, data = validate(
         "test.yaml",
-        ruamel.yaml.round_trip_load(
+        ruamel_yaml.load(
             """
 root:
   - 8
