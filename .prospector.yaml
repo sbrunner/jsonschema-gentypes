@@ -1,5 +1,6 @@
 strictness: veryhigh
 doc-warnings: true
+max-line-length: 110
 
 ignore-paths:
   - build
@@ -34,6 +35,9 @@ pep8:
     - E501 # line too long
 
 mypy:
+  run: true
+
+bandit:
   run: true
 
 mccabe:
