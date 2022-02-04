@@ -9,7 +9,7 @@ import os
 import pkgutil
 import random
 import re
-import subprocess
+import subprocess  # nosec
 import sys
 from typing import Dict, Set, cast
 
@@ -100,7 +100,7 @@ def main() -> None:
                 type_.set_name(name_mapping[type_.unescape_name()])
             if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
                 print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
-                type_.postfix_name(f"Gen{random.randrange(999999)}")
+                type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
                 add_type(type_, imports, types, gen)
             else:
                 if isinstance(type_, jsonschema_gentypes.NamedType):
@@ -138,4 +138,4 @@ def main() -> None:
         for callback in callbacks:
             cmd = list(callback)
             cmd.append(gen["destination"])
-            subprocess.check_call(cmd)
+            subprocess.check_call(cmd)  # nosec

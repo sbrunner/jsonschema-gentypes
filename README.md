@@ -30,23 +30,23 @@ You can also write a config file named `jsonschema-gentypes.yaml` with:
 
 ```yaml
 headers: >
-    # Automatically generated file from a JSON schema
+  # Automatically generated file from a JSON schema
 # Used to correctly format the generated file
 callbacks:
-    - - black
-    - - isort
+  - - black
+  - - isort
 generate:
-    - # JSON schema file path
-      source: jsonschema_gentypes/schema.json
-      # Python file path
-      destination: jsonschema_gentypes/configuration.py
-      # The name of the root element
-      root_name: Config
-      # Argument passed to the API
-      api_arguments:
-          additional_properties: Only explicit
-      # Rename an element
-      name_mapping: {}
+  - # JSON schema file path
+    source: jsonschema_gentypes/schema.json
+    # Python file path
+    destination: jsonschema_gentypes/configuration.py
+    # The name of the root element
+    root_name: Config
+    # Argument passed to the API
+    api_arguments:
+      additional_properties: Only explicit
+    # Rename an element
+    name_mapping: {}
 ```
 
 And just run:
@@ -61,8 +61,8 @@ This package also provide some validations features for YAML file based on `json
 
 Additional features:
 
--   Have the line and columns number in the errors, it the file is loaded with `ruamel.yaml`.
--   Fill with the default provides in the JSON schema, disabled by default because it have some issue with `OneOf` and `AnyOf`.
+- Have the line and columns number in the errors, it the file is loaded with `ruamel.yaml`.
+- Fill with the default provides in the JSON schema, disabled by default because it have some issue with `OneOf` and `AnyOf`.
 
 ```python
     import ruamel.yaml

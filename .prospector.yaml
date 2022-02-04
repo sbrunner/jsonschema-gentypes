@@ -1,5 +1,6 @@
 strictness: veryhigh
 doc-warnings: true
+max-line-length: 110
 
 ignore-paths:
   - build
@@ -35,6 +36,11 @@ pep8:
 
 mypy:
   run: true
+
+bandit:
+  run: true
+  options:
+    config: .bandit.yaml
 
 mccabe:
   run: false
