@@ -12,13 +12,15 @@ setuptools = "==59.8.0"
 
 [dev-packages]
 prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.6.0"}
-mypy = "==0.812"
+mypy = "==0.931"
 flake8 = "==3.9.2"
 pytest = "==7.0.0"
 pytest-cov = "==3.0.0"
 pyupgrade = "==2.31.0"
 black = "==22.1.0"
 isort = "==5.10.1"
+types-requests = "==2.27.8"
+types-pyyaml = "==6.0.4"
 
 [requires]
 python_version = "3.8"
