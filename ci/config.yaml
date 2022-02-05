@@ -5,6 +5,6 @@ checks:
     rebuild: False
 
 publish:
-    docker:
-      images:
-        - name: camptocamp/jsonschema-gentypes
+  docker:
+    images:
+      - name: camptocamp/jsonschema-gentypes
