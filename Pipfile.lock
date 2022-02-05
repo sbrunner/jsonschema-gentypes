@@ -736,6 +736,29 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.0.0"
         },
+        "types-pyyaml": {
+            "hashes": [
+                "sha256:6252f62d785e730e454dfa0c9f0fb99d8dae254c5c3c686903cf878ea27c04b7",
+                "sha256:693b01c713464a6851f36ff41077f8adbc6e355eda929addfb4a97208aea9b4b"
+            ],
+            "index": "pypi",
+            "version": "==6.0.4"
+        },
+        "types-requests": {
+            "hashes": [
+                "sha256:8ec9f5f84adc6f579f53943312c28a84e87dc70201b54f7c4fbc7d22ecfa8a3e",
+                "sha256:c2f4e4754d07ca0a88fd8a89bbc6c8a9f90fb441f9c9b572fd5c484f04817486"
+            ],
+            "index": "pypi",
+            "version": "==2.27.8"
+        },
+        "types-urllib3": {
+            "hashes": [
+                "sha256:4a54f6274ab1c80968115634a55fb9341a699492b95e32104a7c513db9fe02e9",
+                "sha256:abd2d4857837482b1834b4817f0587678dcc531dbc9abe4cde4da28cef3f522c"
+            ],
+            "version": "==1.26.9"
+        },
         "typing-extensions": {
             "hashes": [
                 "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e",
