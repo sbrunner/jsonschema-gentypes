@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9aa04efaf4761ce57456eb6788482a896ad279f4f421ed68fbd2ec5ec2a8cf04"
+            "sha256": "6215c98b5dadca55f521f38d61a1b5483acbe5fda39ba6d18701d8542d247fa3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -139,11 +139,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:09980778aa734c3037a47997f28d6db5ab18bdf2af0e49f719bfc53967fd2e82",
-                "sha256:608a7885b664342ae9fafc43840b29d219c5a578876f6f7e00c4e2612160587f"
+                "sha256:80743e57120665fa65665286369a0734bce0e7a629ad36507fb7a4b65e7d2e3b",
+                "sha256:93b1a3037230bf9aa07327b9fc58f527d5f4e22d36705b55d55ba3ece8606ca6"
             ],
             "index": "pypi",
-            "version": "==59.8.0"
+            "version": "==60.9.2"
         },
         "unidecode": {
             "hashes": [
@@ -563,10 +563,10 @@
         },
         "pylint-django": {
             "hashes": [
-                "sha256:1fda2b86de993241c9a076970af0d1a7beac52a4333c786975a0e7f45c062490",
-                "sha256:7eb8399fc9813040754081e496655cd7cc40d32d4b68e49c64a2eea50df9af12"
+                "sha256:6e6492ef78de8e021a185c7a968132a29b864e5b5762e34dd63786983e0de74a",
+                "sha256:f5a58d53129d12e62bf58b437752fb998e3f50af6b4c67b0481ec07ba219e15c"
             ],
-            "version": "==2.5.0"
+            "version": "==2.5.1"
         },
         "pylint-flask": {
             "hashes": [
@@ -683,11 +683,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:09980778aa734c3037a47997f28d6db5ab18bdf2af0e49f719bfc53967fd2e82",
-                "sha256:608a7885b664342ae9fafc43840b29d219c5a578876f6f7e00c4e2612160587f"
+                "sha256:80743e57120665fa65665286369a0734bce0e7a629ad36507fb7a4b65e7d2e3b",
+                "sha256:93b1a3037230bf9aa07327b9fc58f527d5f4e22d36705b55d55ba3ece8606ca6"
             ],
             "index": "pypi",
-            "version": "==59.8.0"
+            "version": "==60.9.2"
         },
         "smmap": {
             "hashes": [
@@ -764,7 +764,7 @@
                 "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42",
                 "sha256:21c85e0fe4b9a155d0799430b0ad741cdce7e359660ccbd8b530613e8df88ce2"
             ],
-            "markers": "python_version < '3.10'",
+            "markers": "python_version >= '3.6'",
             "version": "==4.1.1"
         },
         "urllib3": {
