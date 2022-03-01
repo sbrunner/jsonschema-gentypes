@@ -7,7 +7,7 @@ ignore-paths:
   - jsonschema_gentypes/configuration.py
   - jsonschema_gentypes/jsonschema.py
 
-pep257:
+pydocstyle:
   disable:
     - D212 # Multi-line docstring summary should start at the first line
     - D407 # Missing dashed underline after section
@@ -30,7 +30,7 @@ pylint:
     - no-else-return
     - line-too-long
 
-pep8:
+pycodestyle:
   disable:
     - E203 # whitespace before ':'
     - E501 # line too long
