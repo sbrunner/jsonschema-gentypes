@@ -11,7 +11,7 @@ unidecode = "==1.3.3"
 setuptools = "==59.8.0"
 
 [dev-packages]
-prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.7.6"}
+prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.7.7"}
 mypy = "==0.931"
 flake8 = "==4.0.1"
 pytest = "==7.0.1"
