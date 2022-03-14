@@ -14,7 +14,7 @@ setuptools = "==59.8.0"
 prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.7.7"}
 mypy = "==0.931"
 flake8 = "==4.0.1"
-pytest = "==7.0.1"
+pytest = "==7.1.0"
 pytest-cov = "==3.0.0"
 pyupgrade = "==2.31.1"
 black = "==22.1.0"
