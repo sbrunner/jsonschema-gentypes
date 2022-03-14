@@ -78,7 +78,7 @@ def main() -> None:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
         assert schema_data
         with open(args.config, encoding="utf-8") as data_file:
-            yaml = ruamel.yaml.YAML()  # type: ignore
+            yaml = ruamel.yaml.YAML()
             data = yaml.load(data_file)
         errors, data = validate.validate(args.config, data, json.loads(schema_data), True)
         config = cast(configuration.Configuration, data)
