@@ -20,7 +20,7 @@ pyupgrade = "==2.31.1"
 black = "==22.1.0"
 isort = "==5.10.1"
 types-requests = "==2.27.13"
-types-pyyaml = "==6.0.4"
+types-pyyaml = "==6.0.5"
 
 [requires]
 python_version = "3.8"
