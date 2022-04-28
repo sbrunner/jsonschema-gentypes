@@ -19,7 +19,7 @@ pytest-cov = "==3.0.0"
 pyupgrade = "==2.32.0"
 black = "==22.3.0"
 isort = "==5.10.1"
-types-requests = "==2.27.20"
+types-requests = "==2.27.22"
 types-pyyaml = "==6.0.7"
 
 [requires]
