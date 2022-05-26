@@ -12,7 +12,7 @@ setuptools = "==59.8.0"
 
 [dev-packages]
 prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "==1.7.7"}
-mypy = "==0.950"
+mypy = "==0.960"
 flake8 = "==4.0.1"
 pytest = "==7.1.2"
 pytest-cov = "==3.0.0"
