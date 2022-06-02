@@ -29,13 +29,13 @@ class Type:
         """
         raise NotImplementedError
 
-    def imports(self) -> List[Tuple[str, str]]:  # pylint: disable=no-self-use
+    def imports(self) -> List[Tuple[str, str]]:
         """
         Return the needed imports.
         """
         return []
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:  # pylint: disable=no-self-use
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
         Return the type declaration.
 
@@ -45,7 +45,7 @@ class Type:
         del line_length
         return []
 
-    def depends_on(self) -> List["Type"]:  # pylint: disable=no-self-use
+    def depends_on(self) -> List["Type"]:
         """
         Return the needed sub types.
         """
@@ -779,7 +779,7 @@ class APIv4(API):
             get_description(schema),
         )
 
-    def boolean(  # pylint: disable=no-self-use
+    def boolean(
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
         """
@@ -951,7 +951,7 @@ class APIv4(API):
             self.ref_type[ref] = type_
         return type_
 
-    def string(  # pylint: disable=no-self-use
+    def string(
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
         """
@@ -960,7 +960,7 @@ class APIv4(API):
         del schema, proposed_name
         return BuiltinType("str")
 
-    def number(  # pylint: disable=no-self-use
+    def number(
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
         """
@@ -969,7 +969,7 @@ class APIv4(API):
         del schema, proposed_name
         return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
 
-    def integer(  # pylint: disable=no-self-use
+    def integer(
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
         """
@@ -978,7 +978,7 @@ class APIv4(API):
         del schema, proposed_name
         return BuiltinType("int")
 
-    def null(  # pylint: disable=no-self-use
+    def null(
         self, schema: jsonschema.JSONSchemaItem, proposed_name: str
     ) -> Type:
         """
