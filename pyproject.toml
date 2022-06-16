@@ -8,3 +8,73 @@ include_trailing_comma = true
 force_grid_wrap = false
 use_parentheses = true
 line_length = 110
+known_first_party = "jsonschema_gentypes"
+
+[tool.mypy]
+python_version = 3.8
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+strict = true
+
+[tool.poetry]
+name = "jsonschema-gentypes"
+version = "0.0.0"
+description = "Tool to generate Python types based on TypedDict from a JSON Schema"
+readme = "README.md"
+authors = ["Camptocamp <info@camptocamp.com>"]
+repository = "https://github.com/camptocamp/jsonschema-gentypes"
+keywords = ["jsonschema", "types"]
+packages = [{ include = "jsonschema_gentypes" }]
+include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Software Development :: Code Generators",
+    "Typing :: Typed",
+]
+
+[tool.poetry.scripts]
+jsonschema-gentypes = "jsonschema_gentypes.cli:main"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+jsonschema = "4.6.0"
+requests = "2.28.0"
+unidecode = "1.3.4"
+"ruamel.yaml" = "0.17.21"
+PyYAML = "6.0"
+pyupgrade = { version = "2.34.0", optional = true }
+black = { version = "22.3.0", optional = true }
+isort = { version = "5.10.1", optional = true }
+
+[tool.poetry.extras]
+tools = ["black", "isort", "pyupgrade"]
+
+[tool.poetry.dev-dependencies]
+prospector = {extras = ["with_mypy", "with_bandit", "with_pyroma"],version = "1.7.7"}
+pylint = "2.14.1"
+mypy = "0.961"
+flake8 = "4.0.1"
+pytest = "7.1.2"
+pytest-cov = "3.0.0"
+types-requests = "2.27.30"
+types-pyyaml = "6.0.8"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning", "poetry-plugin-tweak-dependencies-version"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry-dynamic-versioning]
+enable = true # disable on Docker
+vcs = "git"
+pattern = "^((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)"
+
+[tool.poetry-plugin-tweak-dependencies-version]
+default = "present"
