@@ -1,6 +1,6 @@
 *
-!jsonschema_gentypes/*
-!setup.py
+!jsonschema_gentypes/
 !requirements.txt
-!Pipfile*
+!pyproject.toml
+!poetry.lock
 !README.md
