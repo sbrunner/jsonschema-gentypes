@@ -64,7 +64,7 @@ mypy = "0.961"
 flake8 = "4.0.1"
 pytest = "7.1.2"
 pytest-cov = "3.0.0"
-types-requests = "2.27.31"
+types-requests = "2.28.0"
 types-pyyaml = "6.0.9"
 
 [build-system]
