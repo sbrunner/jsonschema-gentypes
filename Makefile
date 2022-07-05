@@ -10,7 +10,7 @@ help: ## Display this help message
 
 .poetry.timestamps: pyproject.toml poetry.lock
 	poetry --version || pip install --user --requirement=requirements.txt
-	poetry install --extras=tools
+	poetry install --extras=tools --extras=generate --extras=extra
 	touch $@
 
 .PHONY: prospector
@@ -19,7 +19,7 @@ prospector: .poetry.timestamps # Run Prospector check
 
 .PHONY: pyprest
 pytest: .poetry.timestamps # Run the unit tests
-	poetry run pytest --verbose --cov=jsonschema_gentypes -vv --cov-report=term-missing
+	poetry run pytest -vv --cov=jsonschema_gentypes --cov-report=term-missing
 
 .PHONY: jsonschema-gentypes
 jsonschema-gentypes: .poetry.timestamps # Generate files related to the JSON schema

@@ -3,17 +3,151 @@ Generate the type structure based on the Type class from the JSON schema file.
 """
 
 import textwrap
+import unicodedata
 from abc import abstractmethod
-from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple, Union, cast
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union, cast
 
-import yaml
 from jsonschema import RefResolver
-from unidecode import unidecode
 
 from jsonschema_gentypes import configuration, jsonschema
 
 # Raise issues here.
 ISSUE_URL = "https://github.com/camptcamp/jsonschema-gentypes"
+
+
+def __pinyin(char: str) -> str:
+    try:
+        import pinyin  # pylint: disable=import-outside-toplevel
+    except ModuleNotFoundError:
+        return char
+
+    char = pinyin.get(char, delimiter=" ")
+    return (
+        char
+        if len(char) == 1
+        else "".join([c for c in unicodedata.normalize("NFKD", f" {char} ") if not unicodedata.combining(c)])
+    )
+
+
+def __romkan(char: str) -> str:
+    try:
+        import romkan  # pylint: disable=import-outside-toplevel
+    except ModuleNotFoundError:
+        return char
+
+    return cast(str, romkan.to_roma(char))
+
+
+def __greek(char: str) -> str:
+    try:
+        import romanize  # pylint: disable=import-outside-toplevel
+    except ModuleNotFoundError:
+        return char
+
+    return cast(str, romanize.romanize(char))
+
+
+def __char_range(char1: str, char2: str) -> List[str]:
+    """
+    Generate the characters range from `char1` to `char2`, inclusive.
+
+    Arguments:
+        char1: the first char of the range
+        char2: the last char of the range
+    """
+    return [chr(char) for char in range(ord(char1), ord(char2) + 1)]
+
+
+AUTHORIZED_CHAR = __char_range("a", "z") + __char_range("A", "Z") + __char_range("0", "9")
+
+
+def __convert_char(char: str) -> str:
+    if char in AUTHORIZED_CHAR:
+        return char
+
+    # Remove accents
+    if unicodedata.combining(char):
+        return ""
+    if char == "-":
+        return " "
+    category = unicodedata.category(char)
+    # All spaced => space
+    if category in ("Zs", "Cc"):
+        return " "
+    # Explicit sign
+    if category in ("So", "Po"):
+        name = unicodedata.name(char)
+        if category == "So":
+            name = name.replace(" SIGN", "")
+        return f" {name} "
+
+    # Greek characters
+    char = __greek(char)
+    if char in AUTHORIZED_CHAR or len(char) > 1:
+        return char
+
+    # Japanese characters
+    char = __romkan(char)
+    if char in AUTHORIZED_CHAR or len(char) > 1:
+        return char
+
+    # Chinese characters
+    char = __pinyin(char)
+    if char in AUTHORIZED_CHAR or len(char) > 1:
+        return char
+
+    return " "
+
+
+def normalize(input_str: str) -> str:
+    """Normalize the string to be a Python name."""
+
+    # Unaccent, ...
+    nfkd_form = unicodedata.normalize("NFKD", input_str)
+    name = "".join([__convert_char(c) for c in nfkd_form])
+
+    # No number at first position
+    if name[0] in __char_range("0", "9"):
+        name = f"num {name}"
+
+    # No python keyword
+    if name.lower() in [
+        "and",
+        "as",
+        "assert",
+        "break",
+        "class",
+        "continue",
+        "def",
+        "del",
+        "elif",
+        "else",
+        "except",
+        "false",
+        "finally",
+        "for",
+        "from",
+        "global",
+        "if",
+        "import",
+        "in",
+        "is",
+        "lambda",
+        "none",
+        "nonlocal",
+        "not",
+        "or",
+        "pass",
+        "raise",
+        "return",
+        "true",
+        "try",
+        "while",
+        "with",
+        "yield",
+    ]:
+        name = f"{name} name"
+    return name
 
 
 class Type:
@@ -94,7 +228,7 @@ class NamedType(Type):
 
     def unescape_name(self) -> str:
         """
-        Return the unscaped name.
+        Return the unescaped name.
         """
         return self._name
 
@@ -158,7 +292,7 @@ class BuiltinType(Type):
 
 class NativeType(Type):
     """
-    Native Type that will essencially generates a Python import.
+    Native Type that will essentially generates a Python import.
     """
 
     def __init__(self, name: str, package: str = "typing") -> None:
@@ -229,7 +363,7 @@ class TypeAlias(NamedType):
 
         Arguments:
             name: the type name
-            sub_type: the type that should be aliazed
+            sub_type: the type that should be aliased
             descriptions: the type description
         """
         super().__init__(name)
@@ -292,8 +426,8 @@ class TypeEnum(NamedType):
         result += ["# The values for the enum"]
         for value in self.values:
             name = get_name({"title": f"{self._name} {value}"}, upper=True)
-            formated_value = f'"{value}"' if isinstance(value, str) else str(value)
-            result.append(f"{name}: {LiteralType(value).name()} = {formated_value}")
+            formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
+            result.append(f"{name}: {LiteralType(value).name()} = {formatted_value}")
         return result
 
 
@@ -366,18 +500,6 @@ def split_comment(text: List[str], line_length: Optional[int]) -> List[str]:
     return result
 
 
-def char_range(char1: str, char2: str) -> Iterator[str]:
-    """
-    Generate the characters range from `char1` to `char2`, inclusive.
-
-    Arguments:
-        char1: the first char of the range
-        char2: the last char of the range
-    """
-    for char in range(ord(char1), ord(char2) + 1):
-        yield chr(char)
-
-
 def get_name(
     schema: Optional[jsonschema.JSONSchemaItem],
     proposed_name: Optional[str] = None,
@@ -388,58 +510,15 @@ def get_name(
 
     Arguments:
         schema: the concerned schema
-        proposed_name: a name that we will use it the scheema hasn't any title
-        upper: should we use an upper cass (For constants)
+        proposed_name: a name that we will use it the schema hasn't any title
+        upper: should we use an upper case (For constants)
     """
     # Get the base name
     has_title = isinstance(schema, dict) and "title" in schema
     name = schema["title"] if has_title else proposed_name  # type: ignore
     assert name is not None
-    # Unaccent, ...
-    name = unidecode(name)
-    # Remove unauthorised char
-    authorised_char = list(char_range("a", "z")) + list(char_range("A", "Z")) + list(char_range("0", "9"))
-    name = "".join([(c if c in authorised_char else " ") for c in name])
-    # No number at first position
-    if name[0] in list(char_range("0", "9")):
-        name = f"num {name}"
-    # No python keyword
-    if name.lower() in [
-        "and",
-        "as",
-        "assert",
-        "break",
-        "class",
-        "continue",
-        "def",
-        "del",
-        "elif",
-        "else",
-        "except",
-        "false",
-        "finally",
-        "for",
-        "from",
-        "global",
-        "if",
-        "import",
-        "in",
-        "is",
-        "lambda",
-        "none",
-        "nonlocal",
-        "not",
-        "or",
-        "pass",
-        "raise",
-        "return",
-        "true",
-        "try",
-        "while",
-        "with",
-        "yield",
-    ]:
-        name = f"{name} name"
+    name = normalize(name)
+
     prefix = "" if has_title else "_"
     if upper:
         # Upper case
@@ -460,6 +539,8 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
     Arguments:
         schema: the concerned schema
     """
+    import yaml  # pylint: disable=import-outside-toplevel
+
     result: List[str] = []
     for key in ("title", "description"):
         if key in schema:
@@ -594,13 +675,13 @@ class API:
             then_schema.update(self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("then", {}))))
             if "properties" not in then_schema:
                 then_schema["properties"] = {}
-            then_propoerties = then_schema["properties"]
-            assert then_propoerties
+            then_properties = then_schema["properties"]
+            assert then_properties
             if_properties = self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("if", {}))).get(
                 "properties", {}
             )
             assert if_properties
-            then_propoerties.update(if_properties)
+            then_properties.update(if_properties)
             else_schema: jsonschema.JSONSchemaItem = {}
             else_schema.update(base_schema)
             else_schema.update(self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("else", {}))))
@@ -676,7 +757,7 @@ class API:
 
         if schema_type is None:
             type_ = BuiltinType("None")
-            type_.set_comments(["WARNING: we get an scheam without any type"])
+            type_.set_comments(["WARNING: we get an schema without any type"])
             return type_
         assert isinstance(schema_type, str), (
             f"Expected to find a supported schema type, got {schema_type}" f"\nDuring parsing of {schema}"
@@ -722,7 +803,7 @@ class API:
     def any_of(
         self,
         schema: jsonschema.JSONSchemaItem,
-        subschema: List[jsonschema.JSONSchemaItem],
+        sub_schema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
         sub_name: str,
     ) -> Type:
@@ -779,9 +860,7 @@ class APIv4(API):
             get_description(schema),
         )
 
-    def boolean(
-        self, schema: jsonschema.JSONSchemaItem, proposed_name: str
-    ) -> Type:
+    def boolean(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
         Generate a ``bool`` annotation for a boolean object.
         """
@@ -819,9 +898,9 @@ class APIv4(API):
 
             struct = {
                 prop: add_required(
-                    self.get_type(subschema, proposed_name + " " + prop, auto_alias=False), prop, required
+                    self.get_type(sub_schema, proposed_name + " " + prop, auto_alias=False), prop, required
                 )
-                for prop, subschema in properties.items()
+                for prop, sub_schema in properties.items()
             }
 
             type_: Type = TypedDictType(
@@ -884,7 +963,7 @@ class APIv4(API):
     def any_of(
         self,
         schema: jsonschema.JSONSchemaItem,
-        subschema: List[jsonschema.JSONSchemaItem],
+        sub_schema: List[jsonschema.JSONSchemaItem],
         proposed_name: str,
         sub_name: str,
     ) -> Type:
@@ -896,7 +975,7 @@ class APIv4(API):
                 lambda o: o is not None,
                 [
                     self.get_type(subs, f"{proposed_name} {sub_name}{index}")
-                    for index, subs in enumerate(subschema)
+                    for index, subs in enumerate(sub_schema)
                 ],
             )
         )
@@ -951,36 +1030,28 @@ class APIv4(API):
             self.ref_type[ref] = type_
         return type_
 
-    def string(
-        self, schema: jsonschema.JSONSchemaItem, proposed_name: str
-    ) -> Type:
+    def string(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
         Generate a ``str`` annotation.
         """
         del schema, proposed_name
         return BuiltinType("str")
 
-    def number(
-        self, schema: jsonschema.JSONSchemaItem, proposed_name: str
-    ) -> Type:
+    def number(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
         Generate a ``Union[int, float]`` annotation.
         """
         del schema, proposed_name
         return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
 
-    def integer(
-        self, schema: jsonschema.JSONSchemaItem, proposed_name: str
-    ) -> Type:
+    def integer(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
         Generate an ``int`` annotation.
         """
         del schema, proposed_name
         return BuiltinType("int")
 
-    def null(
-        self, schema: jsonschema.JSONSchemaItem, proposed_name: str
-    ) -> Type:
+    def null(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
         """
         Generate an ``None`` annotation.
         """
