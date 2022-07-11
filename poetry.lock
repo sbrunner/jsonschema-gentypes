@@ -864,8 +864,8 @@ tools = ["black", "isort", "pyupgrade"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.8,<4.0"
-content-hash = "91c4c0a12ebda73559106faaa0b4139f84effadea5eafb77fe4b5738d2e35dc3"
+python-versions = ">=3.8,<3.11"
+content-hash = "b4f3b45624f7f0785ff8edc6ab5cca12f1514c6e2fc744a2f74f0b564ff7d49b"
 
 [metadata.files]
 astroid = [
