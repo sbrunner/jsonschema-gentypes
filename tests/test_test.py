@@ -535,13 +535,36 @@ TESTBASICTYPES_FALSE: Literal[False] = False"""
 def test_default(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "default": value})
     assert (
-        "\n".join([d.rstrip() for d in type_.definition(None)])
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].definition(None)])
         == f"""
 
 # test basic types
 #
 # default: {value}
 TestBasicTypes = {expected_type}"""
+    )
+
+
+@pytest.mark.parametrize(
+    "value,expected_type",
+    [
+        (11, " = 11"),
+        (1.1, " = 1.1"),
+        (True, " = True"),
+        ("test", " = 'test'"),
+        (None, " = None"),
+        ([111], ": Any = [111]"),
+        ({"aa": 111}, ": Any = {'aa': 111}"),
+    ],
+)
+def test_default(value, expected_type) -> None:
+    type_ = get_types({"title": "test basic types", "type": "string", "default": value})
+    assert (
+        "\n".join([d.rstrip() for d in type_.depends_on()[-1].definition(None)])
+        == f"""
+
+# Default value of the field path 'Base'
+TEST_BASIC_TYPES_DEFAULT{expected_type}"""
     )
 
 

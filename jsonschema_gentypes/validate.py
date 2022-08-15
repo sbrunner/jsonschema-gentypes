@@ -5,6 +5,7 @@ Module that offer some useful functions to validate the data against a JSON sche
 import logging
 import re
 from typing import Any, Dict, Iterator, List, Optional, Tuple
+from warnings import warn
 
 import jsonschema
 
@@ -92,6 +93,9 @@ def validate(
         jsonschema.Draft7Validator,
     )
     if default:
+        warn(
+            "This is deprecated, use `obj.get('field', schema.FIELD_TYPE_DEFAULT)` instead.", DeprecationWarning
+        )
         Validator = _extend_with_default(  # noqa: N806 # variable 'Validator' in function should be lowercase
             Validator
         )

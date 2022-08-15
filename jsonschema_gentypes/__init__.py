@@ -5,7 +5,7 @@ Generate the type structure based on the Type class from the JSON schema file.
 import textwrap
 import unicodedata
 from abc import abstractmethod
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, cast
 
 from jsonschema import RefResolver
 
@@ -156,6 +156,13 @@ class Type:
     """
 
     _comments: Optional[List[str]] = None
+    _depends_on: Optional[List["Type"]] = None
+
+    def __init__(self) -> None:
+        """
+        Initialize the type.
+        """
+        self._depends_on = []
 
     def name(self) -> str:
         """
@@ -183,7 +190,15 @@ class Type:
         """
         Return the needed sub types.
         """
-        return []
+        assert self._depends_on is not None
+        return self._depends_on
+
+    def add_depends_on(self, depends_on: "Type") -> None:
+        """
+        Add a sub type.
+        """
+        assert self._depends_on is not None
+        self._depends_on.append(depends_on)
 
     def comments(self) -> List[str]:
         """
@@ -212,6 +227,7 @@ class NamedType(Type):
         Arguments:
             name: the type name
         """
+        super().__init__()
         self._name = name
 
     def postfix_name(self, postfix: str) -> None:
@@ -251,6 +267,7 @@ class LiteralType(Type):
         Arguments:
             const: the constant
         """
+        super().__init__()
         self.const = const
 
     def name(self) -> str:
@@ -281,6 +298,7 @@ class BuiltinType(Type):
         Arguments:
             name: the type name
         """
+        super().__init__()
         self._name = name
 
     def name(self) -> str:
@@ -303,6 +321,7 @@ class NativeType(Type):
             name: the type name
             package: the package of the type
         """
+        super().__init__()
         self.package = package
         self._name = name
 
@@ -334,6 +353,7 @@ class CombinedType(Type):
             base: the base type (e.-g. for `Union[str, int]` the base type is `Union`)
             sub_types: the sub types (e.-g. for `Union[str]` the sub types are `str` and `int`)
         """
+        super().__init__()
         self.base = base
         self.sub_types = sub_types
         self.name()
@@ -349,7 +369,7 @@ class CombinedType(Type):
         """
         Return the needed sub types.
         """
-        return [self.base] + self.sub_types
+        return [self.base] + self.sub_types + super().depends_on()
 
 
 class TypeAlias(NamedType):
@@ -374,7 +394,7 @@ class TypeAlias(NamedType):
         """
         Return the needed sub types.
         """
-        return [self.sub_type]
+        return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
@@ -406,13 +426,13 @@ class TypeEnum(NamedType):
         super().__init__(name)
         self.values = values
         self.descriptions = descriptions
-        self.sub_type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
+        self.sub_type: Type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
 
     def depends_on(self) -> List["Type"]:
         """
         Return the needed sub types.
         """
-        return [self.sub_type]
+        return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
@@ -460,7 +480,7 @@ class TypedDictType(NamedType):
         """
         result: List[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
-        return result
+        return result + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
@@ -476,6 +496,39 @@ class TypedDictType(NamedType):
                 result.append(f"    # {comment}")
             result.append(f"    '{property_}': {type_obj.name()},")
         result.append("}, total=False)")
+        return result
+
+
+class Constant(NamedType):
+    """
+    The Pseudo Type is used to add the default constants.
+    """
+
+    def __init__(self, name: str, constant: Any, descriptions: List[str]):
+        """
+        Init.
+
+        Arguments:
+            name: the type name
+            constant: the constant value
+            descriptions: the type description
+        """
+        super().__init__(name)
+        self.constant = constant
+        self.descriptions = descriptions
+
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
+        """
+        Return the type declaration.
+        """
+        result = ["", ""]
+        result += [
+            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+        ]
+        if isinstance(self.constant, (dict, list)):
+            result.append(f"{self._name}: Any = {repr(self.constant)}")
+        else:
+            result.append(f"{self._name} = {repr(self.constant)}")
         return result
 
 
@@ -642,10 +695,18 @@ class API:
         description += additional_description
         if not isinstance(the_type, NamedType) and description:
             if auto_alias:
-                return TypeAlias(get_name(schema, proposed_name), the_type, description)
+                the_type = TypeAlias(get_name(schema, proposed_name), the_type, description)
             else:
                 the_type.set_comments(description)
 
+        if "default" in schema:
+            the_type.add_depends_on(
+                Constant(
+                    f"{get_name(schema, proposed_name, True)}_DEFAULT",
+                    schema["default"],
+                    [f"Default value of the field path '{proposed_name}'"],
+                )
+            )
         return the_type
 
     def _resolve_ref(self, schema: jsonschema.JSONSchemaItem) -> jsonschema.JSONSchemaItem:

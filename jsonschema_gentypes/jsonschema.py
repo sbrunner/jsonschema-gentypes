@@ -5,6 +5,10 @@ Automatically generated file from a JSON schema.
 
 from typing import Any, Dict, List, Literal, TypedDict, Union
 
+# Default value of the field path 'JSONSchema'
+CORE_SCHEMA_META_SCHEMA_DEFAULT = True
+
+
 # Core schema meta-schema
 #
 # default: True
@@ -105,6 +109,42 @@ JSONSchemaItem = TypedDict(
     },
     total=False,
 )
+
+
+# Default value of the field path 'Core schema meta-schema object definitions'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: Any = {}
+
+
+# Default value of the field path 'Core schema meta-schema object items'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_ITEMS_DEFAULT = True
+
+
+# Default value of the field path 'Core schema meta-schema object minLength allof1'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_MINLENGTH_ALLOF1_DEFAULT = 0
+
+
+# Default value of the field path 'Core schema meta-schema object patternProperties'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Any = {}
+
+
+# Default value of the field path 'Core schema meta-schema object properties'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Any = {}
+
+
+# Default value of the field path 'Core schema meta-schema object readOnly'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_READONLY_DEFAULT = False
+
+
+# Default value of the field path 'Core schema meta-schema object required'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: Any = []
+
+
+# Default value of the field path 'Core schema meta-schema object uniqueItems'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
+
+
+# Default value of the field path 'Core schema meta-schema object writeOnly'
+_CORE_SCHEMA_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
 
 
 # WARNING: Forward references may not be supported.

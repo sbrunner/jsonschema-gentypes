@@ -55,14 +55,22 @@ And just run:
 jsonschema-gentypes
 ```
 
+# Default
+
+The default values are exported in the Python file, then you can do something like that:
+
+```python
+value_with_default = my_object.get('field_name', my_schema.FIELD_DEFAULT)
+```
+
 # Validation
 
 This package also provide some validations features for YAML file based on `jsonschema`.
 
 Additional features:
 
-- Have the line and columns number in the errors, it the file is loaded with `ruamel.yaml`.
-- Fill with the default provides in the JSON schema, disabled by default because it have some issue with `OneOf` and `AnyOf`.
+- Obtain the line and columns number in the errors, if the file is loaded with `ruamel.yaml`.
+- Export the default provided in the JSON schema.
 
 ```python
     import ruamel.yaml
@@ -73,11 +81,14 @@ Additional features:
     with open(filename) as data_file:
         yaml = ruamel.yaml.YAML()  # type: ignore
         data = yaml.load(data_file)
-    errors, data = jsonschema_gentypes.validate.validate(filename, data, schema, default)
+    errors, data = jsonschema_gentypes.validate.validate(filename, data, schema)
     if errors:
         print("\n".join(errors))
         sys.exit(1)
 ```
+
+The filling of the default value is deprecated because it can produce quite peculiar things, see also
+[the jsonschema documentation](https://python-jsonschema.readthedocs.io/en/stable/faq/#why-doesn-t-my-schema-s-default-property-set-the-default-on-my-instance).
 
 ## Limitations
 
