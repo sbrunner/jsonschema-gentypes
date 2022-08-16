@@ -1,12 +1,30 @@
 # Changelog
 
-## [Unreleased](https://github.com/camptocamp/jsonschema-gentypes/tree/HEAD)
+## [1.3.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.0) (2022-08-16)
 
-[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.2.1...HEAD)
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.2.1...1.3.0)
+
+#### :sparkles: Enhancements
+
+- Add default values in the generated file [\#285](https://github.com/camptocamp/jsonschema-gentypes/pull/285) ([sbrunner](https://github.com/sbrunner))
 
 #### :wrench: Build, CI, Tests, Code style
 
+- Use the latest version of c2cciutils in the audit [\#281](https://github.com/camptocamp/jsonschema-gentypes/pull/281) ([sbrunner](https://github.com/sbrunner))
+- Fix the changelog generation [\#270](https://github.com/camptocamp/jsonschema-gentypes/pull/270) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#269](https://github.com/camptocamp/jsonschema-gentypes/pull/269) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Update the changelog [\#267](https://github.com/camptocamp/jsonschema-gentypes/pull/267) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Lock file maintenance [\#284](https://github.com/camptocamp/jsonschema-gentypes/pull/284) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#282](https://github.com/camptocamp/jsonschema-gentypes/pull/282) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#280](https://github.com/camptocamp/jsonschema-gentypes/pull/280) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency jsonschema to v4.9.0 [\#276](https://github.com/camptocamp/jsonschema-gentypes/pull/276) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#275](https://github.com/camptocamp/jsonschema-gentypes/pull/275) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all minor versions \(minor\) [\#274](https://github.com/camptocamp/jsonschema-gentypes/pull/274) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#273](https://github.com/camptocamp/jsonschema-gentypes/pull/273) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#272](https://github.com/camptocamp/jsonschema-gentypes/pull/272) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [1.2.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.2.1) (2022-07-11)
 
