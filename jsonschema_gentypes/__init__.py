@@ -525,11 +525,24 @@ class Constant(NamedType):
         result += [
             "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
         ]
-        if isinstance(self.constant, (dict, list)):
-            result.append(f"{self._name}: Any = {repr(self.constant)}")
+        if isinstance(self.constant, dict) and not self.constant:
+            result.append(f"{self._name}: Dict[str, Any] = {repr(self.constant)}")
+        elif isinstance(self.constant, (dict, list)) and not self.constant:
+            result.append(f"{self._name}: List[Any] = {repr(self.constant)}")
         else:
             result.append(f"{self._name} = {repr(self.constant)}")
         return result
+
+    def imports(self) -> List[Tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
+        if isinstance(self.constant, dict) and not self.constant:
+            return [("typing", "Any"), ("typing", "Dict")]
+        elif isinstance(self.constant, list) and not self.constant:
+            return [("typing", "Any"), ("typing", "List")]
+        else:
+            return []
 
 
 def split_comment(text: List[str], line_length: Optional[int]) -> List[str]:

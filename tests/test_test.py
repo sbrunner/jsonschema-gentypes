@@ -546,26 +546,29 @@ TestBasicTypes = {expected_type}"""
 
 
 @pytest.mark.parametrize(
-    "value,expected_type",
+    "value,expected_type,import_",
     [
-        (11, " = 11"),
-        (1.1, " = 1.1"),
-        (True, " = True"),
-        ("test", " = 'test'"),
-        (None, " = None"),
-        ([111], ": Any = [111]"),
-        ({"aa": 111}, ": Any = {'aa': 111}"),
+        (11, " = 11", []),
+        (1.1, " = 1.1", []),
+        (True, " = True", []),
+        ("test", " = 'test'", []),
+        (None, " = None", []),
+        ([111], " = [111]", []),
+        ({"aa": 111}, " = {'aa': 111}", []),
+        ([], ": List[Any] = []", [("typing", "Any"), ("typing", "List")]),
+        ({}, ": Dict[str, Any] = {}", [("typing", "Any"), ("typing", "Dict")]),
     ],
 )
-def test_default(value, expected_type) -> None:
-    type_ = get_types({"title": "test basic types", "type": "string", "default": value})
+def test_default(value, expected_type, import_) -> None:
+    type_ = get_types({"title": "test basic types", "type": "string", "default": value}).depends_on()[-1]
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[-1].definition(None)])
+        "\n".join([d.rstrip() for d in type_.definition(None)])
         == f"""
 
 # Default value of the field path 'Base'
 TEST_BASIC_TYPES_DEFAULT{expected_type}"""
     )
+    assert type_.imports() == import_
 
 
 def test_typeddict_mixrequired():
