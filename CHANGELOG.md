@@ -1,16 +1,25 @@
 # Changelog
 
+## [Unreleased](https://github.com/camptocamp/jsonschema-gentypes/tree/HEAD)
+
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.1...HEAD)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Update the SECURITY.md [\#289](https://github.com/camptocamp/jsonschema-gentypes/pull/289) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#286](https://github.com/camptocamp/jsonschema-gentypes/pull/286) ([github-actions[bot]](https://github.com/apps/github-actions))
+
 ## [1.3.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.1) (2022-08-16)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.0...1.3.1)
 
+#### :bug: Bug Fixes
+
+- Add missing import for constants, better type for List and Dict [\#287](https://github.com/camptocamp/jsonschema-gentypes/pull/287) ([sbrunner](https://github.com/sbrunner))
+
 #### :wrench: Build, CI, Tests, Code style
 
 - Update the changelog [\#271](https://github.com/camptocamp/jsonschema-gentypes/pull/271) ([github-actions[bot]](https://github.com/apps/github-actions))
-
-**Merged pull requests:**
-
-- Add missing import for constants, better type for List and Dict [\#287](https://github.com/camptocamp/jsonschema-gentypes/pull/287) ([sbrunner](https://github.com/sbrunner))
 
 ## [1.3.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.0) (2022-08-16)
 
@@ -66,6 +75,21 @@
 ## [1.1.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.1.0) (2022-07-07)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.0.0...1.1.0)
+
+#### :bug: Bug Fixes
+
+- Replace unidecode by unicodedata, pinyin, romkan [\#260](https://github.com/camptocamp/jsonschema-gentypes/pull/260) ([sbrunner](https://github.com/sbrunner))
+
+#### :books: Documentation
+
+- Fix typos in code samples [\#162](https://github.com/camptocamp/jsonschema-gentypes/pull/162) ([chlandsi](https://github.com/chlandsi))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Use Poetry instead of Pipenv [\#247](https://github.com/camptocamp/jsonschema-gentypes/pull/247) ([sbrunner](https://github.com/sbrunner))
+- Don't run 2 CI jobs in a pull request [\#241](https://github.com/camptocamp/jsonschema-gentypes/pull/241) ([sbrunner](https://github.com/sbrunner))
+- Configure Renovate [\#238](https://github.com/camptocamp/jsonschema-gentypes/pull/238) ([sbrunner](https://github.com/sbrunner))
+- Create new version [\#146](https://github.com/camptocamp/jsonschema-gentypes/pull/146) ([sbrunner](https://github.com/sbrunner))
 
 #### :package: Dependencies update
 
@@ -149,18 +173,32 @@
 - Bump c2cciutils from 1.2.dev20220207125831 to 1.2.dev20220208134628 [\#148](https://github.com/camptocamp/jsonschema-gentypes/pull/148) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20220203110559 to 1.2.dev20220207125831 [\#147](https://github.com/camptocamp/jsonschema-gentypes/pull/147) ([dependabot[bot]](https://github.com/apps/dependabot))
 
-**Merged pull requests:**
-
-- Replace unidecode by unicodedata, pinyin, romkan [\#260](https://github.com/camptocamp/jsonschema-gentypes/pull/260) ([sbrunner](https://github.com/sbrunner))
-- Use Poetry instead of Pipenv [\#247](https://github.com/camptocamp/jsonschema-gentypes/pull/247) ([sbrunner](https://github.com/sbrunner))
-- Don't run 2 CI jobs in a pull request [\#241](https://github.com/camptocamp/jsonschema-gentypes/pull/241) ([sbrunner](https://github.com/sbrunner))
-- Configure Renovate [\#238](https://github.com/camptocamp/jsonschema-gentypes/pull/238) ([sbrunner](https://github.com/sbrunner))
-- Fix typos in code samples [\#162](https://github.com/camptocamp/jsonschema-gentypes/pull/162) ([chlandsi](https://github.com/chlandsi))
-- Create new version [\#146](https://github.com/camptocamp/jsonschema-gentypes/pull/146) ([sbrunner](https://github.com/sbrunner))
-
 ## [1.0.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.0.0) (2022-02-07)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/0.9.4...1.0.0)
+
+#### :sparkles: Enhancements
+
+- \[Backport master\] Get more understandable error message on deep structure [\#27](https://github.com/camptocamp/jsonschema-gentypes/pull/27) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- Add validator with line number and default setter [\#10](https://github.com/camptocamp/jsonschema-gentypes/pull/10) ([sbrunner](https://github.com/sbrunner))
+
+#### :bug: Bug Fixes
+
+- \[Backport master\] Support line split in description, add auto-split lines [\#37](https://github.com/camptocamp/jsonschema-gentypes/pull/37) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- \[Backport master\] Validation: disable default by default, remove load, add doc [\#35](https://github.com/camptocamp/jsonschema-gentypes/pull/35) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- \[Backport master\] Add rule in error [\#34](https://github.com/camptocamp/jsonschema-gentypes/pull/34) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- \[Backport master\] Instance can be none [\#33](https://github.com/camptocamp/jsonschema-gentypes/pull/33) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- \[Backport master\] Be able to get the data on error [\#26](https://github.com/camptocamp/jsonschema-gentypes/pull/26) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- Fix enum compatible with JSON [\#16](https://github.com/camptocamp/jsonschema-gentypes/pull/16) ([sbrunner](https://github.com/sbrunner))
+
+#### :books: Documentation
+
+- Add readme [\#11](https://github.com/camptocamp/jsonschema-gentypes/pull/11) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Upgrade with pyupgrade [\#46](https://github.com/camptocamp/jsonschema-gentypes/pull/46) ([sbrunner](https://github.com/sbrunner))
+- Mark the package as typed [\#17](https://github.com/camptocamp/jsonschema-gentypes/pull/17) ([sbrunner](https://github.com/sbrunner))
 
 #### :package: Dependencies update
 
@@ -223,17 +261,6 @@
 **Merged pull requests:**
 
 - Typo [\#113](https://github.com/camptocamp/jsonschema-gentypes/pull/113) ([sbrunner](https://github.com/sbrunner))
-- Upgrade with pyupgrade [\#46](https://github.com/camptocamp/jsonschema-gentypes/pull/46) ([sbrunner](https://github.com/sbrunner))
-- \[Backport master\] Support line split in description, add auto-split lines [\#37](https://github.com/camptocamp/jsonschema-gentypes/pull/37) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- \[Backport master\] Validation: disable default by default, remove load, add doc [\#35](https://github.com/camptocamp/jsonschema-gentypes/pull/35) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- \[Backport master\] Add rule in error [\#34](https://github.com/camptocamp/jsonschema-gentypes/pull/34) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- \[Backport master\] Instance can be none [\#33](https://github.com/camptocamp/jsonschema-gentypes/pull/33) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- \[Backport master\] Get more understandable error message on deep structure [\#27](https://github.com/camptocamp/jsonschema-gentypes/pull/27) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- \[Backport master\] Be able to get the data on error [\#26](https://github.com/camptocamp/jsonschema-gentypes/pull/26) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
-- Mark the package as typed [\#17](https://github.com/camptocamp/jsonschema-gentypes/pull/17) ([sbrunner](https://github.com/sbrunner))
-- Fix enum compatible with JSON [\#16](https://github.com/camptocamp/jsonschema-gentypes/pull/16) ([sbrunner](https://github.com/sbrunner))
-- Add readme [\#11](https://github.com/camptocamp/jsonschema-gentypes/pull/11) ([sbrunner](https://github.com/sbrunner))
-- Add validator with line number and default setter [\#10](https://github.com/camptocamp/jsonschema-gentypes/pull/10) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.9.4](https://github.com/camptocamp/jsonschema-gentypes/tree/0.9.4) (2021-06-09)
 
