@@ -112,7 +112,7 @@ JSONSchemaItem = TypedDict(
 
 
 # Default value of the field path 'Core schema meta-schema object definitions'
-_CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: Any = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: Dict[str, Any] = {}
 
 
 # Default value of the field path 'Core schema meta-schema object items'
@@ -124,11 +124,11 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_MINLENGTH_ALLOF1_DEFAULT = 0
 
 
 # Default value of the field path 'Core schema meta-schema object patternProperties'
-_CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Any = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
 
 
 # Default value of the field path 'Core schema meta-schema object properties'
-_CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Any = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
 
 
 # Default value of the field path 'Core schema meta-schema object readOnly'
@@ -136,7 +136,7 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_READONLY_DEFAULT = False
 
 
 # Default value of the field path 'Core schema meta-schema object required'
-_CORE_SCHEMA_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: Any = []
+_CORE_SCHEMA_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: List[Any] = []
 
 
 # Default value of the field path 'Core schema meta-schema object uniqueItems'
