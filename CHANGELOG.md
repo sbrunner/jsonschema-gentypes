@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.1) (2022-08-16)
+
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.0...1.3.1)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Update the changelog [\#271](https://github.com/camptocamp/jsonschema-gentypes/pull/271) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+**Merged pull requests:**
+
+- Add missing import for constants, better type for List and Dict [\#287](https://github.com/camptocamp/jsonschema-gentypes/pull/287) ([sbrunner](https://github.com/sbrunner))
+
 ## [1.3.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.0) (2022-08-16)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.2.1...1.3.0)
