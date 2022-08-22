@@ -7,7 +7,12 @@
 #### :wrench: Build, CI, Tests, Code style
 
 - Update the SECURITY.md [\#289](https://github.com/camptocamp/jsonschema-gentypes/pull/289) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#288](https://github.com/camptocamp/jsonschema-gentypes/pull/288) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Update the changelog [\#286](https://github.com/camptocamp/jsonschema-gentypes/pull/286) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Lock file maintenance [\#291](https://github.com/camptocamp/jsonschema-gentypes/pull/291) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [1.3.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.1) (2022-08-16)
 
@@ -197,6 +202,7 @@
 
 #### :wrench: Build, CI, Tests, Code style
 
+- Typo [\#113](https://github.com/camptocamp/jsonschema-gentypes/pull/113) ([sbrunner](https://github.com/sbrunner))
 - Upgrade with pyupgrade [\#46](https://github.com/camptocamp/jsonschema-gentypes/pull/46) ([sbrunner](https://github.com/sbrunner))
 - Mark the package as typed [\#17](https://github.com/camptocamp/jsonschema-gentypes/pull/17) ([sbrunner](https://github.com/sbrunner))
 
@@ -257,10 +263,6 @@
 - Bump black from 21.5b1 to 21.5b2 [\#21](https://github.com/camptocamp/jsonschema-gentypes/pull/21) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pipenv from 2020.11.15 to 2021.5.29 [\#20](https://github.com/camptocamp/jsonschema-gentypes/pull/20) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pytest-cov from 2.11.1 to 2.12.0 [\#14](https://github.com/camptocamp/jsonschema-gentypes/pull/14) ([dependabot[bot]](https://github.com/apps/dependabot))
-
-**Merged pull requests:**
-
-- Typo [\#113](https://github.com/camptocamp/jsonschema-gentypes/pull/113) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.9.4](https://github.com/camptocamp/jsonschema-gentypes/tree/0.9.4) (2021-06-09)
 
