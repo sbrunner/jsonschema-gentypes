@@ -91,7 +91,7 @@ def main() -> None:
     for gen in config["generate"]:
         source = gen["source"]
         if source.startswith("http://") or source.startswith("https://"):
-            response = requests.get(source)
+            response = requests.get(source, timeout=60)
             response.raise_for_status()
             schema = response.json()
         else:
