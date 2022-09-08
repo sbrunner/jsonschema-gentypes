@@ -1,19 +1,5 @@
 # Changelog
 
-## [Unreleased](https://github.com/camptocamp/jsonschema-gentypes/tree/HEAD)
-
-[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.1...HEAD)
-
-#### :wrench: Build, CI, Tests, Code style
-
-- Update the SECURITY.md [\#289](https://github.com/camptocamp/jsonschema-gentypes/pull/289) ([sbrunner](https://github.com/sbrunner))
-- Update the changelog [\#288](https://github.com/camptocamp/jsonschema-gentypes/pull/288) ([github-actions[bot]](https://github.com/apps/github-actions))
-- Update the changelog [\#286](https://github.com/camptocamp/jsonschema-gentypes/pull/286) ([github-actions[bot]](https://github.com/apps/github-actions))
-
-#### :package: Dependencies update
-
-- Lock file maintenance [\#291](https://github.com/camptocamp/jsonschema-gentypes/pull/291) ([renovate[bot]](https://github.com/apps/renovate))
-
 ## [1.3.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.1) (2022-08-16)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.0...1.3.1)
