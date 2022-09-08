@@ -5,3 +5,4 @@ __pycache__
 /.coverage
 /build
 /dist
+/.github/changelog-generator-cache
