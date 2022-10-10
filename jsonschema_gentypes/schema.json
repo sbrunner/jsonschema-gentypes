@@ -34,7 +34,7 @@
           },
           "name_mapping": {
             "title": "Name mapping",
-            "comment": "Used to map the name of an aleternate name",
+            "description": "Used to map the name of an alternate name",
             "type": "object",
             "additionalProperties": { "type": "string" }
           }
