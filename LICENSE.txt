@@ -1,4 +1,4 @@
-All the code in this library is provided under this licence:
+All the code in this library is provided under this license:
 
     Copyright (c) 2021, Camptocamp SA
     All rights reserved.
