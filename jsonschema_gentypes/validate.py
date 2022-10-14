@@ -94,7 +94,8 @@ def validate(
     )
     if default:
         warn(
-            "This is deprecated, use `obj.get('field', schema.FIELD_TYPE_DEFAULT)` instead.", DeprecationWarning
+            "This is deprecated, use `obj.get('field', schema.FIELD_TYPE_DEFAULT)` instead.",
+            DeprecationWarning,
         )
         Validator = _extend_with_default(  # noqa: N806 # variable 'Validator' in function should be lowercase
             Validator
