@@ -2,6 +2,7 @@
 Generate the type structure based on the Type class from the JSON schema file.
 """
 
+import re
 import textwrap
 import unicodedata
 from abc import abstractmethod
@@ -401,10 +402,13 @@ class TypeAlias(NamedType):
         Return the type declaration.
         """
         result = ["", ""]
-        result += [
-            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
-        ]
         result.append(f"{self._name} = {self.sub_type.name()}")
+        comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
+        if len(comments) == 1:
+            result += [f'"""{comments[0]}"""', ""]
+        elif comments:
+            result += ['"""', *comments, '"""', ""]
+
         return result
 
 
@@ -439,21 +443,28 @@ class TypeEnum(NamedType):
         Return the type declaration.
         """
         result = ["", ""]
-        result += [
-            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
-        ]
+        comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name()}")
-        result += ["# The values for the enum"]
+        if len(comments) == 1:
+            result += [f'"""{comments[0]}"""']
+        elif comments:
+            result += ['"""', *comments, '"""']
         for value in self.values:
             name = get_name({"title": f"{self._name} {value}"}, upper=True)
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
             result.append(f"{name}: {LiteralType(value).name()} = {formatted_value}")
+            name = self.descriptions[0] if self.descriptions else self._name
+            if name.endswith("."):
+                name = name[:-1]
+            result.append(f'"""The values for the \'{name}\' enum"""')
+
+        result.append("")
         return result
 
 
 class TypedDictType(NamedType):
     """
-    The Type that represent a TypeDict in Python.
+    The Type that represent a TypedDict in Python.
     """
 
     def __init__(
@@ -486,16 +497,48 @@ class TypedDictType(NamedType):
         """
         Get the definition based on a dict.
         """
+        supported_re = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+        # Support to be a class
+        supported = True
+
+        for property_ in self.struct.keys():
+            if not supported_re.match(property_):
+                supported = False
+                break
+
         result = ["", ""]
-        result += [
-            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
-        ]
-        result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
-        for property_, type_obj in self.struct.items():
-            for comment in type_obj.comments():
-                result.append(f"    # {comment}")
-            result.append(f"    '{property_}': {type_obj.name()},")
-        result.append("}, total=False)")
+        if supported:
+            result.append(f"class {self._name}(TypedDict, total=False):")
+            comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
+            if len(comments) == 1:
+                result.append(f'    """{comments[0]}"""')
+                result.append("")
+            elif comments:
+                result.append('    """')
+                result += [f"    {d}" if d else "" for d in comments]
+                result.append('    """')
+                result.append("")
+
+            for property_, type_obj in self.struct.items():
+                result.append(f"    {property_}: {type_obj.name()}")
+                comments = type_obj.comments()
+                if len(comments) == 1:
+                    result.append(f'    """{comments[0]}"""')
+                    result.append("")
+                elif comments:
+                    result.append('    """')
+                    result += [f"    {comment}" if comment else "" for comment in comments]
+                    result.append('    """')
+                    result.append("")
+        else:
+            result += [
+                "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+            ]
+            result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
+            for property_, type_obj in self.struct.items():
+                result += [f"    # {comment}" for comment in type_obj.comments()]
+                result.append(f"    '{property_}': {type_obj.name()},")
+            result.append("}, total=False)")
         return result
 
 
@@ -522,15 +565,17 @@ class Constant(NamedType):
         Return the type declaration.
         """
         result = ["", ""]
-        result += [
-            "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
-        ]
         if isinstance(self.constant, dict) and not self.constant:
             result.append(f"{self._name}: Dict[str, Any] = {repr(self.constant)}")
         elif isinstance(self.constant, (dict, list)) and not self.constant:
             result.append(f"{self._name}: List[Any] = {repr(self.constant)}")
         else:
             result.append(f"{self._name} = {repr(self.constant)}")
+        comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
+        if len(comments) == 1:
+            result += [f'"""{comments[0]}"""', ""]
+        elif comments:
+            result += ['"""', *comments, '"""', ""]
         return result
 
     def imports(self) -> List[Tuple[str, str]]:
@@ -608,11 +653,12 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
     import yaml  # pylint: disable=import-outside-toplevel
 
     result: List[str] = []
-    for key in ("title", "description"):
-        if key in schema:
-            if result:
-                result.append("")
-            result += schema[key].split("\n")  # type: ignore
+    if "title" in schema:
+        result.append(f"{schema['title']}.")
+    if "description" in schema:
+        if result:
+            result.append("")
+        result += schema["description"].split("\n")
     first = True
     for key, value in schema.items():
         if (
