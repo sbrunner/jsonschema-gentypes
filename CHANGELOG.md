@@ -1,5 +1,80 @@
 # Changelog
 
+## [1.4.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.4.0) (2022-11-28)
+
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.2...1.4.0)
+
+#### :sparkles: Enhancements
+
+- Use more docstring [\#355](https://github.com/camptocamp/jsonschema-gentypes/pull/355) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Upgrade deprecated set-output commands [\#349](https://github.com/camptocamp/jsonschema-gentypes/pull/349) ([sbrunner](https://github.com/sbrunner))
+- Remove pip upgrading to the latest version [\#348](https://github.com/camptocamp/jsonschema-gentypes/pull/348) ([sbrunner](https://github.com/sbrunner))
+- Create or update a Poetry group for Renovate [\#340](https://github.com/camptocamp/jsonschema-gentypes/pull/340) ([sbrunner](https://github.com/sbrunner))
+- Fix repository in workflow used to delete old workflow runs [\#337](https://github.com/camptocamp/jsonschema-gentypes/pull/337) ([sbrunner](https://github.com/sbrunner))
+- Fix repository in workflow used to delete old workflow runs [\#336](https://github.com/camptocamp/jsonschema-gentypes/pull/336) ([sbrunner](https://github.com/sbrunner))
+- Add workflow to delete old workflow runs [\#333](https://github.com/camptocamp/jsonschema-gentypes/pull/333) ([sbrunner](https://github.com/sbrunner))
+- Update the dynamic versioning configuration [\#330](https://github.com/camptocamp/jsonschema-gentypes/pull/330) ([sbrunner](https://github.com/sbrunner))
+- Use venv to avoid issue on reinstalling an other version of c2cciutils in audit workflow [\#327](https://github.com/camptocamp/jsonschema-gentypes/pull/327) ([sbrunner](https://github.com/sbrunner))
+- Fix the checkout user to be able to create pull request for Snyk fix [\#325](https://github.com/camptocamp/jsonschema-gentypes/pull/325) ([sbrunner](https://github.com/sbrunner))
+- Use the standard name for pull request checks workflow [\#315](https://github.com/camptocamp/jsonschema-gentypes/pull/315) ([sbrunner](https://github.com/sbrunner))
+- Fix the get config in changelog workflow [\#314](https://github.com/camptocamp/jsonschema-gentypes/pull/314) ([sbrunner](https://github.com/sbrunner))
+- Group Poetry packages in Renovate pull requests [\#313](https://github.com/camptocamp/jsonschema-gentypes/pull/313) ([sbrunner](https://github.com/sbrunner))
+- Schedule Renovate on early Saturday [\#312](https://github.com/camptocamp/jsonschema-gentypes/pull/312) ([sbrunner](https://github.com/sbrunner))
+- Add the global requirements file to be scanned with Snyk [\#307](https://github.com/camptocamp/jsonschema-gentypes/pull/307) ([sbrunner](https://github.com/sbrunner))
+- Fix the changelog generator workflow [\#306](https://github.com/camptocamp/jsonschema-gentypes/pull/306) ([sbrunner](https://github.com/sbrunner))
+- Clean all the images already present in the image given by GitHub [\#305](https://github.com/camptocamp/jsonschema-gentypes/pull/305) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog generation workflow [\#304](https://github.com/camptocamp/jsonschema-gentypes/pull/304) ([sbrunner](https://github.com/sbrunner))
+- Update the Renovate configuration [\#303](https://github.com/camptocamp/jsonschema-gentypes/pull/303) ([sbrunner](https://github.com/sbrunner))
+- Remove Dependabot configuration [\#302](https://github.com/camptocamp/jsonschema-gentypes/pull/302) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#292](https://github.com/camptocamp/jsonschema-gentypes/pull/292) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Update the changelog [\#290](https://github.com/camptocamp/jsonschema-gentypes/pull/290) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Update the SECURITY.md [\#289](https://github.com/camptocamp/jsonschema-gentypes/pull/289) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#288](https://github.com/camptocamp/jsonschema-gentypes/pull/288) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Update the changelog [\#286](https://github.com/camptocamp/jsonschema-gentypes/pull/286) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Lock file maintenance [\#352](https://github.com/camptocamp/jsonschema-gentypes/pull/352) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#350](https://github.com/camptocamp/jsonschema-gentypes/pull/350) ([renovate[bot]](https://github.com/apps/renovate))
+- Snyk auto fix [\#345](https://github.com/camptocamp/jsonschema-gentypes/pull/345) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+- Lock file maintenance [\#344](https://github.com/camptocamp/jsonschema-gentypes/pull/344) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#343](https://github.com/camptocamp/jsonschema-gentypes/pull/343) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.4.0.dev185 [\#339](https://github.com/camptocamp/jsonschema-gentypes/pull/339) ([renovate[bot]](https://github.com/apps/renovate))
+- Update Poetry [\#338](https://github.com/camptocamp/jsonschema-gentypes/pull/338) ([renovate[bot]](https://github.com/apps/renovate))
+- Update andstor/file-existence-action action to v2 [\#335](https://github.com/camptocamp/jsonschema-gentypes/pull/335) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#334](https://github.com/camptocamp/jsonschema-gentypes/pull/334) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.4.0.dev123 [\#332](https://github.com/camptocamp/jsonschema-gentypes/pull/332) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency poetry to v1.2.2 [\#329](https://github.com/camptocamp/jsonschema-gentypes/pull/329) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.4.0.dev121 [\#328](https://github.com/camptocamp/jsonschema-gentypes/pull/328) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#324](https://github.com/camptocamp/jsonschema-gentypes/pull/324) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency pyupgrade to v3 [\#323](https://github.com/camptocamp/jsonschema-gentypes/pull/323) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency types-requests to v2.28.11.2 [\#322](https://github.com/camptocamp/jsonschema-gentypes/pull/322) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#320](https://github.com/camptocamp/jsonschema-gentypes/pull/320) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency pytest-cov to v4 [\#319](https://github.com/camptocamp/jsonschema-gentypes/pull/319) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency types-pyyaml to v6.0.12 [\#318](https://github.com/camptocamp/jsonschema-gentypes/pull/318) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#317](https://github.com/camptocamp/jsonschema-gentypes/pull/317) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency poetry to v1.2.1 [\#316](https://github.com/camptocamp/jsonschema-gentypes/pull/316) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#311](https://github.com/camptocamp/jsonschema-gentypes/pull/311) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency types-requests to v2.28.11 [\#310](https://github.com/camptocamp/jsonschema-gentypes/pull/310) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#309](https://github.com/camptocamp/jsonschema-gentypes/pull/309) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency types-requests to v2.28.10 [\#308](https://github.com/camptocamp/jsonschema-gentypes/pull/308) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all minor versions \(minor\) [\#301](https://github.com/camptocamp/jsonschema-gentypes/pull/301) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#300](https://github.com/camptocamp/jsonschema-gentypes/pull/300) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#299](https://github.com/camptocamp/jsonschema-gentypes/pull/299) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#293](https://github.com/camptocamp/jsonschema-gentypes/pull/293) ([renovate[bot]](https://github.com/apps/renovate))
+- Lock file maintenance [\#291](https://github.com/camptocamp/jsonschema-gentypes/pull/291) ([renovate[bot]](https://github.com/apps/renovate))
+
+**Closed issues:**
+
+- Please release sdists [\#351](https://github.com/camptocamp/jsonschema-gentypes/issues/351)
+
+## [1.3.2](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.2) (2022-11-22)
+
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.1...1.3.2)
+
 ## [1.3.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.3.1) (2022-08-16)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.0...1.3.1)
