@@ -2,6 +2,7 @@
 Generate the type structure based on the Type class from the JSON schema file.
 """
 
+import keyword
 import re
 import textwrap
 import unicodedata
@@ -112,41 +113,7 @@ def normalize(input_str: str) -> str:
         name = f"num {name}"
 
     # No python keyword
-    if name.lower() in [
-        "and",
-        "as",
-        "assert",
-        "break",
-        "class",
-        "continue",
-        "def",
-        "del",
-        "elif",
-        "else",
-        "except",
-        "false",
-        "finally",
-        "for",
-        "from",
-        "global",
-        "if",
-        "import",
-        "in",
-        "is",
-        "lambda",
-        "none",
-        "nonlocal",
-        "not",
-        "or",
-        "pass",
-        "raise",
-        "return",
-        "true",
-        "try",
-        "while",
-        "with",
-        "yield",
-    ]:
+    if name in keyword.kwlist:
         name = f"{name} name"
     return name
 
@@ -502,7 +469,7 @@ class TypedDictType(NamedType):
         supported = True
 
         for property_ in self.struct.keys():
-            if not supported_re.match(property_):
+            if not supported_re.match(property_) or property_ in keyword.kwlist:
                 supported = False
                 break
 
