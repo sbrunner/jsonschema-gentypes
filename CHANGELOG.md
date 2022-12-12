@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/camptocamp/jsonschema-gentypes/tree/1.4.1) (2022-12-12)
+
+[Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.4.0...1.4.1)
+
+**Closed issues:**
+
+- Make more intellisense friendly \(class + docstrings\) [\#134](https://github.com/camptocamp/jsonschema-gentypes/issues/134)
+
 ## [1.4.0](https://github.com/camptocamp/jsonschema-gentypes/tree/1.4.0) (2022-11-28)
 
 [Full Changelog](https://github.com/camptocamp/jsonschema-gentypes/compare/1.3.2...1.4.0)
