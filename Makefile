@@ -9,7 +9,7 @@ help: ## Display this help message
 		awk 'BEGIN {FS = ":.*?## "}; {printf "	%-20s%s\n", $$1, $$2}'
 
 .poetry.timestamps: pyproject.toml poetry.lock
-	poetry --version || pip install --user --requirement=requirements.txt
+	poetry --version || pip install --user --ignore-installed --requirement=requirements.txt
 	poetry install --extras=tools --extras=generate --extras=extra
 	touch $@
 
