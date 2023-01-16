@@ -11,3 +11,9 @@ publish:
   docker:
     images:
       - name: camptocamp/jsonschema-gentypes
+
+audit:
+  snyk:
+    pip_install_arguments:
+      - --user
+      - --ignore-installed
