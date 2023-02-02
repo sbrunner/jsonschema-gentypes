@@ -24,6 +24,7 @@ description = "Tool to generate Python types based on TypedDict from a JSON Sche
 readme = "README.md"
 authors = ["Camptocamp <info@camptocamp.com>"]
 repository = "https://github.com/camptocamp/jsonschema-gentypes"
+license = "BSD-2-Clause"
 keywords = ["jsonschema", "types"]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
