@@ -80,11 +80,12 @@ def validate(
         filename: Name used to generate the error messages
         data: The data structure to be validated (should be loaded with ruamel.yaml to have the lines numbers)
         schema: The loaded JSON schema
-        default: If true, fill the data with the defaults provided in the JSON schema, not working as expected with AnyOf and OneOf
+        default: If true, fill the data with the defaults provided in the JSON schema, not working as expected
+            with AnyOf and OneOf
     """
     schema_ref = schema.get("$schema", "default")
     schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
-    Validator = {  # noqa: N806 # variable 'Validator' in function should be lowercase
+    Validator = {  # pylint: disable=invalid-name
         "draft-04": jsonschema.Draft4Validator,
         "draft-06": jsonschema.Draft6Validator,
         "draft-07": jsonschema.Draft7Validator,
@@ -97,9 +98,7 @@ def validate(
             "This is deprecated, use `obj.get('field', schema.FIELD_TYPE_DEFAULT)` instead.",
             DeprecationWarning,
         )
-        Validator = _extend_with_default(  # noqa: N806 # variable 'Validator' in function should be lowercase
-            Validator
-        )
+        Validator = _extend_with_default(Validator)
 
     validator = Validator(schema)
 
