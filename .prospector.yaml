@@ -28,12 +28,13 @@ pylint:
     - too-many-lines
     - too-few-public-methods
     - no-else-return
-    - line-too-long
+    - line-too-long # in conflict with Black
 
 pycodestyle:
   disable:
-    - E203 # whitespace before ':'
-    - E501 # line too long
+    - E203 # whitespace before ':', duplicated with Black
+    - E501 # line too long, duplicated with Pylint
+    - N806 # variable in function should be lowercase, duplicated with Pylint
 
 mypy:
   run: true
