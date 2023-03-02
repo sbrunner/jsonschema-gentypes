@@ -64,7 +64,7 @@ tools = ["black", "isort", "pyupgrade"]
 extra = ['pinyin', 'romkan', 'romanize']
 
 [tool.poetry.dev-dependencies]
-prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.8.4" }
+prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.9.0" }
 pytest = "7.2.1"
 pytest-cov = "4.0.0"
 types-requests = "2.28.11.15"
