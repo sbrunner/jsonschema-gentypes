@@ -1104,7 +1104,7 @@ tokenize-rt = ">=3.2.0"
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1579,10 +1579,10 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 
 [extras]
 extra = ["pinyin", "romanize", "romkan"]
-generate = ["PyYAML", "requests"]
+generate = []
 tools = ["black", "isort", "pyupgrade"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "fc073326f16febd2ee227684e5917edda159c26e74294422fe26c9f529c7934c"
+content-hash = "9652f97ec8cbfb9c03ada8993230a4a24ae9f105bc4271287ccb1f72ad38d860"
