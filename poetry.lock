@@ -796,14 +796,14 @@ files = [
 
 [[package]]
 name = "prospector"
-version = "1.8.4"
+version = "1.9.0"
 description = "Prospector is a tool to analyse Python code by aggregating the result of other tools."
 category = "dev"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = ">=3.7.2,<4.0"
 files = [
-    {file = "prospector-1.8.4-py3-none-any.whl", hash = "sha256:4a9584544cf8d118574567a669b85456d036444597f0664185263e229055cdf6"},
-    {file = "prospector-1.8.4.tar.gz", hash = "sha256:60db5b6046a523248a1b32fb2daa8080d3f406da822ad95cff8cd9f153e04555"},
+    {file = "prospector-1.9.0-py3-none-any.whl", hash = "sha256:c24011019e48b54745dc0f5d3d25e9d6b19750129996c134253c2f1eed9d45ac"},
+    {file = "prospector-1.9.0.tar.gz", hash = "sha256:599f31516f857d785058773875e9358702ad653e65461e8cad44134d8ee17b1f"},
 ]
 
 [package.dependencies]
@@ -813,7 +813,7 @@ flake8 = "<6.0.0"
 GitPython = ">=3.1.27,<4.0.0"
 mccabe = ">=0.7.0,<0.8.0"
 mypy = {version = ">=0.600", optional = true, markers = "extra == \"with_mypy\" or extra == \"with_everything\""}
-packaging = "<22.0"
+packaging = "*"
 pep8-naming = ">=0.3.3,<=0.10.0"
 pycodestyle = ">=2.9.0"
 pydocstyle = ">=2.0.0"
@@ -1627,4 +1627,4 @@ tools = ["black", "isort", "pyupgrade"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "6f1db4bda96b30f0e2e2e4b47b5e6a1a2b8defbfb974fe5f3d0a234bebfa5592"
+content-hash = "fc073326f16febd2ee227684e5917edda159c26e74294422fe26c9f529c7934c"
