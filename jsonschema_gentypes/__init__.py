@@ -7,8 +7,10 @@ import re
 import textwrap
 import unicodedata
 from abc import abstractmethod
+from io import StringIO
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, cast
 
+import ruamel.yaml
 from jsonschema import RefResolver
 
 from jsonschema_gentypes import configuration, jsonschema
@@ -617,7 +619,8 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
     Arguments:
         schema: the concerned schema
     """
-    import yaml  # pylint: disable=import-outside-toplevel
+    yaml = ruamel.yaml.YAML(typ="safe")
+    yaml.default_flow_style = False
 
     result: List[str] = []
     if "title" in schema:
@@ -663,7 +666,9 @@ def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
                     result.append("")
                 first = False
             result.append(f"{key}:")
-            result += [f"  {line}" for line in yaml.dump(value).split("\n") if line]
+            formatted_value = StringIO()
+            yaml.dump(value, formatted_value)
+            result += [f"  {line}" for line in formatted_value.getvalue().split("\n") if line]
 
     return result
 
