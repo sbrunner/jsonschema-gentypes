@@ -11,7 +11,7 @@ import random
 import re
 import subprocess  # nosec
 import sys
-from typing import Dict, Set, cast
+from typing import Dict, Set, cast, Callable
 
 import requests
 import ruamel.yaml
@@ -22,10 +22,13 @@ from jsonschema_gentypes import configuration, validate
 
 LOG = logging.getLogger(__name__)
 
+AddImport = Callable[[str, str], None]
+
+
 
 def _add_type(
     type_: jsonschema_gentypes.Type,
-    imports: Dict[str, Set[str]],
+    add_import: AddImport,
     types: Dict[str, jsonschema_gentypes.Type],
     gen: configuration.GenerateItem,
     config: configuration.Configuration,
@@ -44,16 +47,14 @@ def _add_type(
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
         print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
         type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
-        _add_type(type_, imports, types, gen, config)
+        _add_type(type_, add_import, types, gen, config)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
             types[type_.unescape_name()] = type_
         for package, imp in type_.imports():
-            if package not in imports:
-                imports[package] = set()
-            imports[package].add(imp)
+            add_import(package, imp)
         for sub_type in type_.depends_on():
-            _add_type(sub_type, imports, types, gen, config)
+            _add_type(sub_type, add_import, types, gen, config)
 
 
 def main() -> None:
@@ -65,7 +66,10 @@ def main() -> None:
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated python file")
+    parser.add_argument("--rewrite-import", action='append', help="Rewrite a particular import to a different import. For example: --rewrite-import typing.Required:typing_extensions")
     args = parser.parse_args()
+
+    import_rewrites = dict(from_to.split(":", 1) for from_to in args.rewrite_import)
 
     if args.python is not None or args.json_schema is not None:
         if args.python is None or args.json_schema is None:
@@ -113,13 +117,18 @@ def main() -> None:
         api = api_version(resolver, **api_args)
 
         types: Dict[str, jsonschema_gentypes.Type] = {}
-        imports: Dict[str, Set[str]] = {}
 
         base_type = api.get_type(schema, gen.get("root_name", "Root"))
         if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
             assert gen["root_name"] is not None
             base_type.set_name(gen["root_name"])
-        _add_type(base_type, imports, types, gen, config)
+
+        imports = {}
+
+        def add_import(package, name):
+            package = import_rewrites.get(f"{package}.{name}", package)
+            imports.setdefault(package, set()).add(name)
+        _add_type(base_type, add_import, types, gen, config)
 
         lines = []
         for imp, names in imports.items():
