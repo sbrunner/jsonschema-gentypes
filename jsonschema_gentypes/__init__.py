@@ -441,6 +441,7 @@ class TypedDictType(NamedType):
         name: str,
         struct: Dict[str, Type],
         descriptions: List[str],
+        required: Set[str],
     ):
         """
         Init.
@@ -453,6 +454,7 @@ class TypedDictType(NamedType):
         super().__init__(name)
         self.descriptions = descriptions
         self.struct = struct
+        self.required = required
 
     def depends_on(self) -> List[Type]:
         """
@@ -460,7 +462,14 @@ class TypedDictType(NamedType):
         """
         result: List[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
+        if self.required:
+            result.append(NativeType("Required"))
         return result + super().depends_on()
+
+    def _get_type_obj_name(self, property_, type_obj):
+        if property_ in self.required:
+            return f"Required[{type_obj.name()}]"
+        return type_obj.name()
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
@@ -489,7 +498,7 @@ class TypedDictType(NamedType):
                 result.append("")
 
             for property_, type_obj in self.struct.items():
-                result.append(f"    {property_}: {type_obj.name()}")
+                result.append(f"    {property_}: {self._get_type_obj_name(property_, type_obj)}")
                 comments = type_obj.comments()
                 if len(comments) == 1:
                     result.append(f'    """{comments[0]}"""')
@@ -506,7 +515,7 @@ class TypedDictType(NamedType):
             result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
             for property_, type_obj in self.struct.items():
                 result += [f"    # {comment}" for comment in type_obj.comments()]
-                result.append(f"    '{property_}': {type_obj.name()},")
+                result.append(f"    '{property_}': {self._get_type_obj_name(property_, type_obj)},")
             result.append("}, total=False)")
         return result
 
@@ -999,12 +1008,10 @@ class APIv4(API):
                 name if std_dict is None else name + "Typed",
                 struct,
                 get_description(schema) if std_dict is None else [],
+                required=required,
             )
 
-            comments = [
-                "WARNING: The required are not correctly taken in account,",
-                "See: https://github.com/camptocamp/jsonschema-gentypes/issues/6",
-            ]
+            comments = []
 
             if std_dict is not None:
                 type_ = CombinedType(NativeType("Union"), [std_dict, type_])

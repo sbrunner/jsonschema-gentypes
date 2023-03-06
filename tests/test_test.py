@@ -24,6 +24,9 @@ def test_basic_types():
                 "null": {"type": "null"},
                 "const": {"const": 8},
             },
+            "required": [
+                "string",
+            ]
         }
     )
     assert (
@@ -37,8 +40,12 @@ class TestBasicTypes(TypedDict, total=False):
     A description
     """
 
-    string: str
-    """A string."""
+    string: Required[str]
+    """
+    A string.
+
+    required
+    """
 
     number: Union[int, float]
     """A number"""
