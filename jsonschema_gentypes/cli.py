@@ -87,7 +87,13 @@ def main() -> None:
             LOG.error("The config file is invalid:\n%s", "\n".join(errors))
             if not args.skip_config_errors:
                 sys.exit(1)
+    process_config(config)
 
+
+def process_config(config: configuration.Configuration) -> None:
+    """
+    Run the tasks defined in the given configuration.
+    """
     for gen in config["generate"]:
         source = gen["source"]
         if source.startswith("http://") or source.startswith("https://"):
