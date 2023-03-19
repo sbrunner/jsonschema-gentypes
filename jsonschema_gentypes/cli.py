@@ -25,6 +25,15 @@ LOG = logging.getLogger(__name__)
 AddImport = Callable[[str, str], None]
 
 
+def _get_import_rewrites(python_version):
+    rewrites = {}
+    if python_version < (3, 11):
+        # https://peps.python.org/pep-0655/
+        rewrites["typing.Required"] = "typing_extensions"
+        rewrites["typing.NotRequired"] = "typing_extensions"
+
+    return rewrites
+
 
 def _add_type(
     type_: jsonschema_gentypes.Type,
@@ -66,17 +75,25 @@ def main() -> None:
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated python file")
-    parser.add_argument("--rewrite-import", action='append', help="Rewrite a particular import to a different import. For example: --rewrite-import typing.Required:typing_extensions")
+    parser.add_argument(
+        "--python-version",
+        help="The major.minor version of Python to generate typestubs for. Sometimes the generated code may choose to import typing_extensions. It is recommended to depend on the latest version of that package.",
+    )
     args = parser.parse_args()
-
-    import_rewrites = dict(from_to.split(":", 1) for from_to in args.rewrite_import)
 
     if args.python is not None or args.json_schema is not None:
         if args.python is None or args.json_schema is None:
             print("If you specify the argument --python or --json-schema the other one is required")
             sys.exit(1)
+
         config: configuration.Configuration = {
-            "generate": [{"source": args.json_schema, "destination": args.python}]
+            "generate": [
+                {
+                    "source": args.json_schema,
+                    "destination": args.python,
+                    "python_version": args.python_version,
+                }
+            ]
         }
     else:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
@@ -124,10 +141,17 @@ def main() -> None:
             base_type.set_name(gen["root_name"])
 
         imports = {}
+        python_version = gen.get("python_version")
+        if python_version is not None:
+            python_version = tuple(int(x) for x in python_version.split("."))
+        else:
+            python_version = sys.version_info[:3]
+        import_rewrites = _get_import_rewrites(gen.get("python_version", python_version))
 
         def add_import(package, name):
             package = import_rewrites.get(f"{package}.{name}", package)
             imports.setdefault(package, set()).add(name)
+
         _add_type(base_type, add_import, types, gen, config)
 
         lines = []

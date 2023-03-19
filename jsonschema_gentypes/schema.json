@@ -37,6 +37,10 @@
             "description": "Used to map the name of an alternate name",
             "type": "object",
             "additionalProperties": { "type": "string" }
+          },
+          "python_version": {
+            "title": "The minimum Python version to support.",
+            "type": "string"
           }
         },
         "required": ["source", "destination"]
