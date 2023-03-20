@@ -21,12 +21,14 @@ def test_basic_types():
                 "number": {"type": "number", "description": "A number"},
                 "integer": {"type": "integer", "title": "An integer", "description": "An integer"},
                 "boolean": {"type": "boolean"},
+                "string_required": {"type": "string", "title": "A string"},
+                "number_required": {"type": "number", "description": "A number"},
+                "integer_required": {"type": "integer", "title": "An integer", "description": "An integer"},
+                "boolean": {"type": "boolean"},
                 "null": {"type": "null"},
                 "const": {"const": 8},
             },
-            "required": [
-                "string",
-            ]
+            "required": ["string_required", "number_required", "integer_required"],
         }
     )
     assert (
@@ -40,12 +42,8 @@ class TestBasicTypes(TypedDict, total=False):
     A description
     """
 
-    string: Required[str]
-    """
-    A string.
-
-    required
-    """
+    string: str
+    """A string."""
 
     number: Union[int, float]
     """A number"""
@@ -58,6 +56,29 @@ class TestBasicTypes(TypedDict, total=False):
     """
 
     boolean: bool
+    string_required: Required[str]
+    """
+    A string.
+
+    Required property
+    """
+
+    number_required: Required[Union[int, float]]
+    """
+    A number
+
+    Required property
+    """
+
+    integer_required: Required[int]
+    """
+    An integer.
+
+    An integer
+
+    Required property
+    """
+
     null: None
     const: Literal[8]'''
     )
@@ -198,8 +219,6 @@ TestBasicTypes = Union[Dict[str, str], "TestBasicTypesTyped"]
 """
 test basic types.
 
-WARNING: The required are not correctly taken in account,
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/6
 
 WARNING: Normally the types should be a mix of each other instead of Union.
 See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
@@ -624,7 +643,7 @@ TEST_BASIC_TYPES_DEFAULT{expected_type}
 """Default value of the field path 'Base'"""
 '''
     )
-    assert type_.imports() == import_
+    assert type_.imports(None) == import_
 
 
 def test_typeddict_mixrequired():
@@ -646,8 +665,8 @@ def test_typeddict_mixrequired():
 class TestBasicTypes(TypedDict, total=False):
     """test basic types."""
 
-    text1: str
-    """required"""
+    text1: Required[str]
+    """Required property"""
 
     text2: str'''
     )

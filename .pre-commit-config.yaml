@@ -1,0 +1,16 @@
+# https://pre-commit.com/hooks.html
+
+repos:
+  - repo: local
+    hooks:
+      - id: jsonschema-gentypes
+        name: Generate Python types based on TypedDict from a JSON schema
+        entry: jsonschema-gentypes
+        language: python
+        files: ^jsonschema_gentypes/schema\.json$
+        verbose: true
+        pass_filenames: false
+        additional_dependencies:
+          - ruamel.yaml==0.17.21 # pypi
+          - jsonschema==4.17.3 # pypi
+          - typing-extensions==4.5.0 # pypi

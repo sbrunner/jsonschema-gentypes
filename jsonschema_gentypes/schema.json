@@ -10,6 +10,10 @@
     "headers": { "type": "string" },
     "callbacks": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
     "lineLength": { "type": "integer", "description": "The maximum line length" },
+    "python_version": {
+      "title": "The minimum Python version to support",
+      "type": "string"
+    },
     "generate": {
       "type": "array",
       "items": {

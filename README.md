@@ -47,6 +47,10 @@ generate:
       additional_properties: Only explicit
     # Rename an element
     name_mapping: {}
+    # The minimum Python version that the code should support. By default the
+    # currently executing Python version is chosen. Note that the output
+    # may require typing_extensions to be installed.
+    python_version: '3.11'
 ```
 
 And just run:

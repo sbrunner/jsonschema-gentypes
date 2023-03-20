@@ -5,6 +5,8 @@ Automatically generated file from a JSON schema.
 
 from typing import Dict, List, Literal, TypedDict, Union
 
+from typing_extensions import Required
+
 AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
 """
 Additional properties.
@@ -39,36 +41,34 @@ class Configuration(TypedDict, total=False):
     lineLength: int
     """The maximum line length"""
 
-    generate: List["GenerateItem"]
-    """required"""
+    python_version: str
+    """The minimum Python version to support."""
+
+    generate: Required[List["GenerateItem"]]
+    """Required property"""
 
 
 class GenerateItem(TypedDict, total=False):
     """Generate item."""
 
-    source: str
+    source: Required[str]
     """
     The JSON schema file name
 
-    required
+    Required property
     """
 
-    destination: str
+    destination: Required[str]
     """
     The generated Python file name
 
-    required
+    Required property
     """
 
     root_name: str
     """The name of the root element"""
 
     api_arguments: "ApiArguments"
-    """
-    WARNING: The required are not correctly taken in account,
-    See: https://github.com/camptocamp/jsonschema-gentypes/issues/6
-    """
-
     name_mapping: Dict[str, str]
     """
     Name mapping.
