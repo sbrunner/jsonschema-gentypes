@@ -140,10 +140,11 @@ class Type:
         """
         raise NotImplementedError
 
-    def imports(self) -> List[Tuple[str, str]]:
+    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
         """
         Return the needed imports.
         """
+        del python_version
         return []
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
@@ -249,10 +250,11 @@ class LiteralType(Type):
         else:
             return f"Literal[{self.const}]"
 
-    def imports(self) -> List[Tuple[str, str]]:
+    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
         """
         Return the needed imports.
         """
+        del python_version
         return [("typing", "Literal")]
 
 
@@ -283,17 +285,27 @@ class NativeType(Type):
     Native Type that will essentially generates a Python import.
     """
 
-    def __init__(self, name: str, package: str = "typing") -> None:
+    def __init__(
+        self,
+        name: str,
+        package: str = "typing",
+        minimal_python_version: Optional[Tuple[int, ...]] = None,
+        workaround_package: Optional[str] = None,
+    ) -> None:
         """
         Init.
 
         Arguments:
             name: the type name
             package: the package of the type
+            minimal_python_version: the minimal Python version to use the type
+            workaround_package: the package to use if the minimal Python version is not met
         """
         super().__init__()
         self.package = package
         self._name = name
+        self.minimal_python_version = minimal_python_version
+        self.workaround_package = workaround_package
 
     def name(self) -> str:
         """
@@ -301,10 +313,13 @@ class NativeType(Type):
         """
         return self._name
 
-    def imports(self) -> List[Tuple[str, str]]:
+    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
         """
         Return the needed imports.
         """
+        if self.minimal_python_version is not None and python_version < self.minimal_python_version:
+            assert self.workaround_package is not None
+            return [(self.workaround_package, self._name)]
         return [(self.package, self._name)]
 
 
@@ -441,6 +456,7 @@ class TypedDictType(NamedType):
         name: str,
         struct: Dict[str, Type],
         descriptions: List[str],
+        required: Set[str],
     ):
         """
         Init.
@@ -449,10 +465,23 @@ class TypedDictType(NamedType):
             name: name of the type
             struct: the struct of the subtypes
             descriptions: the description
+            required: the required properties names
         """
         super().__init__(name)
         self.descriptions = descriptions
-        self.struct = struct
+
+        def get_required_type(prop_type: Type) -> Type:
+            result = CombinedType(NativeType("Required", "typing", (3, 11), "typing_extensions"), [prop_type])
+            if prop_type.comments():
+                result.set_comments([*prop_type.comments(), "", "Required property"])
+            else:
+                result.set_comments(["Required property"])
+            return result
+
+        self.struct = {
+            name: get_required_type(prop_type) if name in required else prop_type
+            for name, prop_type in struct.items()
+        }
 
     def depends_on(self) -> List[Type]:
         """
@@ -547,10 +576,12 @@ class Constant(NamedType):
             result += ['"""', *comments, '"""', ""]
         return result
 
-    def imports(self) -> List[Tuple[str, str]]:
+    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
         """
         Return the needed imports.
         """
+        del python_version
+
         if isinstance(self.constant, dict) and not self.constant:
             return [("typing", "Any"), ("typing", "Dict")]
         elif isinstance(self.constant, list) and not self.constant:
@@ -980,18 +1011,8 @@ class APIv4(API):
         if properties:
             required = set(schema.get("required", []))
 
-            def add_required(type_: Type, prop: str, required: Set[str]) -> Type:
-                if prop in required:
-                    comments = type_.comments()
-                    if comments:
-                        comments.append("")
-                    comments.append("required")
-                return type_
-
             struct = {
-                prop: add_required(
-                    self.get_type(sub_schema, proposed_name + " " + prop, auto_alias=False), prop, required
-                )
+                prop: self.get_type(sub_schema, proposed_name + " " + prop, auto_alias=False)
                 for prop, sub_schema in properties.items()
             }
 
@@ -999,12 +1020,10 @@ class APIv4(API):
                 name if std_dict is None else name + "Typed",
                 struct,
                 get_description(schema) if std_dict is None else [],
+                required=required,
             )
 
-            comments = [
-                "WARNING: The required are not correctly taken in account,",
-                "See: https://github.com/camptocamp/jsonschema-gentypes/issues/6",
-            ]
+            comments = []
 
             if std_dict is not None:
                 type_ = CombinedType(NativeType("Union"), [std_dict, type_])
