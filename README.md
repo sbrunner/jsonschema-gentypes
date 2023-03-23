@@ -109,3 +109,12 @@ The code should be typed.
 The `prospector` tests should pass.
 
 The code should be tested with `pytests`.
+
+## Contributing
+
+Install the pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install --allow-missing-config
+```
