@@ -3,12 +3,8 @@ line-length = 110
 target-version = ['py38']
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = false
-use_parentheses = true
+profile = "black"
 line_length = 110
-known_first_party = "jsonschema_gentypes"
 
 [tool.mypy]
 python_version = 3.8

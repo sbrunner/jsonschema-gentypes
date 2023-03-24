@@ -3,11 +3,9 @@ headers: |
   Automatically generated file from a JSON schema.
   """
 callbacks:
-  - - pyupgrade
-    - --py38-plus
-    - --exit-zero-even-if-changed
-  - - black
-  - - isort
+  - - pre-commit
+    - run
+    - --files
 generate:
   - source: jsonschema_gentypes/schema.json
     destination: jsonschema_gentypes/configuration.py

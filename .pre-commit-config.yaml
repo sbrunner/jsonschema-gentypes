@@ -1,5 +1,14 @@
 # https://pre-commit.com/hooks.html
 
+ci:
+  autoupdate_schedule: quarterly
+  skip:
+    - copyright
+    - poetry-check
+    - poetry-lock
+    - ripsecrets
+    - jsonschema-gentypes
+
 repos:
   - repo: local
     hooks:
@@ -102,10 +111,3 @@ repos:
           - --tool=pydocstyle
           - --die-on-tool-error
           - --output-format=pylint
-ci:
-  autoupdate_schedule: quarterly
-  skip:
-    - copyright
-    - poetry-check
-    - poetry-lock
-    - ripsecrets
