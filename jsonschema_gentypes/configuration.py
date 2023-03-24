@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Dict, List, Literal, TypedDict, Union
+from typing import Any, Dict, List, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
@@ -38,6 +38,7 @@ class Configuration(TypedDict, total=False):
 
     headers: str
     callbacks: List[List[str]]
+    pre_commit: "PreCommitConfiguration"
     lineLength: int
     """The maximum line length"""
 
@@ -74,4 +75,51 @@ class GenerateItem(TypedDict, total=False):
     Name mapping.
 
     Used to map the name of an alternate name
+    """
+
+
+PRE_COMMIT_ARGUMENTS_DEFAULT: List[Any] = []
+"""Default value of the field path 'Pre-commit configuration arguments'"""
+
+
+PRE_COMMIT_ENABLE_DEFAULT = False
+"""Default value of the field path 'Pre-commit configuration enable'"""
+
+
+class PreCommitConfiguration(TypedDict, total=False):
+    """
+    Pre-commit configuration.
+
+    The pre-commit configuration
+    """
+
+    enable: bool
+    """
+    Pre-commit enable.
+
+    default: False
+    """
+
+    arguments: List[str]
+    """
+    Pre-commit arguments.
+
+    Additional pre-commit arguments
+
+    default:
+      []
+    """
+
+    hooks: List[str]
+    """
+    Pre-commit hooks.
+
+    The hooks to run, all by default
+    """
+
+    hooks_skip: List[str]
+    """
+    Pre-commit skipped hooks.
+
+    The hooks to skip, none by default
     """

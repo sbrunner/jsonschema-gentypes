@@ -161,9 +161,25 @@ def process_config(config: configuration.Configuration) -> None:
             destination_file.write("\n".join(lines))
             destination_file.write("\n")
 
+        pre_commit = config.get("pre_commit", {})
+        if pre_commit.get("enabled", False):
+            env = {**os.environ}
+            env["SKIP"] = ",".join(pre_commit.get("hooks_skip", []))
+            subprocess.run(  # nosec
+                [
+                    "pre-commit",
+                    "run",
+                    *pre_commit.get("arguments", []),
+                    f"--files={gen['destination']}",
+                    *pre_commit.get("hooks", []),
+                ],  # nosec
+                env=env,
+                check=False,
+            )
+
         callbacks = config.get("callbacks", [])
         assert callbacks is not None
         for callback in callbacks:
             cmd = list(callback)
             cmd.append(gen["destination"])
-            subprocess.check_call(cmd)  # nosec
+            subprocess.run(cmd, check=True)  # nosec

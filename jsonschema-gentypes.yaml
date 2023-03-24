@@ -2,10 +2,11 @@ headers: |
   """
   Automatically generated file from a JSON schema.
   """
-callbacks:
-  - - pre-commit
-    - run
-    - --files
+pre_commit:
+  enabled: true
+  arguments:
+    - --color=never
+
 generate:
   - source: jsonschema_gentypes/schema.json
     destination: jsonschema_gentypes/configuration.py
