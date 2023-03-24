@@ -21,10 +21,6 @@ prospector: .poetry.timestamps # Run Prospector check
 pytest: .poetry.timestamps # Run the unit tests
 	poetry run pytest -vv --cov=jsonschema_gentypes --cov-report=term-missing
 
-.PHONY: jsonschema-gentypes
-jsonschema-gentypes: .poetry.timestamps # Generate files related to the JSON schema
-	poetry run jsonschema-gentypes
-
 .PHONY: build-docker
 build-docker: # Build the Docker image
 	docker build --tag=camptocamp/jsonschema-gentypes .

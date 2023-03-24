@@ -59,7 +59,7 @@ And just run:
 jsonschema-gentypes
 ```
 
-# Default
+## Default
 
 The default values are exported in the Python file, then you can do something like that:
 
@@ -67,7 +67,7 @@ The default values are exported in the Python file, then you can do something li
 value_with_default = my_object.get('field_name', my_schema.FIELD_DEFAULT)
 ```
 
-# Validation
+## Validation
 
 This package also provide some validations features for YAML file based on `jsonschema`.
 
@@ -100,12 +100,43 @@ Requires Python 3.8
 
 See the [issues with label "limitation"](https://github.com/camptocamp/jsonschema-gentypes/issues?q=is%3Aissue+is%3Aopen+label%3Alimitation).
 
-## Contribute
+## Pre-commit hooks
 
-The code should be formatted with `isort` and `black`.
+This project provides pre-commit hooks to automatically generate the files.
 
-The code should be typed.
+```yaml
+repos:
+  - repo: https://github.com/camptocamp/jsonschema-gentypes
+    rev: <version> # Use the ref you want to point at
+    hools:
+      - id: jsonschema-gentypes
+        files: |
+          (?x)^(
+              jsonschema-gentypes\.yaml|
+              <schema_path>\.json
+          )$
+```
+
+See also the pre_commit section in the configuration to run the pre-commit just after the generation, for example with:
+
+```yaml
+pre_commit:
+  enabled: true
+  arguments:
+    - --color=never
+```
+
+## Contributing
+
+Install the pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install --allow-missing-config
+```
 
 The `prospector` tests should pass.
+
+The code should be typed.
 
 The code should be tested with `pytests`.

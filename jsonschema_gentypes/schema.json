@@ -9,6 +9,33 @@
   "properties": {
     "headers": { "type": "string" },
     "callbacks": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+    "pre_commit": {
+      "title": "Pre-commit configuration",
+      "description": "The pre-commit configuration",
+      "type": "object",
+      "properties": {
+        "enable": { "title": "Pre-commit enable", "type": "boolean", "default": false },
+        "arguments": {
+          "title": "Pre-commit arguments",
+          "description": "Additional pre-commit arguments",
+          "default": [],
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "hooks": {
+          "title": "Pre-commit hooks",
+          "description": "The hooks to run, all by default",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "hooks_skip": {
+          "title": "Pre-commit skipped hooks",
+          "description": "The hooks to skip, none by default",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
     "lineLength": { "type": "integer", "description": "The maximum line length" },
     "python_version": {
       "title": "The minimum Python version to support",

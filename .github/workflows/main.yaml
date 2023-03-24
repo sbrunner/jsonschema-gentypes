@@ -36,18 +36,25 @@ jobs:
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
+      - run: pip install -e .
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: "pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}\npre-commit-"
+      - run: pre-commit run --all-files
+        env:
+          SKIP: poetry-lock,isort,black
+      - run: git diff && false
+        if: failure()
       - name: Checks
         run: c2cciutils-checks
 
       - run: make prospector
       - run: make pytest
       - run: git reset --hard
-      - run: make jsonschema-gentypes
       - run: make build-docker
       - run: docker run --rm --user=$(id --user) --volume=$(pwd):/src camptocamp/jsonschema-gentypes
-      - run: git diff --quiet
-      - run: git diff
-        if: failure()
 
       - name: Publish
         run: c2cciutils-publish
