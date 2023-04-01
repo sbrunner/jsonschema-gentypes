@@ -889,7 +889,6 @@ class API:
         return self._get_type(schema, schema_type, proposed_name)
 
     def _get_type(self, schema: jsonschema.JSONSchemaItem, schema_type: str, proposed_name: str) -> Type:
-
         proposed_name = schema.get("title", proposed_name)
 
         # Enums get special treatment, as they should be one of the literal values.
