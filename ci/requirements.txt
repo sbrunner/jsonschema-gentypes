@@ -1,4 +1,4 @@
-c2cciutils==1.2.10
+c2cciutils==1.2.12
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 pip==22.3.1
 protobuf>=3.18.3 # not directly required, pinned by Snyk to avoid a vulnerability
