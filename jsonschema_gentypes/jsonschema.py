@@ -46,45 +46,31 @@ JSONSchemaItem = TypedDict(
         "minLength": "_CoreSchemaMetaSchemaObjectMinlength",
         # format: regex
         "pattern": str,
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "additionalItems": Dict[str, Any],
+        "additionalItems": "CoreSchemaMetaSchema",
         # default: True
-        "items": Union["_CoreSchemaMetaSchemaObjectItemsAnyof0", "_CoreSchemaMetaSchemaObjectItemsAnyof1"],
+        "items": Union["CoreSchemaMetaSchema", "_CoreSchemaMetaSchemaObjectItemsAnyof1"],
         "maxItems": "_CoreSchemaMetaSchemaObjectMaxlength",
         "minItems": "_CoreSchemaMetaSchemaObjectMinlength",
         # default: False
         "uniqueItems": bool,
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "contains": Dict[str, Any],
+        "contains": "CoreSchemaMetaSchema",
         "maxProperties": "_CoreSchemaMetaSchemaObjectMaxlength",
         "minProperties": "_CoreSchemaMetaSchemaObjectMinlength",
         "required": "_CoreSchemaMetaSchemaObjectRequired",
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "additionalProperties": Dict[str, Any],
+        "additionalProperties": "CoreSchemaMetaSchema",
         # default:
         #   {}
-        "definitions": Dict[str, "_CoreSchemaMetaSchemaObjectDefinitionsAdditionalproperties"],
+        "definitions": Dict[str, "CoreSchemaMetaSchema"],
         # default:
         #   {}
-        "properties": Dict[str, "_CoreSchemaMetaSchemaObjectPropertiesAdditionalproperties"],
+        "properties": Dict[str, "CoreSchemaMetaSchema"],
         # propertyNames:
         #   format: regex
         # default:
         #   {}
-        "patternProperties": Dict[str, "_CoreSchemaMetaSchemaObjectPatternpropertiesAdditionalproperties"],
-        "dependencies": Dict[
-            str,
-            Union[
-                "_CoreSchemaMetaSchemaObjectDependenciesAdditionalpropertiesAnyof0",
-                "_CoreSchemaMetaSchemaObjectRequired",
-            ],
-        ],
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "propertyNames": Dict[str, Any],
+        "patternProperties": Dict[str, "CoreSchemaMetaSchema"],
+        "dependencies": Dict[str, Union["CoreSchemaMetaSchema", "_CoreSchemaMetaSchemaObjectRequired"]],
+        "propertyNames": "CoreSchemaMetaSchema",
         "const": Any,
         # minItems: 1
         # uniqueItems: True
@@ -93,21 +79,13 @@ JSONSchemaItem = TypedDict(
         "format": str,
         "contentMediaType": str,
         "contentEncoding": str,
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "if": Dict[str, Any],
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "then": Dict[str, Any],
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "else": Dict[str, Any],
+        "if": "CoreSchemaMetaSchema",
+        "then": "CoreSchemaMetaSchema",
+        "else": "CoreSchemaMetaSchema",
         "allOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
         "anyOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
         "oneOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
-        # WARNING: Forward references may not be supported.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-        "not": Dict[str, Any],
+        "not": "CoreSchemaMetaSchema",
     },
     total=False,
 )
@@ -149,36 +127,8 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
 """Default value of the field path 'Core schema meta-schema object writeOnly'"""
 
 
-_CoreSchemaMetaSchemaObjectDefinitionsAdditionalproperties = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
-
-
-_CoreSchemaMetaSchemaObjectDependenciesAdditionalpropertiesAnyof0 = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
-
-
-_CoreSchemaMetaSchemaObjectItemsAnyof0 = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
-
-
-_CoreSchemaMetaSchemaObjectItemsAnyof1 = List["_CoreSchemaMetaSchemaObjectItemsAnyof1Item"]
+_CoreSchemaMetaSchemaObjectItemsAnyof1 = List["CoreSchemaMetaSchema"]
 """minItems: 1"""
-
-
-_CoreSchemaMetaSchemaObjectItemsAnyof1Item = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
 
 
 _CoreSchemaMetaSchemaObjectMaxlength = int
@@ -197,20 +147,6 @@ See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
 
 _CoreSchemaMetaSchemaObjectMinlengthAllof1 = int
 """default: 0"""
-
-
-_CoreSchemaMetaSchemaObjectPatternpropertiesAdditionalproperties = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
-
-
-_CoreSchemaMetaSchemaObjectPropertiesAdditionalproperties = Dict[str, Any]
-"""
-WARNING: Forward references may not be supported.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/9
-"""
 
 
 _CoreSchemaMetaSchemaObjectRequired = List[str]

@@ -2,6 +2,7 @@ headers: |
   """
   Automatically generated file from a JSON schema.
   """
+
 pre_commit:
   enabled: true
   arguments:

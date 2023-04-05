@@ -18,7 +18,7 @@ import ruamel.yaml
 from jsonschema import RefResolver
 
 import jsonschema_gentypes
-from jsonschema_gentypes import configuration, validate
+from jsonschema_gentypes import configuration, get_name, validate
 
 LOG = logging.getLogger(__name__)
 
@@ -139,7 +139,9 @@ def process_config(config: configuration.Configuration) -> None:
         types: Dict[str, jsonschema_gentypes.Type] = {}
         imports: Dict[str, Set[str]] = {}
 
-        base_type = api.get_type(schema, gen.get("root_name", "Root"))
+        root_name = gen.get("root_name", "Root")
+        api.set_base_name(get_name(schema, root_name))
+        base_type = api.get_type(schema, root_name)
         if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
             assert gen["root_name"] is not None
             base_type.set_name(gen["root_name"])
