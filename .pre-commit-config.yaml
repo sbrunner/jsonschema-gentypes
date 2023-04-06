@@ -70,7 +70,6 @@ repos:
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.22.0
     hooks:
-      - id: check-github-actions
       - id: check-github-workflows
       - id: check-jsonschema
         name: Check GitHub Workflows set timeout-minutes

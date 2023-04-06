@@ -721,6 +721,14 @@ class API:
         self.additional_properties = additional_properties
         # types by reference
         self.ref_type: Dict[str, Type] = {}
+        self.base_name = "Base"
+        self.recursive_anchor_path: List[str] = []
+
+    def set_base_name(self, name: str) -> None:
+        """
+        Set the name of the base element.
+        """
+        self.base_name = name
 
     def get_type_handler(self, schema_type: str) -> Callable[[jsonschema.JSONSchemaItem, str], Type]:
         """
@@ -737,7 +745,7 @@ class API:
         return handler
 
     def get_type(
-        self, schema: jsonschema.JSONSchema, proposed_name: str = "Base", auto_alias: bool = True
+        self, schema: jsonschema.JSONSchema, proposed_name: Optional[str] = None, auto_alias: bool = True
     ) -> Type:
         """
         Get a :class:`.Type` for a JSON schema.
@@ -747,6 +755,12 @@ class API:
         if schema is False:
             return BuiltinType("None")
         assert not isinstance(schema, bool)
+
+        if proposed_name is None:
+            proposed_name = self.base_name
+
+        if schema.get("$recursiveAnchor", False):
+            self.recursive_anchor_path.append(get_name(schema, proposed_name))
 
         the_type = self._get_type_internal(schema, proposed_name)
         assert the_type is not None
@@ -769,6 +783,10 @@ class API:
                     [f"Default value of the field path '{proposed_name}'"],
                 )
             )
+
+        if schema.get("$recursiveAnchor", False):
+            self.recursive_anchor_path.pop()
+
         return the_type
 
     def _resolve_ref(self, schema: jsonschema.JSONSchemaItem) -> jsonschema.JSONSchemaItem:
@@ -817,7 +835,7 @@ class API:
                 ],
             )
 
-        if "$ref" in schema:
+        if "$ref" in schema or "$recursiveRef" in schema:
             return self.ref(schema, proposed_name)
 
         if "const" in schema:
@@ -1043,9 +1061,9 @@ class APIv4(API):
         Generate a ``List[]`` annotation with the allowed types.
         """
         items = schema.get("items")
-        if items is True:  # type: ignore
+        if items is True:
             return CombinedType(NativeType("List"), [NativeType("Any")])
-        elif items is False:  # type: ignore
+        elif items is False:
             raise NotImplementedError('"items": false is not supported')
         elif isinstance(items, list):
             inner_types = [self.get_type(cast(jsonschema.JSONSchemaItem, item)) for item in items]
@@ -1095,9 +1113,13 @@ class APIv4(API):
         """
         Handle a `$ref`.
         """
+
+        if schema.get("$recursiveRef") == "#":
+            return NamedType(self.recursive_anchor_path[-1])
+
         ref = schema["$ref"]
-        schema = cast(jsonschema.JSONSchemaItem, dict(schema))
         del schema["$ref"]
+
         if ref == "#":  # Self ref.
             # Per @ilevkivskyi:
             #
@@ -1110,14 +1132,7 @@ class APIv4(API):
             # self.forward_refs.append(forward_ref)
             # return forward_ref
 
-            type_ = self.object({}, proposed_name + " object")
-            type_.set_comments(
-                [
-                    "WARNING: Forward references may not be supported.",
-                    "See: https://github.com/camptocamp/jsonschema-gentypes/issues/9",
-                ]
-            )
-            return type_
+            return NamedType(self.base_name)
 
         if ref in self.ref_type:
             return self.ref_type[ref]

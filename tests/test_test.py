@@ -127,6 +127,80 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
+def test_self_ref():
+    type_ = get_types(
+        {
+            "type": "object",
+            "title": "test basic types",
+            "definitions": {
+                "string": {"type": "string"},
+            },
+            "properties": {
+                "string": {"$ref": "#"},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class TestBasicTypes(TypedDict, total=False):
+    """test basic types."""
+
+    string: "Base"'''
+    )
+
+
+def test_recursive_ref():
+    type_ = get_types(
+        {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": "https://example.com/tree",
+            "$recursiveAnchor": True,
+            "title": "Ref1",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "title": "Ref2",
+                    "type": "object",
+                    "$recursiveAnchor": True,
+                    "properties": {"data_child": {"$recursiveRef": "#"}},
+                },
+                "children": {"type": "array", "items": {"$recursiveRef": "#"}},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class Ref1(TypedDict, total=False):
+    """
+    Ref1.
+
+    $recursiveAnchor: True
+    """
+
+    data: "Ref2"
+    children: List["Ref1"]'''
+    )
+    depends_on = [e for e in type_.depends_on() if e.definition(None)]
+    assert len(depends_on) == 1
+    assert (
+        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
+        == '''
+
+class Ref2(TypedDict, total=False):
+    """
+    Ref2.
+
+    $recursiveAnchor: True
+    """
+
+    data_child: "Ref2"'''
+    )
+
+
 def test_array():
     type_ = get_types(
         {
