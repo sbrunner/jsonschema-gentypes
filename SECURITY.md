@@ -10,3 +10,4 @@
 | 1.4     | Best effort     |
 | 1.5     | Best effort     |
 | 1.6     | Best effort     |
+| 1.7     | Best effort     |
