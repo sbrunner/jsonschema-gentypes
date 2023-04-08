@@ -11,14 +11,14 @@ import random
 import re
 import subprocess  # nosec
 import sys
-from typing import Dict, Set, Tuple, cast
+from typing import Dict, Optional, Set, Tuple, cast
 
 import requests
 import ruamel.yaml
 from jsonschema import RefResolver
 
 import jsonschema_gentypes
-from jsonschema_gentypes import configuration, get_name, validate
+from jsonschema_gentypes import configuration, validate
 
 LOG = logging.getLogger(__name__)
 
@@ -30,7 +30,13 @@ def _add_type(
     gen: configuration.GenerateItem,
     config: configuration.Configuration,
     minimal_python_version: Tuple[int, ...],
+    added_types: Optional[Set[jsonschema_gentypes.Type]] = None,
 ) -> None:
+    if added_types is None:
+        added_types = set()
+    if type_ in added_types:
+        return
+    added_types.add(type_)
     if (
         isinstance(type_, jsonschema_gentypes.NamedType)
         and type_.unescape_name() in types
@@ -45,7 +51,7 @@ def _add_type(
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
         print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
         type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
-        _add_type(type_, imports, types, gen, config, minimal_python_version)
+        _add_type(type_, imports, types, gen, config, minimal_python_version, added_types)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
             types[type_.unescape_name()] = type_
@@ -54,7 +60,7 @@ def _add_type(
                 imports[package] = set()
             imports[package].add(imp)
         for sub_type in type_.depends_on():
-            _add_type(sub_type, imports, types, gen, config, minimal_python_version)
+            _add_type(sub_type, imports, types, gen, config, minimal_python_version, added_types)
 
 
 def main() -> None:
@@ -114,6 +120,7 @@ def process_config(config: configuration.Configuration) -> None:
 
     for gen in config["generate"]:
         source = gen["source"]
+        print(f"Processing {source}")
         if source.startswith("http://") or source.startswith("https://"):
             response = requests.get(source, timeout=60)
             response.raise_for_status()
@@ -140,7 +147,6 @@ def process_config(config: configuration.Configuration) -> None:
         imports: Dict[str, Set[str]] = {}
 
         root_name = gen.get("root_name", "Root")
-        api.set_base_name(get_name(schema, root_name))
         base_type = api.get_type(schema, root_name)
         if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
             assert gen["root_name"] is not None

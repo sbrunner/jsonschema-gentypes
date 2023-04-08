@@ -186,6 +186,69 @@ class Type:
         self._comments = comments
 
 
+class TypeProxy(Type):
+    """
+    A proxy on a type that can be set later.
+    """
+
+    _type: Optional[Type] = None
+
+    def name(self) -> str:
+        """
+        Return what we need to use the type.
+        """
+        assert self._type is not None
+        return self._type.name()
+
+    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
+        assert self._type is not None
+        return self._type.imports(python_version)
+
+    def definition(self, line_length: Optional[int] = None) -> List[str]:
+        """
+        Return the type declaration.
+
+        Arguments:
+            line_length: the maximum line length
+        """
+        assert self._type is not None
+        return self._type.definition()
+
+    def depends_on(self) -> List["Type"]:
+        """
+        Return the needed sub types.
+        """
+        assert self._type is not None
+        return self._type.depends_on()
+
+    def add_depends_on(self, depends_on: "Type") -> None:
+        """
+        Add a sub type.
+        """
+        raise NotImplementedError
+
+    def comments(self) -> List[str]:
+        """
+        Additional comments shared by the type.
+        """
+        return self._type.comments() if self._type is not None else []
+
+    def set_comments(self, comments: List[str]) -> None:
+        """
+        Set comment on the type.
+        """
+        print(f"Warning: set_comments on a TypeProxy, lost comments: {comments}")
+
+    def set_type(self, type_: Type) -> None:
+        """
+        Set the type.
+        """
+        self._type = type_
+
+
 class NamedType(Type):
     """
     The based type of named type.
@@ -341,7 +404,6 @@ class CombinedType(Type):
         super().__init__()
         self.base = base
         self.sub_types = sub_types
-        self.name()
 
     def name(self) -> str:
         """
@@ -721,14 +783,8 @@ class API:
         self.additional_properties = additional_properties
         # types by reference
         self.ref_type: Dict[str, Type] = {}
-        self.base_name = "Base"
-        self.recursive_anchor_path: List[str] = []
-
-    def set_base_name(self, name: str) -> None:
-        """
-        Set the name of the base element.
-        """
-        self.base_name = name
+        self.recursive_anchor_path: List[Type] = []
+        self.root: Optional[TypeProxy] = None
 
     def get_type_handler(self, schema_type: str) -> Callable[[jsonschema.JSONSchemaItem, str], Type]:
         """
@@ -744,23 +800,30 @@ class API:
             )
         return handler
 
-    def get_type(
-        self, schema: jsonschema.JSONSchema, proposed_name: Optional[str] = None, auto_alias: bool = True
-    ) -> Type:
+    def get_type(self, schema: jsonschema.JSONSchema, proposed_name: str, auto_alias: bool = True) -> Type:
         """
         Get a :class:`.Type` for a JSON schema.
         """
+        root = self.root is None
+        if root:
+            self.root = TypeProxy()
         if schema is True:
-            return NativeType("Any")
+            type_ = NativeType("Any")
+            if root:
+                assert self.root is not None
+                self.root.set_type(type_)
+            return type_
         if schema is False:
-            return BuiltinType("None")
+            type_ = NativeType("None")
+            if root:
+                assert self.root is not None
+                self.root.set_type(type_)
+            return type_
         assert not isinstance(schema, bool)
 
-        if proposed_name is None:
-            proposed_name = self.base_name
-
+        proxy = TypeProxy()
         if schema.get("$recursiveAnchor", False):
-            self.recursive_anchor_path.append(get_name(schema, proposed_name))
+            self.recursive_anchor_path.append(proxy)
 
         the_type = self._get_type_internal(schema, proposed_name)
         assert the_type is not None
@@ -783,6 +846,11 @@ class API:
                     [f"Default value of the field path '{proposed_name}'"],
                 )
             )
+
+        proxy.set_type(the_type)
+        if root:
+            assert self.root is not None
+            self.root.set_type(the_type)
 
         if schema.get("$recursiveAnchor", False):
             self.recursive_anchor_path.pop()
@@ -1066,7 +1134,10 @@ class APIv4(API):
         elif items is False:
             raise NotImplementedError('"items": false is not supported')
         elif isinstance(items, list):
-            inner_types = [self.get_type(cast(jsonschema.JSONSchemaItem, item)) for item in items]
+            inner_types = [
+                self.get_type(cast(jsonschema.JSONSchemaItem, item), f"{proposed_name} {nb}")
+                for nb, item in enumerate(items)
+            ]
             type_: Type = CombinedType(NativeType("Tuple"), inner_types)
             if {schema.get("minItems"), schema.get("maxItems")} - {None, len(items)}:
                 type_.set_comments(
@@ -1115,7 +1186,8 @@ class APIv4(API):
         """
 
         if schema.get("$recursiveRef") == "#":
-            return NamedType(self.recursive_anchor_path[-1])
+            del schema["$recursiveRef"]  # type: ignore
+            return self.recursive_anchor_path[-1]
 
         ref = schema["$ref"]
         del schema["$ref"]
@@ -1132,22 +1204,34 @@ class APIv4(API):
             # self.forward_refs.append(forward_ref)
             # return forward_ref
 
-            return NamedType(self.base_name)
+            assert self.root is not None
+            return self.root
 
         if ref in self.ref_type:
             return self.ref_type[ref]
+
+        ref_proposed_name = ref
+        if ref.startswith("#/definitions/"):
+            ref_proposed_name = ref[len("#/definitions/") :]
+        elif ref.startswith("#/"):
+            ref_proposed_name = ref[len("#/") :]
+        if "/" in ref_proposed_name:
+            ref_proposed_name = ref_proposed_name.replace("/", " ")
+        else:
+            if re.search("[a-z]", ref_proposed_name):
+                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
 
         resolve = getattr(self.resolver, "resolve", None)
         if resolve is None:
             with self.resolver.resolving(ref) as resolved:
                 schema.update(resolved)
-                type_ = self.get_type(schema)
+                type_ = self.get_type(schema, ref_proposed_name)
         else:
             scope, resolved = self.resolver.resolve(ref)
             self.resolver.push_scope(scope)
             try:
                 schema.update(resolved)
-                type_ = self.get_type(schema, proposed_name)
+                type_ = self.get_type(schema, ref_proposed_name)
             finally:
                 self.resolver.pop_scope()
 

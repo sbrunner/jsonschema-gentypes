@@ -42,50 +42,50 @@ JSONSchemaItem = TypedDict(
         "exclusiveMaximum": Union[int, float],
         "minimum": Union[int, float],
         "exclusiveMinimum": Union[int, float],
-        "maxLength": "_CoreSchemaMetaSchemaObjectMaxlength",
-        "minLength": "_CoreSchemaMetaSchemaObjectMinlength",
+        "maxLength": "_NonNegativeInteger",
+        "minLength": "_NonNegativeIntegerDefault0",
         # format: regex
         "pattern": str,
-        "additionalItems": "CoreSchemaMetaSchema",
+        "additionalItems": "JSONSchema",
         # default: True
-        "items": Union["CoreSchemaMetaSchema", "_CoreSchemaMetaSchemaObjectItemsAnyof1"],
-        "maxItems": "_CoreSchemaMetaSchemaObjectMaxlength",
-        "minItems": "_CoreSchemaMetaSchemaObjectMinlength",
+        "items": Union["JSONSchema", "_SchemaArray"],
+        "maxItems": "_NonNegativeInteger",
+        "minItems": "_NonNegativeIntegerDefault0",
         # default: False
         "uniqueItems": bool,
-        "contains": "CoreSchemaMetaSchema",
-        "maxProperties": "_CoreSchemaMetaSchemaObjectMaxlength",
-        "minProperties": "_CoreSchemaMetaSchemaObjectMinlength",
-        "required": "_CoreSchemaMetaSchemaObjectRequired",
-        "additionalProperties": "CoreSchemaMetaSchema",
+        "contains": "JSONSchema",
+        "maxProperties": "_NonNegativeInteger",
+        "minProperties": "_NonNegativeIntegerDefault0",
+        "required": "_StringArray",
+        "additionalProperties": "JSONSchema",
         # default:
         #   {}
-        "definitions": Dict[str, "CoreSchemaMetaSchema"],
+        "definitions": Dict[str, "JSONSchema"],
         # default:
         #   {}
-        "properties": Dict[str, "CoreSchemaMetaSchema"],
+        "properties": Dict[str, "JSONSchema"],
         # propertyNames:
         #   format: regex
         # default:
         #   {}
-        "patternProperties": Dict[str, "CoreSchemaMetaSchema"],
-        "dependencies": Dict[str, Union["CoreSchemaMetaSchema", "_CoreSchemaMetaSchemaObjectRequired"]],
-        "propertyNames": "CoreSchemaMetaSchema",
+        "patternProperties": Dict[str, "JSONSchema"],
+        "dependencies": Dict[str, Union["JSONSchema", "_StringArray"]],
+        "propertyNames": "JSONSchema",
         "const": Any,
         # minItems: 1
         # uniqueItems: True
         "enum": List[Any],
-        "type": Union["_CoreSchemaMetaSchemaObjectTypeAnyof0", "_CoreSchemaMetaSchemaObjectTypeAnyof1"],
+        "type": Union["_SimpleTypes", "_CoreSchemaMetaSchemaObjectTypeAnyof1"],
         "format": str,
         "contentMediaType": str,
         "contentEncoding": str,
-        "if": "CoreSchemaMetaSchema",
-        "then": "CoreSchemaMetaSchema",
-        "else": "CoreSchemaMetaSchema",
-        "allOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
-        "anyOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
-        "oneOf": "_CoreSchemaMetaSchemaObjectItemsAnyof1",
-        "not": "CoreSchemaMetaSchema",
+        "if": "JSONSchema",
+        "then": "JSONSchema",
+        "else": "JSONSchema",
+        "allOf": "_SchemaArray",
+        "anyOf": "_SchemaArray",
+        "oneOf": "_SchemaArray",
+        "not": "JSONSchema",
     },
     total=False,
 )
@@ -97,10 +97,6 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: Dict[str, Any] = {}
 
 _CORE_SCHEMA_META_SCHEMA_OBJECT_ITEMS_DEFAULT = True
 """Default value of the field path 'Core schema meta-schema object items'"""
-
-
-_CORE_SCHEMA_META_SCHEMA_OBJECT_MINLENGTH_ALLOF1_DEFAULT = 0
-"""Default value of the field path 'Core schema meta-schema object minLength allof1'"""
 
 
 _CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
@@ -127,17 +123,22 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
 """Default value of the field path 'Core schema meta-schema object writeOnly'"""
 
 
-_CoreSchemaMetaSchemaObjectItemsAnyof1 = List["CoreSchemaMetaSchema"]
-"""minItems: 1"""
+_CoreSchemaMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
+"""
+minItems: 1
+uniqueItems: True
+"""
 
 
-_CoreSchemaMetaSchemaObjectMaxlength = int
+_NON_NEGATIVE_INTEGER_DEFAULT0_ALLOF1_DEFAULT = 0
+"""Default value of the field path 'non negative integer default0 allof1'"""
+
+
+_NonNegativeInteger = int
 """minimum: 0"""
 
 
-_CoreSchemaMetaSchemaObjectMinlength = Union[
-    "_CoreSchemaMetaSchemaObjectMaxlength", "_CoreSchemaMetaSchemaObjectMinlengthAllof1"
-]
+_NonNegativeIntegerDefault0 = Union["_NonNegativeInteger", "_NonNegativeIntegerDefault0Allof1"]
 """
 WARNING: PEP 544 does not support an Intersection type,
 so `allOf` is interpreted as a `Union` for now.
@@ -145,19 +146,19 @@ See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
 """
 
 
-_CoreSchemaMetaSchemaObjectMinlengthAllof1 = int
+_NonNegativeIntegerDefault0Allof1 = int
 """default: 0"""
 
 
-_CoreSchemaMetaSchemaObjectRequired = List[str]
-"""
-uniqueItems: True
-default:
-  []
-"""
+_STRING_ARRAY_DEFAULT: List[Any] = []
+"""Default value of the field path 'string array'"""
 
 
-_CoreSchemaMetaSchemaObjectTypeAnyof0 = Union[
+_SchemaArray = List["JSONSchema"]
+"""minItems: 1"""
+
+
+_SimpleTypes = Union[
     Literal["array"],
     Literal["boolean"],
     Literal["integer"],
@@ -166,24 +167,25 @@ _CoreSchemaMetaSchemaObjectTypeAnyof0 = Union[
     Literal["object"],
     Literal["string"],
 ]
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_ARRAY: Literal["array"] = "array"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_BOOLEAN: Literal["boolean"] = "boolean"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_INTEGER: Literal["integer"] = "integer"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_NULL: Literal["null"] = "null"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_NUMBER: Literal["number"] = "number"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_OBJECT: Literal["object"] = "object"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
-_CORESCHEMAMETASCHEMAOBJECTTYPEANYOF0_STRING: Literal["string"] = "string"
-"""The values for the '_CoreSchemaMetaSchemaObjectTypeAnyof0' enum"""
+_SIMPLETYPES_ARRAY: Literal["array"] = "array"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_BOOLEAN: Literal["boolean"] = "boolean"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_INTEGER: Literal["integer"] = "integer"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_NULL: Literal["null"] = "null"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_NUMBER: Literal["number"] = "number"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_OBJECT: Literal["object"] = "object"
+"""The values for the '_SimpleTypes' enum"""
+_SIMPLETYPES_STRING: Literal["string"] = "string"
+"""The values for the '_SimpleTypes' enum"""
 
 
-_CoreSchemaMetaSchemaObjectTypeAnyof1 = List["_CoreSchemaMetaSchemaObjectTypeAnyof0"]
+_StringArray = List[str]
 """
-minItems: 1
 uniqueItems: True
+default:
+  []
 """
