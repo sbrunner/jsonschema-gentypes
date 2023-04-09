@@ -1,18 +1,19 @@
 import pytest
 from jsonschema import RefResolver
 
-import jsonschema_gentypes
+import jsonschema_gentypes.api_draft_07
+import jsonschema_gentypes.api_draft_2019_09
 
 
 def get_types(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
-    api = jsonschema_gentypes.APIv7(resolver)
+    api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2019_09(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
-    api = jsonschema_gentypes.APIv201909(resolver)
+    api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
 

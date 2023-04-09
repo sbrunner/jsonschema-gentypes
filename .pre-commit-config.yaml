@@ -22,6 +22,7 @@ repos:
               |jsonschema_gentypes/schema\.json
               |jsonschema_gentypes/__init__\.py
               |jsonschema_gentypes/cli\.py
+              |jsonschema_gentypes/api.*\.py
           )$
         verbose: true
         pass_filenames: false
