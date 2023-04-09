@@ -7,7 +7,7 @@ import jsonschema_gentypes
 def get_types(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
     api = jsonschema_gentypes.APIv7(resolver)
-    return api.get_type(schema)
+    return api.get_type(schema, "Base")
 
 
 def test_basic_types():
@@ -147,7 +147,7 @@ def test_self_ref():
 class TestBasicTypes(TypedDict, total=False):
     """test basic types."""
 
-    string: "Base"'''
+    string: "TestBasicTypes"'''
     )
 
 
