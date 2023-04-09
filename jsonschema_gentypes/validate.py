@@ -9,7 +9,7 @@ from warnings import warn
 
 import jsonschema
 
-import jsonschema_gentypes.jsonschema
+import jsonschema_gentypes.jsonschema_draft_07
 
 LOG = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def _extend_with_default(
     """
     Add the default provider.
 
-    Extends the jsonschema validator by adding a validator that fill the missing value with the default
+    Extends the jsonschema_draft_07 validator by adding a validator that fill the missing value with the default
     provided by the JSON schema.
 
     Arguments:
@@ -30,9 +30,9 @@ def _extend_with_default(
 
     def set_defaults(
         validator: "jsonschema.validators._DefaultTypesDeprecatingMetaClass",
-        properties: Dict[str, jsonschema_gentypes.jsonschema.JSONSchemaItem],
+        properties: Dict[str, jsonschema_gentypes.jsonschema_draft_07.JSONSchemaItemD7],
         instance: Optional[Dict[str, Any]],
-        schema: jsonschema_gentypes.jsonschema.JSONSchemaItem,
+        schema: jsonschema_gentypes.jsonschema_draft_07.JSONSchemaItemD7,
     ) -> Iterator[jsonschema.exceptions.ValidationError]:
         """
         Set the default from the JSON schema to the data.

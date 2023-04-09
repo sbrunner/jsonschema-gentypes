@@ -136,6 +136,7 @@ def process_config(config: configuration.Configuration) -> None:
             "draft-04": jsonschema_gentypes.APIv4,
             "draft-06": jsonschema_gentypes.APIv6,
             "draft-07": jsonschema_gentypes.APIv7,
+            "draft/2019-09": jsonschema_gentypes.APIv201909,
         }.get(
             schema_match.group(1) if schema_match else "default",
             jsonschema_gentypes.APIv7,

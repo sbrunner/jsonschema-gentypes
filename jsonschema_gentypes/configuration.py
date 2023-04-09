@@ -40,13 +40,13 @@ class Configuration(TypedDict, total=False):
     callbacks: List[List[str]]
     pre_commit: "PreCommitConfiguration"
     lineLength: int
-    """The maximum line length"""
+    """ The maximum line length """
 
     python_version: str
-    """The minimum Python version to support."""
+    """ The minimum Python version to support. """
 
     generate: Required[List["GenerateItem"]]
-    """Required property"""
+    """ Required property """
 
 
 class GenerateItem(TypedDict, total=False):
@@ -67,7 +67,7 @@ class GenerateItem(TypedDict, total=False):
     """
 
     root_name: str
-    """The name of the root element"""
+    """ The name of the root element """
 
     api_arguments: "ApiArguments"
     name_mapping: Dict[str, str]
@@ -79,11 +79,11 @@ class GenerateItem(TypedDict, total=False):
 
 
 PRE_COMMIT_ARGUMENTS_DEFAULT: List[Any] = []
-"""Default value of the field path 'Pre-commit configuration arguments'"""
+""" Default value of the field path 'Pre-commit configuration arguments' """
 
 
 PRE_COMMIT_ENABLE_DEFAULT = False
-"""Default value of the field path 'Pre-commit configuration enable'"""
+""" Default value of the field path 'Pre-commit configuration enable' """
 
 
 class PreCommitConfiguration(TypedDict, total=False):

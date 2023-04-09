@@ -3,9 +3,11 @@ doc-warnings: true
 max-line-length: 110
 
 ignore-paths:
-  - build
   - jsonschema_gentypes/configuration.py
-  - jsonschema_gentypes/jsonschema.py
+  - jsonschema_gentypes/jsonschema_draft_04.py
+  - jsonschema_gentypes/jsonschema_draft_06.py
+  - jsonschema_gentypes/jsonschema_draft_07.py
+  - jsonschema_gentypes/jsonschema_draft_2019_09.py
 
 pydocstyle:
   disable:

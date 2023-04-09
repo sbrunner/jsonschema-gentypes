@@ -13,7 +13,13 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, cast
 import ruamel.yaml
 from jsonschema import RefResolver
 
-from jsonschema_gentypes import configuration, jsonschema
+from jsonschema_gentypes import (
+    configuration,
+    jsonschema_draft_04,
+    jsonschema_draft_06,
+    jsonschema_draft_07,
+    jsonschema_draft_2019_09,
+)
 
 # Raise issues here.
 ISSUE_URL = "https://github.com/camptcamp/jsonschema-gentypes"
@@ -451,7 +457,7 @@ class TypeAlias(NamedType):
         result.append(f"{self._name} = {self.sub_type.name()}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         if len(comments) == 1:
-            result += [f'"""{comments[0]}"""', ""]
+            result += [f'""" {comments[0]} """', ""]
         elif comments:
             result += ['"""', *comments, '"""', ""]
 
@@ -492,7 +498,7 @@ class TypeEnum(NamedType):
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name()}")
         if len(comments) == 1:
-            result += [f'"""{comments[0]}"""']
+            result += [f'""" {comments[0]} """']
         elif comments:
             result += ['"""', *comments, '"""']
         for value in self.values:
@@ -571,7 +577,7 @@ class TypedDictType(NamedType):
             result.append(f"class {self._name}(TypedDict, total=False):")
             comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
             if len(comments) == 1:
-                result.append(f'    """{comments[0]}"""')
+                result.append(f'    """ {comments[0]} """')
                 result.append("")
             elif comments:
                 result.append('    """')
@@ -583,7 +589,7 @@ class TypedDictType(NamedType):
                 result.append(f"    {property_}: {type_obj.name()}")
                 comments = type_obj.comments()
                 if len(comments) == 1:
-                    result.append(f'    """{comments[0]}"""')
+                    result.append(f'    """ {comments[0]} """')
                     result.append("")
                 elif comments:
                     result.append('    """')
@@ -633,7 +639,7 @@ class Constant(NamedType):
             result.append(f"{self._name} = {repr(self.constant)}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         if len(comments) == 1:
-            result += [f'"""{comments[0]}"""', ""]
+            result += [f'""" {comments[0]} """', ""]
         elif comments:
             result += ['"""', *comments, '"""', ""]
         return result
@@ -674,7 +680,14 @@ def split_comment(text: List[str], line_length: Optional[int]) -> List[str]:
 
 
 def get_name(
-    schema: Optional[jsonschema.JSONSchemaItem],
+    schema: Optional[
+        Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ]
+    ],
     proposed_name: Optional[str] = None,
     upper: bool = False,
 ) -> str:
@@ -705,7 +718,14 @@ def get_name(
         return prefix + "".join([char for char in name if not char.isspace()])
 
 
-def get_description(schema: jsonschema.JSONSchemaItem) -> List[str]:
+def get_description(
+    schema: Union[
+        jsonschema_draft_04.JSONSchemaD4,
+        jsonschema_draft_06.JSONSchemaItemD6,
+        jsonschema_draft_07.JSONSchemaItemD7,
+        jsonschema_draft_2019_09.JSONSchemaItemD2019,
+    ]
+) -> List[str]:
     """
     Get the standard description for an element.
 
@@ -783,16 +803,42 @@ class API:
         self.additional_properties = additional_properties
         # types by reference
         self.ref_type: Dict[str, Type] = {}
-        self.recursive_anchor_path: List[Type] = []
         self.root: Optional[TypeProxy] = None
 
-    def get_type_handler(self, schema_type: str) -> Callable[[jsonschema.JSONSchemaItem, str], Type]:
+    def get_type_handler(
+        self, schema_type: str
+    ) -> Callable[
+        [
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ],
+            str,
+        ],
+        Type,
+    ]:
         """
         Get a handler from this schema draft version.
         """
         if schema_type.startswith("_"):
             raise AttributeError("No way friend")
-        handler = cast(Callable[[jsonschema.JSONSchemaItem, str], Type], getattr(self, schema_type, None))
+        handler = cast(
+            Callable[
+                [
+                    Union[
+                        jsonschema_draft_04.JSONSchemaD4,
+                        jsonschema_draft_06.JSONSchemaItemD6,
+                        jsonschema_draft_07.JSONSchemaItemD7,
+                        jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                    ],
+                    str,
+                ],
+                Type,
+            ],
+            getattr(self, schema_type, None),
+        )
         if handler is None:
             raise NotImplementedError(
                 f"Type `{schema_type}` is not supported. If you think that this is an error, "
@@ -800,7 +846,45 @@ class API:
             )
         return handler
 
-    def get_type(self, schema: jsonschema.JSONSchema, proposed_name: str, auto_alias: bool = True) -> Type:
+    def get_type_start(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proxy: Type,
+    ) -> None:
+        """
+        Start getting the type for a schema.
+        """
+
+    def get_type_end(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proxy: Type,
+    ) -> None:
+        """
+        End getting the type for a schema.
+        """
+
+    def get_type(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaD6,
+            jsonschema_draft_07.JSONSchemaD7,
+            jsonschema_draft_2019_09.JSONSchemaD2019,
+        ],
+        proposed_name: str,
+        auto_alias: bool = True,
+    ) -> Type:
         """
         Get a :class:`.Type` for a JSON schema.
         """
@@ -822,8 +906,8 @@ class API:
         assert not isinstance(schema, bool)
 
         proxy = TypeProxy()
-        if schema.get("$recursiveAnchor", False):
-            self.recursive_anchor_path.append(proxy)
+
+        self.get_type_start(schema, proxy)
 
         the_type = self._get_type_internal(schema, proposed_name)
         assert the_type is not None
@@ -852,18 +936,39 @@ class API:
             assert self.root is not None
             self.root.set_type(the_type)
 
-        if schema.get("$recursiveAnchor", False):
-            self.recursive_anchor_path.pop()
+        self.get_type_end(schema, proxy)
 
         return the_type
 
-    def _resolve_ref(self, schema: jsonschema.JSONSchemaItem) -> jsonschema.JSONSchemaItem:
+    def _resolve_ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+    ) -> Union[
+        jsonschema_draft_04.JSONSchemaD4,
+        jsonschema_draft_06.JSONSchemaItemD6,
+        jsonschema_draft_07.JSONSchemaItemD7,
+        jsonschema_draft_2019_09.JSONSchemaItemD2019,
+    ]:
         if "$ref" in schema:
-            with self.resolver.resolving(schema["$ref"]) as resolved:
+            with self.resolver.resolving(schema["$ref"]) as resolved:  # type: ignore
                 schema.update(resolved)
         return schema
 
-    def _get_type_internal(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def _get_type_internal(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Get a :class:`.Type` for a JSON schema.
         """
@@ -874,26 +979,73 @@ class API:
         proposed_name = schema.get("title", proposed_name)
 
         if "if" in schema:
-            base_schema: jsonschema.JSONSchemaItem = {}
-            base_schema.update(schema)
+            base_schema: Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ] = {}
+            base_schema.update(schema)  # type: ignore
             for key in ("if", "then", "else", "title", "description"):
                 if key in base_schema:
                     del base_schema[key]  # type: ignore
-            then_schema: jsonschema.JSONSchemaItem = {}
-            then_schema.update(base_schema)
-            then_schema.update(self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("then", {}))))
+            then_schema: Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ] = {}
+            then_schema.update(base_schema)  # type: ignore
+            then_schema.update(
+                self._resolve_ref(  # type: ignore
+                    cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_06.JSONSchemaItemD6,
+                            jsonschema_draft_07.JSONSchemaItemD7,
+                            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                        ],
+                        schema.get("then", {}),
+                    )
+                )
+            )
             if "properties" not in then_schema:
                 then_schema["properties"] = {}
             then_properties = then_schema["properties"]
             assert then_properties
-            if_properties = self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("if", {}))).get(
-                "properties", {}
-            )
+            if_properties = self._resolve_ref(
+                cast(
+                    Union[
+                        jsonschema_draft_04.JSONSchemaD4,
+                        jsonschema_draft_06.JSONSchemaItemD6,
+                        jsonschema_draft_07.JSONSchemaItemD7,
+                        jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                    ],
+                    schema.get("if", {}),
+                )
+            ).get("properties", {})
             assert if_properties
-            then_properties.update(if_properties)
-            else_schema: jsonschema.JSONSchemaItem = {}
-            else_schema.update(base_schema)
-            else_schema.update(self._resolve_ref(cast(jsonschema.JSONSchemaItem, schema.get("else", {}))))
+            then_properties.update(if_properties)  # type: ignore
+            else_schema: Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ] = {}
+            else_schema.update(base_schema)  # type: ignore
+            else_schema.update(
+                self._resolve_ref(  # type: ignore
+                    cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_06.JSONSchemaItemD6,
+                            jsonschema_draft_07.JSONSchemaItemD7,
+                            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                        ],
+                        schema.get("else", {}),
+                    )
+                )
+            )
 
             return CombinedType(
                 NativeType("Union"),
@@ -924,7 +1076,15 @@ class API:
         if isinstance(schema_type, list):
             inner_types = []
             proposed_name = schema.get("title", proposed_name)
-            schema_copy = cast(jsonschema.JSONSchemaItem, dict(schema))
+            schema_copy = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_07.JSONSchemaItemD7,
+                    jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                ],
+                dict(schema),
+            )
             if "title" in schema_copy:
                 del schema_copy["title"]
             for primitive_type in schema_type:
@@ -937,7 +1097,20 @@ class API:
         elif schema_type is None:
             if "allOf" in schema:
                 type_ = self.any_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["allOf"]), proposed_name, "allof"
+                    schema,
+                    cast(
+                        List[
+                            Union[
+                                jsonschema_draft_04.JSONSchemaD4,
+                                jsonschema_draft_06.JSONSchemaItemD6,
+                                jsonschema_draft_07.JSONSchemaItemD7,
+                                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                            ]
+                        ],
+                        schema["allOf"],
+                    ),
+                    proposed_name,
+                    "allof",
                 )
                 if type_.comments():
                     type_.comments().append("")
@@ -947,11 +1120,37 @@ class API:
                 return type_
             elif "anyOf" in schema:
                 return self.any_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["anyOf"]), proposed_name, "anyof"
+                    schema,
+                    cast(
+                        List[
+                            Union[
+                                jsonschema_draft_04.JSONSchemaD4,
+                                jsonschema_draft_06.JSONSchemaItemD6,
+                                jsonschema_draft_07.JSONSchemaItemD7,
+                                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                            ]
+                        ],
+                        schema["anyOf"],
+                    ),
+                    proposed_name,
+                    "anyof",
                 )
             elif "oneOf" in schema:
                 type_ = self.any_of(
-                    schema, cast(List[jsonschema.JSONSchemaItem], schema["oneOf"]), proposed_name, "oneof"
+                    schema,
+                    cast(
+                        List[
+                            Union[
+                                jsonschema_draft_04.JSONSchemaD4,
+                                jsonschema_draft_06.JSONSchemaItemD6,
+                                jsonschema_draft_07.JSONSchemaItemD7,
+                                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                            ]
+                        ],
+                        schema["oneOf"],
+                    ),
+                    proposed_name,
+                    "oneof",
                 )
                 if type_.comments():
                     type_.comments().append("")
@@ -965,7 +1164,7 @@ class API:
             self.resolver.pop_scope()
 
         if schema_type is None:
-            type_ = BuiltinType("None")
+            type_ = BuiltinType("Any")
             type_.set_comments(["WARNING: we get an schema without any type"])
             return type_
         assert isinstance(schema_type, str), (
@@ -974,7 +1173,17 @@ class API:
 
         return self._get_type(schema, schema_type, proposed_name)
 
-    def _get_type(self, schema: jsonschema.JSONSchemaItem, schema_type: str, proposed_name: str) -> Type:
+    def _get_type(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        schema_type: str,
+        proposed_name: str,
+    ) -> Type:
         proposed_name = schema.get("title", proposed_name)
 
         # Enums get special treatment, as they should be one of the literal values.
@@ -1000,7 +1209,16 @@ class API:
         return type_
 
     @abstractmethod
-    def ref(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Treat the ref keyword.
 
@@ -1010,8 +1228,20 @@ class API:
     @abstractmethod
     def any_of(
         self,
-        schema: jsonschema.JSONSchemaItem,
-        sub_schema: List[jsonschema.JSONSchemaItem],
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        sub_schema: List[
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ]
+        ],
         proposed_name: str,
         sub_name: str,
     ) -> Type:
@@ -1022,7 +1252,16 @@ class API:
         """
 
     @abstractmethod
-    def const(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def const(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Treat the const  keyword.
 
@@ -1030,7 +1269,16 @@ class API:
         """
 
     @abstractmethod
-    def enum(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def enum(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Treat enum.
 
@@ -1038,7 +1286,16 @@ class API:
         """
 
     @abstractmethod
-    def default(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def default(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Treat the default  keyword.
 
@@ -1051,14 +1308,31 @@ class APIv4(API):
     JSON Schema draft 4.
     """
 
-    def const(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def const(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate a ``Literal`` for a const value.
         """
-        const_: Union[int, float, str, bool, None] = schema["const"]
-        return LiteralType(const_)
+        raise NotImplementedError("const is not supported in draft 4")
 
-    def enum(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def enum(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate an enum.
         """
@@ -1068,21 +1342,47 @@ class APIv4(API):
             get_description(schema),
         )
 
-    def boolean(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def boolean(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate a ``bool`` annotation for a boolean object.
         """
         del schema, proposed_name
         return BuiltinType("bool")
 
-    def object(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def object(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate an annotation for an object, usually a TypedDict.
         """
 
         std_dict = None
         name = get_name(schema, proposed_name)
-        additional_properties = cast(jsonschema.JSONSchema, schema.get("additionalProperties"))
+        additional_properties = cast(
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaD6,
+                jsonschema_draft_07.JSONSchemaD7,
+                jsonschema_draft_2019_09.JSONSchemaD2019,
+            ],
+            schema.get("additionalProperties"),
+        )
         if (
             additional_properties is True
             and self.additional_properties == configuration.ADDITIONALPROPERTIES_ALWAYS
@@ -1091,7 +1391,18 @@ class APIv4(API):
         elif isinstance(additional_properties, dict):
             sub_type = self.get_type(additional_properties, f"{proposed_name} additionalProperties")
             std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
-        properties = cast(Dict[str, jsonschema.JSONSchemaItem], schema.get("properties"))
+        properties = cast(
+            Dict[
+                str,
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_07.JSONSchemaItemD7,
+                    jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                ],
+            ],
+            schema.get("properties"),
+        )
         proposed_name = schema.get("title", proposed_name)
         if properties:
             required = set(schema.get("required", []))
@@ -1124,7 +1435,16 @@ class APIv4(API):
             return std_dict
         return CombinedType(NativeType("Dict"), [BuiltinType("str"), NativeType("Any")])
 
-    def array(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def array(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate a ``List[]`` annotation with the allowed types.
         """
@@ -1135,7 +1455,18 @@ class APIv4(API):
             raise NotImplementedError('"items": false is not supported')
         elif isinstance(items, list):
             inner_types = [
-                self.get_type(cast(jsonschema.JSONSchemaItem, item), f"{proposed_name} {nb}")
+                self.get_type(
+                    cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_06.JSONSchemaItemD6,
+                            jsonschema_draft_07.JSONSchemaItemD7,
+                            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                        ],
+                        item,
+                    ),
+                    f"{proposed_name} {nb}",
+                )
                 for nb, item in enumerate(items)
             ]
             type_: Type = CombinedType(NativeType("Tuple"), inner_types)
@@ -1152,7 +1483,20 @@ class APIv4(API):
         elif items is not None:
             return CombinedType(
                 NativeType("List"),
-                [self.get_type(cast(jsonschema.JSONSchemaItem, items), proposed_name + " item")],
+                [
+                    self.get_type(
+                        cast(
+                            Union[
+                                jsonschema_draft_04.JSONSchemaD4,
+                                jsonschema_draft_06.JSONSchemaItemD6,
+                                jsonschema_draft_07.JSONSchemaItemD7,
+                                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                            ],
+                            items,
+                        ),
+                        proposed_name + " item",
+                    )
+                ],
             )
         else:
             type_ = BuiltinType("None")
@@ -1161,8 +1505,20 @@ class APIv4(API):
 
     def any_of(
         self,
-        schema: jsonschema.JSONSchemaItem,
-        sub_schema: List[jsonschema.JSONSchemaItem],
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        sub_schema: List[
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ]
+        ],
         proposed_name: str,
         sub_name: str,
     ) -> Type:
@@ -1180,17 +1536,50 @@ class APIv4(API):
         )
         return CombinedType(NativeType("Union"), inner_types)
 
-    def ref(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def ref_to_proposed_name(self, ref: str) -> str:
+        """
+        Create a proposed name from a ref.
+
+        Change the case from camel case to standard case, this is for layer inverse conversion then don't lost the case.
+        """
+        ref_proposed_name = ref
+        if ref.startswith("#/definitions/"):
+            ref_proposed_name = ref[len("#/definitions/") :]
+        elif ref.startswith("#/"):
+            ref_proposed_name = ref[len("#/") :]
+        if "/" in ref_proposed_name:
+            ref_proposed_name = ref_proposed_name.replace("/", " ")
+        else:
+            if re.search("[a-z]", ref_proposed_name):
+                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
+        return ref_proposed_name
+
+    def ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Handle a `$ref`.
         """
 
-        if schema.get("$recursiveRef") == "#":
-            del schema["$recursiveRef"]  # type: ignore
-            return self.recursive_anchor_path[-1]
+        # ref is not correctly declared in draft 4.
+        schema_casted = cast(
+            Union[
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ],
+            schema,
+        )
 
-        ref = schema["$ref"]
-        del schema["$ref"]
+        ref = schema_casted["$ref"]
+        del schema_casted["$ref"]
 
         if ref == "#":  # Self ref.
             # Per @ilevkivskyi:
@@ -1210,28 +1599,17 @@ class APIv4(API):
         if ref in self.ref_type:
             return self.ref_type[ref]
 
-        ref_proposed_name = ref
-        if ref.startswith("#/definitions/"):
-            ref_proposed_name = ref[len("#/definitions/") :]
-        elif ref.startswith("#/"):
-            ref_proposed_name = ref[len("#/") :]
-        if "/" in ref_proposed_name:
-            ref_proposed_name = ref_proposed_name.replace("/", " ")
-        else:
-            if re.search("[a-z]", ref_proposed_name):
-                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
-
         resolve = getattr(self.resolver, "resolve", None)
         if resolve is None:
             with self.resolver.resolving(ref) as resolved:
-                schema.update(resolved)
-                type_ = self.get_type(schema, ref_proposed_name)
+                schema_casted.update(resolved)
+                type_ = self.get_type(schema_casted, self.ref_to_proposed_name(ref))
         else:
             scope, resolved = self.resolver.resolve(ref)
             self.resolver.push_scope(scope)
             try:
-                schema.update(resolved)
-                type_ = self.get_type(schema, ref_proposed_name)
+                schema_casted.update(resolved)
+                type_ = self.get_type(schema_casted, self.ref_to_proposed_name(ref))
             finally:
                 self.resolver.pop_scope()
 
@@ -1239,35 +1617,80 @@ class APIv4(API):
             self.ref_type[ref] = type_
         return type_
 
-    def string(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def string(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate a ``str`` annotation.
         """
         del schema, proposed_name
         return BuiltinType("str")
 
-    def number(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def number(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate a ``Union[int, float]`` annotation.
         """
         del schema, proposed_name
         return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
 
-    def integer(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def integer(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate an ``int`` annotation.
         """
         del schema, proposed_name
         return BuiltinType("int")
 
-    def null(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def null(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Generate an ``None`` annotation.
         """
         del schema, proposed_name
         return BuiltinType("None")
 
-    def default(self, schema: jsonschema.JSONSchemaItem, proposed_name: str) -> Type:
+    def default(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
         """
         Treat the default keyword.
 
@@ -1292,8 +1715,116 @@ class APIv6(APIv4):
     JSON Schema draft 6.
     """
 
+    def const(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
+        """
+        Generate a ``Literal`` for a const value.
+        """
+
+        schema_casted = cast(
+            Union[
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_07.JSONSchemaItemD7,
+                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            ],
+            schema,
+        )
+
+        const_: Union[int, float, str, bool, None] = schema_casted["const"]
+        return LiteralType(const_)
+
 
 class APIv7(APIv6):
     """
     JSON Schema draft 7.
     """
+
+
+class APIv201909(APIv6):
+    """
+    JSON Schema draft 2019 09.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        """Initialize."""
+        super().__init__(*args, **kwargs)
+        self.recursive_anchor_path: List[Type] = []
+
+    def ref_to_proposed_name(self, ref: str) -> str:
+        """
+        Create a proposed name from a ref.
+
+        Change the case from camel case to standard case, this is for layer inverse conversion then don't lost the case.
+        """
+        ref_proposed_name = ref
+        if ref.startswith("#/$defs/"):
+            ref_proposed_name = ref[len("#/$defs/") :]
+        elif ref.startswith("#/"):
+            ref_proposed_name = ref[len("#/") :]
+        if "/" in ref_proposed_name:
+            ref_proposed_name = ref_proposed_name.replace("/", " ")
+        else:
+            if re.search("[a-z]", ref_proposed_name):
+                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
+        return ref_proposed_name
+
+    def get_type_start(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proxy: Type,
+    ) -> None:
+        """
+        Get the type for a schema.
+        """
+        if schema.get("$recursiveAnchor", False):
+            self.recursive_anchor_path.append(proxy)
+
+    def get_type_end(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proxy: Type,
+    ) -> None:
+        """
+        End getting the type for a schema.
+        """
+        if schema.get("$recursiveAnchor", False):
+            self.recursive_anchor_path.pop()
+
+    def ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_06.JSONSchemaItemD6,
+            jsonschema_draft_07.JSONSchemaItemD7,
+            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        ],
+        proposed_name: str,
+    ) -> Type:
+        """
+        Handle a `$ref`.
+        """
+
+        schema_2019 = cast(Union[jsonschema_draft_2019_09.JSONSchemaItemD2019], schema)
+        if schema_2019.get("$recursiveRef") == "#":
+            del schema_2019["$recursiveRef"]  # type: ignore
+            return self.recursive_anchor_path[-1]
+
+        return super().ref(schema, proposed_name)
