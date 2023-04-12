@@ -21,7 +21,6 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
 
     steps:
-      - run: docker system prune --all --force
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -46,8 +45,6 @@ jobs:
       - run: make prospector
       - run: make pytest
       - run: git reset --hard
-      - run: make build-docker
-      - run: docker run --rm --user=$(id --user) --volume=$(pwd):/src camptocamp/jsonschema-gentypes
 
       - name: Publish
         run: c2cciutils-publish
