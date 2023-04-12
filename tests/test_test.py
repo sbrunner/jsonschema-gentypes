@@ -1,12 +1,19 @@
 import pytest
 from jsonschema import RefResolver
 
-import jsonschema_gentypes
+import jsonschema_gentypes.api_draft_07
+import jsonschema_gentypes.api_draft_2019_09
 
 
 def get_types(schema):
     resolver: RefResolver = RefResolver.from_schema(schema)
-    api = jsonschema_gentypes.APIv7(resolver)
+    api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
+    return api.get_type(schema, "Base")
+
+
+def get_types_2019_09(schema):
+    resolver: RefResolver = RefResolver.from_schema(schema)
+    api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
 
@@ -43,10 +50,10 @@ class TestBasicTypes(TypedDict, total=False):
     """
 
     string: str
-    """A string."""
+    """ A string. """
 
     number: Union[int, float]
-    """A number"""
+    """ A number """
 
     integer: int
     """
@@ -121,7 +128,7 @@ def test_ref():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     string: str'''
     )
@@ -145,14 +152,14 @@ def test_self_ref():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     string: "TestBasicTypes"'''
     )
 
 
 def test_recursive_ref():
-    type_ = get_types(
+    type_ = get_types_2019_09(
         {
             "$schema": "https://json-schema.org/draft/2019-09/schema",
             "$id": "https://example.com/tree",
@@ -216,7 +223,7 @@ def test_array():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     array: List[str]'''
     )
@@ -237,7 +244,7 @@ def test_array_true():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     array: List[Any]'''
     )
@@ -263,7 +270,7 @@ def test_array_tuple():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     array: Tuple[str, Union[int, float]]
     """
@@ -323,7 +330,7 @@ def test_additional_properties():
         == f'''
 
 TestBasicTypes = Dict[str, str]
-"""test basic types."""
+""" test basic types. """
 '''
     )
 
@@ -341,7 +348,7 @@ def test_additional_properties_true():
         == f'''
 
 TestBasicTypes = Dict[str, Any]
-"""test basic types."""
+""" test basic types. """
 '''
     )
 
@@ -359,7 +366,7 @@ def test_boolean_const():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     boolean: Literal[True]'''
     )
@@ -385,7 +392,7 @@ test basic types.
 """
 TestBasicTypes = TypedDict('TestBasicTypes', {
     'enum': "_TestBasicTypesEnum",
-}, total=False)"""
+}, total=False) """
 '''
     )
 
@@ -427,7 +434,7 @@ def test_any_of():
         == f'''
 
 TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]
-"""test basic types."""
+""" test basic types. """
 '''
     )
     assert len(type_.depends_on()) == 1
@@ -564,7 +571,7 @@ def test_type_list() -> None:
         == f'''
 
 TestBasicTypes = Union[str, bool]
-"""test basic types."""
+""" test basic types. """
 '''
     )
 
@@ -584,7 +591,7 @@ def test_it_the_else() -> None:  # 395
         == f'''
 
 TestBasicTypes = Union["_TestBasicTypesThen", "_TestBasicTypesElse"]
-"""test basic types."""
+""" test basic types. """
 '''
     )
 
@@ -617,7 +624,7 @@ def test_const(value, expected_type) -> None:
         == f'''
 
 TestBasicTypes = Literal[{expected_type}]
-"""test basic types."""
+""" test basic types. """
 '''
     )
 
@@ -630,7 +637,7 @@ def test_enum() -> None:
         == '''
 
 TestBasicTypes = Union[Literal["red"], Literal["amber"], Literal["green"]]
-"""test basic types."""
+""" test basic types. """
 TESTBASICTYPES_RED: Literal["red"] = "red"
 """The values for the 'test basic types' enum"""
 TESTBASICTYPES_AMBER: Literal["amber"] = "amber"
@@ -648,7 +655,7 @@ def test_enum_int() -> None:
         == f'''
 
 TestBasicTypes = Union[Literal[1], Literal[2], Literal[3]]
-"""test basic types."""
+""" test basic types. """
 TESTBASICTYPES_1: Literal[1] = 1
 """The values for the 'test basic types' enum"""
 TESTBASICTYPES_2: Literal[2] = 2
@@ -666,7 +673,7 @@ def test_enum_bool() -> None:
         == f'''
 
 TestBasicTypes = Union[Literal[True], Literal[False]]
-"""test basic types."""
+""" test basic types. """
 TESTBASICTYPES_TRUE: Literal[True] = True
 """The values for the 'test basic types' enum"""
 TESTBASICTYPES_FALSE: Literal[False] = False
@@ -688,7 +695,7 @@ def test_default(value, expected_type) -> None:
 test basic types.
 
 default: {value}
-TestBasicTypes = {expected_type}"""
+TestBasicTypes = {expected_type} """
 '''
     )
 
@@ -714,7 +721,7 @@ def test_default(value, expected_type, import_) -> None:
         == f'''
 
 TEST_BASIC_TYPES_DEFAULT{expected_type}
-"""Default value of the field path 'Base'"""
+""" Default value of the field path 'Base' """
 '''
     )
     assert type_.imports(None) == import_
@@ -737,10 +744,10 @@ def test_typeddict_mixrequired():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """test basic types."""
+    """ test basic types. """
 
     text1: Required[str]
-    """Required property"""
+    """ Required property """
 
     text2: str'''
     )

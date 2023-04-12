@@ -17,7 +17,11 @@ import requests
 import ruamel.yaml
 from jsonschema import RefResolver
 
-import jsonschema_gentypes
+import jsonschema_gentypes.api
+import jsonschema_gentypes.api_draft_04
+import jsonschema_gentypes.api_draft_06
+import jsonschema_gentypes.api_draft_07
+import jsonschema_gentypes.api_draft_2019_09
 from jsonschema_gentypes import configuration, validate
 
 LOG = logging.getLogger(__name__)
@@ -133,12 +137,13 @@ def process_config(config: configuration.Configuration) -> None:
         schema_ref = schema.get("$schema", "default")
         schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
         api_version = {
-            "draft-04": jsonschema_gentypes.APIv4,
-            "draft-06": jsonschema_gentypes.APIv6,
-            "draft-07": jsonschema_gentypes.APIv7,
+            "draft-04": jsonschema_gentypes.api_draft_04.APIv4,
+            "draft-06": jsonschema_gentypes.api_draft_06.APIv6,
+            "draft-07": jsonschema_gentypes.api_draft_07.APIv7,
+            "draft/2019-09": jsonschema_gentypes.api_draft_2019_09.APIv201909,
         }.get(
             schema_match.group(1) if schema_match else "default",
-            jsonschema_gentypes.APIv7,
+            jsonschema_gentypes.api_draft_2019_09.APIv201909,
         )
         api_args = gen.get("api_arguments", {})
         api = api_version(resolver, **api_args)
