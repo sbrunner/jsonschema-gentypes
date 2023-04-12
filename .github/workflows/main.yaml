@@ -50,6 +50,8 @@ jobs:
       - name: Checks
         run: c2cciutils-checks
 
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - run: make prospector
       - run: make pytest
       - run: git reset --hard
@@ -59,3 +61,6 @@ jobs:
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
