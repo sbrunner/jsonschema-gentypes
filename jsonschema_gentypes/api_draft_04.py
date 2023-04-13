@@ -17,7 +17,6 @@ from jsonschema_gentypes import (
     get_name,
     jsonschema_draft_04,
     jsonschema_draft_06,
-    jsonschema_draft_07,
     jsonschema_draft_2019_09,
 )
 from jsonschema_gentypes.api import API
@@ -30,12 +29,7 @@ class APIv4(API):
 
     def const(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -45,12 +39,7 @@ class APIv4(API):
 
     def enum(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -64,12 +53,7 @@ class APIv4(API):
 
     def boolean(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -80,12 +64,7 @@ class APIv4(API):
 
     def object(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -95,12 +74,7 @@ class APIv4(API):
         std_dict = None
         name = get_name(schema, proposed_name)
         additional_properties = cast(
-            Union[
-                jsonschema_draft_04.JSONSchemaD4,
-                jsonschema_draft_06.JSONSchemaD6,
-                jsonschema_draft_07.JSONSchemaD7,
-                jsonschema_draft_2019_09.JSONSchemaD2019,
-            ],
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaD2019],
             schema.get("additionalProperties"),
         )
         if (
@@ -114,12 +88,7 @@ class APIv4(API):
         properties = cast(
             Dict[
                 str,
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4,
-                    jsonschema_draft_06.JSONSchemaItemD6,
-                    jsonschema_draft_07.JSONSchemaItemD7,
-                    jsonschema_draft_2019_09.JSONSchemaItemD2019,
-                ],
+                Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
             ],
             schema.get("properties"),
         )
@@ -157,12 +126,7 @@ class APIv4(API):
 
     def array(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -177,12 +141,7 @@ class APIv4(API):
             inner_types = [
                 self.get_type(
                     cast(
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_06.JSONSchemaItemD6,
-                            jsonschema_draft_07.JSONSchemaItemD7,
-                            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-                        ],
+                        Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
                         item,
                     ),
                     f"{proposed_name} {nb}",
@@ -207,10 +166,7 @@ class APIv4(API):
                     self.get_type(
                         cast(
                             Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_06.JSONSchemaItemD6,
-                                jsonschema_draft_07.JSONSchemaItemD7,
-                                jsonschema_draft_2019_09.JSONSchemaItemD2019,
+                                jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019
                             ],
                             items,
                         ),
@@ -225,19 +181,9 @@ class APIv4(API):
 
     def any_of(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         sub_schema: List[
-            Union[
-                jsonschema_draft_04.JSONSchemaD4,
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_07.JSONSchemaItemD7,
-                jsonschema_draft_2019_09.JSONSchemaItemD2019,
-            ]
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019]
         ],
         proposed_name: str,
         sub_name: str,
@@ -276,12 +222,7 @@ class APIv4(API):
 
     def ref(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -290,11 +231,7 @@ class APIv4(API):
 
         # ref is not correctly declared in draft 4.
         schema_casted = cast(
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_07.JSONSchemaItemD7,
-                jsonschema_draft_2019_09.JSONSchemaItemD2019,
-            ],
+            Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2019_09.JSONSchemaItemD2019],
             schema,
         )
 
@@ -323,13 +260,13 @@ class APIv4(API):
         if resolve is None:
             with self.resolver.resolving(ref) as resolved:
                 schema_casted.update(resolved)
-                type_ = self.get_type(schema_casted, self.ref_to_proposed_name(ref))
+                type_ = self.get_type(resolved, self.ref_to_proposed_name(ref))
         else:
             scope, resolved = self.resolver.resolve(ref)
             self.resolver.push_scope(scope)
             try:
                 schema_casted.update(resolved)
-                type_ = self.get_type(schema_casted, self.ref_to_proposed_name(ref))
+                type_ = self.get_type(resolved, self.ref_to_proposed_name(ref))
             finally:
                 self.resolver.pop_scope()
 
@@ -339,12 +276,7 @@ class APIv4(API):
 
     def string(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -355,12 +287,7 @@ class APIv4(API):
 
     def number(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -371,12 +298,7 @@ class APIv4(API):
 
     def integer(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -387,12 +309,7 @@ class APIv4(API):
 
     def null(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
@@ -403,12 +320,7 @@ class APIv4(API):
 
     def default(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """

@@ -16,14 +16,6 @@ Convert a JSON schema to a Python file contains the types:
 jsonschema-gentypes --json-schema=<JSON schema> --python=<destination Python file>
 ```
 
-## Docker
-
-You can also run it with Docker:
-
-```bash
-docker run --rm --user=$(id --user) --volume=$(pwd):/src camptocamp/jsonschema-gentypes
-```
-
 ## Config file
 
 You can also write a config file named `jsonschema-gentypes.yaml` with:

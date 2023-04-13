@@ -11,11 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: camptocamp/initialise-gopass-summon-action@v2
-        with:
-          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
-          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
-
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 

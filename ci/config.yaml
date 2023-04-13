@@ -3,11 +3,6 @@
 checks:
   codespell: false
 
-publish:
-  docker:
-    images:
-      - name: camptocamp/jsonschema-gentypes
-
 audit:
   snyk:
     pip_install_arguments:

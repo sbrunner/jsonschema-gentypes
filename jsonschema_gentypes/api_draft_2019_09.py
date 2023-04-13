@@ -5,13 +5,7 @@ The API version draft 2019 09.
 import re
 from typing import Any, List, Union, cast
 
-from jsonschema_gentypes import (
-    Type,
-    jsonschema_draft_04,
-    jsonschema_draft_06,
-    jsonschema_draft_07,
-    jsonschema_draft_2019_09,
-)
+from jsonschema_gentypes import Type, jsonschema_draft_04, jsonschema_draft_2019_09
 from jsonschema_gentypes.api_draft_07 import APIv7
 
 
@@ -45,12 +39,7 @@ class APIv201909(APIv7):
 
     def get_type_start(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proxy: Type,
     ) -> None:
         """
@@ -61,12 +50,7 @@ class APIv201909(APIv7):
 
     def get_type_end(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proxy: Type,
     ) -> None:
         """
@@ -77,12 +61,7 @@ class APIv201909(APIv7):
 
     def ref(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
-        ],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
