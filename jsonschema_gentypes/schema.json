@@ -68,6 +68,12 @@
             "description": "Used to map the name of an alternate name",
             "type": "object",
             "additionalProperties": { "type": "string" }
+          },
+          "vocabularies": {
+            "title": "vocabularies",
+            "description": "Used to add some vocabularies",
+            "type": "object",
+            "additionalProperties": { "type": "string" }
           }
         },
         "required": ["source", "destination"]

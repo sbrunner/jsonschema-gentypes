@@ -77,6 +77,13 @@ class GenerateItem(TypedDict, total=False):
     Used to map the name of an alternate name
     """
 
+    vocabularies: Dict[str, str]
+    """
+    vocabularies.
+
+    Used to add some vocabularies
+    """
+
 
 PRE_COMMIT_ARGUMENTS_DEFAULT: List[Any] = []
 """ Default value of the field path 'Pre-commit configuration arguments' """

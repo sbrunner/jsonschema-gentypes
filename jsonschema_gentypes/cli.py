@@ -13,15 +13,14 @@ import subprocess  # nosec
 import sys
 from typing import Dict, Optional, Set, Tuple, cast
 
-import requests
 import ruamel.yaml
-from jsonschema import RefResolver
 
 import jsonschema_gentypes.api
 import jsonschema_gentypes.api_draft_04
 import jsonschema_gentypes.api_draft_06
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
+import jsonschema_gentypes.resolver
 from jsonschema_gentypes import configuration, validate
 
 LOG = logging.getLogger(__name__)
@@ -125,15 +124,14 @@ def process_config(config: configuration.Configuration) -> None:
     for gen in config["generate"]:
         source = gen["source"]
         print(f"Processing {source}")
-        if source.startswith("http://") or source.startswith("https://"):
-            response = requests.get(source, timeout=60)
-            response.raise_for_status()
-            schema = response.json()
-        else:
-            with open(os.path.abspath(source), encoding="utf-8") as source_file:
-                schema = json.load(source_file)
 
-        resolver: RefResolver = RefResolver.from_schema(schema)
+        resolver = jsonschema_gentypes.resolver.RefResolver(source)
+        schema = resolver.schema
+
+        if "vocabularies" in gen:
+            for vocab, uri in gen["vocabularies"].items():
+                resolver.add_vocabulary(vocab, uri)
+
         schema_ref = schema.get("$schema", "default")
         schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
         api_version = {
