@@ -6,10 +6,9 @@ import keyword
 import re
 import textwrap
 import unicodedata
-from io import StringIO
 from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
-import ruamel.yaml
+import yaml
 
 from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data
 
@@ -717,9 +716,6 @@ def get_description(
     Arguments:
         schema: the concerned schema
     """
-    yaml = ruamel.yaml.YAML(typ="safe")
-    yaml.default_flow_style = False
-
     result: List[str] = []
     if "title" in schema:
         result.append(f"{schema['title']}.")
@@ -764,8 +760,7 @@ def get_description(
                     result.append("")
                 first = False
             result.append(f"{key}:")
-            formatted_value = StringIO()
-            yaml.dump(value, formatted_value)
-            result += [f"  {line}" for line in formatted_value.getvalue().split("\n") if line]
+            lines = yaml.dump(value, Dumper=yaml.SafeDumper).split("\n")
+            result += [f"  {line}" for line in lines if line]
 
     return result

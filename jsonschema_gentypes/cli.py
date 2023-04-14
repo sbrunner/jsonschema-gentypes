@@ -3,7 +3,6 @@ Generate the Python type files from the JSON schema files.
 """
 
 import argparse
-import json
 import logging
 import os
 import pkgutil
@@ -13,7 +12,7 @@ import subprocess  # nosec
 import sys
 from typing import Dict, Optional, Set, Tuple, cast
 
-import ruamel.yaml
+import yaml
 
 import jsonschema_gentypes.api
 import jsonschema_gentypes.api_draft_04
@@ -21,7 +20,7 @@ import jsonschema_gentypes.api_draft_06
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
 import jsonschema_gentypes.resolver
-from jsonschema_gentypes import configuration, validate
+from jsonschema_gentypes import configuration
 
 LOG = logging.getLogger(__name__)
 
@@ -98,15 +97,9 @@ def main() -> None:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
         assert schema_data
         with open(args.config, encoding="utf-8") as data_file:
-            yaml = ruamel.yaml.YAML()
-            data = yaml.load(data_file)
-        errors, data = validate.validate(args.config, data, json.loads(schema_data), True)
+            data = yaml.load(data_file, Loader=yaml.SafeLoader)
         config = cast(configuration.Configuration, data)
 
-        if errors:
-            LOG.error("The config file is invalid:\n%s", "\n".join(errors))
-            if not args.skip_config_errors:
-                sys.exit(1)
     process_config(config)
 
 
