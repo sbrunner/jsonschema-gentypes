@@ -5,7 +5,12 @@ The API version draft 2019 09.
 import re
 from typing import Any, List, Union, cast
 
-from jsonschema_gentypes import Type, jsonschema_draft_04, jsonschema_draft_2019_09
+from jsonschema_gentypes import (
+    Type,
+    jsonschema_draft_04,
+    jsonschema_draft_2019_09_applicator,
+    jsonschema_draft_2019_09_core,
+)
 from jsonschema_gentypes.api_draft_07 import APIv7
 
 
@@ -17,6 +22,7 @@ class APIv201909(APIv7):
     def __init__(self, *args: Any, **kwargs: Any):
         """Initialize."""
         super().__init__(*args, **kwargs)
+        self.is_recursive_anchor_path: List[bool] = []
         self.recursive_anchor_path: List[Type] = []
 
     def ref_to_proposed_name(self, ref: str) -> str:
@@ -39,38 +45,54 @@ class APIv201909(APIv7):
 
     def get_type_start(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+        ],
         proxy: Type,
     ) -> None:
         """
         Get the type for a schema.
         """
-        if schema.get("$recursiveAnchor", False):
+
+        schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
+
+        self.is_recursive_anchor_path.append(schema_core.get("$recursiveAnchor", False))
+        if self.is_recursive_anchor_path[-1]:
+            del schema_core["$recursiveAnchor"]
             self.recursive_anchor_path.append(proxy)
+
+        super().get_type_start(schema, proxy)
 
     def get_type_end(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+        ],
         proxy: Type,
     ) -> None:
         """
         End getting the type for a schema.
         """
-        if schema.get("$recursiveAnchor", False):
+
+        super().get_type_end(schema, proxy)
+
+        if self.is_recursive_anchor_path[-1]:
             self.recursive_anchor_path.pop()
+        self.is_recursive_anchor_path.pop()
 
     def ref(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_core.JSONSchemaItemD2019],
         proposed_name: str,
     ) -> Type:
         """
         Handle a `$ref`.
         """
 
-        schema_2019 = cast(Union[jsonschema_draft_2019_09.JSONSchemaItemD2019], schema)
-        if schema_2019.get("$recursiveRef") == "#":
-            del schema_2019["$recursiveRef"]  # type: ignore
+        schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
+
+        if schema_core.get("$recursiveRef") == "#":
+            del schema_core["$recursiveRef"]
             return self.recursive_anchor_path[-1]
 
         return super().ref(schema, proposed_name)

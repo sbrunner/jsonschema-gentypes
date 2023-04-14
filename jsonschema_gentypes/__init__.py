@@ -11,12 +11,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
 import ruamel.yaml
 
-from jsonschema_gentypes import (
-    jsonschema_draft_04,
-    jsonschema_draft_06,
-    jsonschema_draft_07,
-    jsonschema_draft_2019_09,
-)
+from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data
 
 
 def __pinyin(char: str) -> str:
@@ -677,9 +672,7 @@ def get_name(
     schema: Optional[
         Union[
             jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_07.JSONSchemaItemD7,
-            jsonschema_draft_2019_09.JSONSchemaItemD2019,
+            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
         ]
     ],
     proposed_name: Optional[str] = None,
@@ -715,9 +708,7 @@ def get_name(
 def get_description(
     schema: Union[
         jsonschema_draft_04.JSONSchemaD4,
-        jsonschema_draft_06.JSONSchemaItemD6,
-        jsonschema_draft_07.JSONSchemaItemD7,
-        jsonschema_draft_2019_09.JSONSchemaItemD2019,
+        jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
     ]
 ) -> List[str]:
     """

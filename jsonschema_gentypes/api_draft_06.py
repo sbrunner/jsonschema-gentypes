@@ -9,7 +9,8 @@ from jsonschema_gentypes import (
     Type,
     jsonschema_draft_04,
     jsonschema_draft_06,
-    jsonschema_draft_2019_09,
+    jsonschema_draft_2019_09_applicator,
+    jsonschema_draft_2019_09_validation,
 )
 from jsonschema_gentypes.api_draft_04 import APIv4
 
@@ -19,9 +20,35 @@ class APIv6(APIv4):
     JSON Schema draft 6.
     """
 
+    def get_type_start(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+        ],
+        proxy: Type,
+    ) -> None:
+        """
+        Get the type for a schema.
+        """
+
+        schema_casted = cast(
+            Union[
+                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+            ],
+            schema,
+        )
+        property_names = schema_casted.get("propertyNames")
+        if isinstance(property_names, dict) and "type" in property_names:
+            property_names["__type__"] = property_names["type"]  # type: ignore
+            del property_names["type"]  # type: ignore
+
+        super().get_type_start(schema, proxy)
+
     def const(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09.JSONSchemaItemD2019],
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+        ],
         proposed_name: str,
     ) -> Type:
         """
@@ -29,7 +56,9 @@ class APIv6(APIv4):
         """
 
         schema_casted = cast(
-            Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2019_09.JSONSchemaItemD2019],
+            Union[
+                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2019_09_validation.JSONSchemaItemD2019
+            ],
             schema,
         )
 

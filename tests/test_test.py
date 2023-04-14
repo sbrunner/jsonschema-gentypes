@@ -1,18 +1,18 @@
 import pytest
-from jsonschema import RefResolver
 
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
+import jsonschema_gentypes.resolver
 
 
 def get_types(schema):
-    resolver: RefResolver = RefResolver.from_schema(schema)
+    resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2019_09(schema):
-    resolver: RefResolver = RefResolver.from_schema(schema)
+    resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
@@ -113,6 +113,8 @@ _Base = TypedDict('_Base', {
 def test_ref():
     type_ = get_types(
         {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": "https://example.com/fake",
             "type": "object",
             "title": "test basic types",
             "definitions": {
@@ -182,11 +184,7 @@ def test_recursive_ref():
         == '''
 
 class Ref1(TypedDict, total=False):
-    """
-    Ref1.
-
-    $recursiveAnchor: True
-    """
+    """ Ref1. """
 
     data: "Ref2"
     children: List["Ref1"]'''
@@ -198,11 +196,7 @@ class Ref1(TypedDict, total=False):
         == '''
 
 class Ref2(TypedDict, total=False):
-    """
-    Ref2.
-
-    $recursiveAnchor: True
-    """
+    """ Ref2. """
 
     data_child: "Ref2"'''
     )
