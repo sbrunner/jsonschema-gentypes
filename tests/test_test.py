@@ -2,6 +2,7 @@ import pytest
 
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
+import jsonschema_gentypes.api_draft_2020_12
 import jsonschema_gentypes.resolver
 
 
@@ -14,6 +15,12 @@ def get_types(schema):
 def get_types_2019_09(schema):
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
+    return api.get_type(schema, "Base")
+
+
+def get_types_2020_12(schema):
+    resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
+    api = jsonschema_gentypes.api_draft_2020_12.APIv202012(resolver)
     return api.get_type(schema, "Base")
 
 
@@ -818,3 +825,118 @@ def test_name(config, title, expected):
 
 def test_name_upper():
     assert jsonschema_gentypes.get_name({"title": "test"}, upper=True) == "TEST"
+
+
+def test_recursive_ref():
+    type_ = get_types_2020_12(
+        {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": "https://example.com/tree",
+            "$dynamicAnchor": "r1",
+            "title": "Ref1",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "title": "Ref2",
+                    "type": "object",
+                    "$dynamicAnchor": "r2",
+                    "properties": {"data_child": {"$dynamicRef": "#r2"}},
+                },
+                "children": {"type": "array", "items": {"$dynamicRef": "#r1"}},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class Ref1(TypedDict, total=False):
+    """ Ref1. """
+
+    data: "Ref2"
+    children: List["Ref1"]'''
+    )
+    depends_on = [e for e in type_.depends_on() if e.definition(None)]
+    assert len(depends_on) == 1
+    assert (
+        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
+        == '''
+
+class Ref2(TypedDict, total=False):
+    """ Ref2. """
+
+    data_child: "Ref2"'''
+    )
+
+
+def test_array():
+    type_ = get_types_2020_12(
+        {
+            "type": "object",
+            "title": "test basic types",
+            "properties": {
+                "array": {"type": "array", "items": {"type": "string"}},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    array: List[str]'''
+    )
+
+
+def test_array_true():
+    type_ = get_types_2020_12(
+        {
+            "type": "object",
+            "title": "test basic types",
+            "properties": {
+                "array": {"type": "array", "items": True},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    array: List[Any]'''
+    )
+
+
+def test_array_tuple():
+    type_ = get_types_2020_12(
+        {
+            "type": "object",
+            "title": "test basic types",
+            "properties": {
+                "array": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [{"type": "string"}, {"type": "number"}],
+                },
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    array: Tuple[str, Union[int, float]]
+    """
+    minItems: 2
+    maxItems: 2
+    """
+'''
+    )

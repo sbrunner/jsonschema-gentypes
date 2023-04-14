@@ -26,6 +26,7 @@ generate:
     root_name: JSONSchemaD7
     name_mapping:
       _CoreSchemaMetaSchemaObject: JSONSchemaItemD7
+
   - source: https://json-schema.org/draft/2019-09/schema
     destination: jsonschema_gentypes/jsonschema_draft_2019_09.py
   - source: https://json-schema.org/draft/2019-09/meta/core
@@ -51,3 +52,27 @@ generate:
     destination: jsonschema_gentypes/jsonschema_draft_2019_09_format.py
   - source: https://json-schema.org/draft/2019-09/meta/content
     destination: jsonschema_gentypes/jsonschema_draft_2019_09_content.py
+
+  - source: https://json-schema.org/draft/2020-12/schema
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12.py
+  - source: https://json-schema.org/draft/2020-12/meta/core
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12_core.py
+    root_name: JSONSchemaD2020
+    name_mapping:
+      _CoreVocabularyMetaSchemaObject: JSONSchemaItemD2020
+  - source: https://json-schema.org/draft/2020-12/meta/meta-data
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12_meta_data.py
+    name_mapping:
+      _MetaDataVocabularyMetaSchemaObject: JSONSchemaItemD2020
+  - source: https://json-schema.org/draft/2020-12/meta/applicator
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12_applicator.py
+    root_name: JSONSchemaD2020
+    name_mapping:
+      _ApplicatorVocabularyMetaSchemaObject: JSONSchemaItemD2020
+  - source: https://json-schema.org/draft/2020-12/meta/validation
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12_validation.py
+    root_name: JSONSchemaD2020
+    name_mapping:
+      _ValidationVocabularyMetaSchemaObject: JSONSchemaItemD2020
+  - source: https://json-schema.org/draft/2020-12/meta/content
+    destination: jsonschema_gentypes/jsonschema_draft_2020_12_content.py

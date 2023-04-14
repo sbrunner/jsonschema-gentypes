@@ -13,8 +13,9 @@ from referencing import Registry, Resource
 
 from jsonschema_gentypes import (
     jsonschema_draft_04,
-    jsonschema_draft_2019_09_applicator,
     jsonschema_draft_2019_09_core,
+    jsonschema_draft_2020_12_applicator,
+    jsonschema_draft_2020_12_core,
 )
 
 Json = Union[str, int, float, bool, None, List["Json"], Dict[str, "Json"]]
@@ -53,12 +54,25 @@ class RefResolver:
     """
 
     def __init__(
-        self, base_url: str, schema: Optional[jsonschema_draft_2019_09_core.JSONSchemaItemD2019] = None
+        self,
+        base_url: str,
+        schema: Optional[
+            Union[
+                jsonschema_draft_2019_09_core.JSONSchemaItemD2019,
+                jsonschema_draft_2020_12_core.JSONSchemaItemD2020,
+            ]
+        ] = None,
     ) -> None:
         """Initialize the resolver."""
         self.base_url = base_url
         self.schema = (
-            cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, _open_uri(base_url))
+            cast(
+                Union[
+                    jsonschema_draft_2019_09_core.JSONSchemaItemD2019,
+                    jsonschema_draft_2020_12_core.JSONSchemaItemD2020,
+                ],
+                _open_uri(base_url),
+            )
             if schema is None
             else schema
         )
@@ -82,7 +96,7 @@ class RefResolver:
 
     def lookup(
         self, uri: str
-    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019]:
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Lookup for the reference."""
         match = _META_RE.match(uri)
         if match:
@@ -91,21 +105,21 @@ class RefResolver:
                 return cast(
                     Union[
                         jsonschema_draft_04.JSONSchemaD4,
-                        jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019,
+                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                     ],
                     self.resolver.lookup(f"{self.vocabulary[vocab]}#{path}").contents,
                 )
         if uri.startswith("#"):
             return cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
                 ],
                 self.resolver.lookup(f"{self.base_url}{uri}").contents,
             )
         else:
             return cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
                 ],
                 self.resolver.lookup(uri).contents,
             )
