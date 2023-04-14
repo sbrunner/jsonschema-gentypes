@@ -8,7 +8,7 @@ ci:
     - poetry-lock
     - ripsecrets
     - jsonschema-gentypes
-
+    - jsonschema-validator
 repos:
   - repo: local
     hooks:
@@ -16,7 +16,7 @@ repos:
         name: Generate Python types based on TypedDict from a JSON schema
         entry: jsonschema-gentypes
         language: python
-        files: |
+        files: |-
           (?x)^(
               jsonschema-gentypes\.yaml
               |jsonschema_gentypes/schema\.json
@@ -115,3 +115,11 @@ repos:
           - --tool=pydocstyle
           - --die-on-tool-error
           - --output-format=pylint
+  - repo: https://github.com/sbrunner/jsonschema-validator
+    rev: 0.1.0
+    hooks:
+      - id: jsonschema-validator
+        files: |-
+          (?x)^(
+              ci/config\.yaml
+          )$
