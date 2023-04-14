@@ -18,5 +18,5 @@ jobs:
     steps:
       - uses: camptocamp/backport-action@master
         with:
-          token: ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN }}
         if: env.HAS_SECRETS == 'HAS_SECRETS'
