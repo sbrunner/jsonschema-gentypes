@@ -8,8 +8,9 @@ from typing import Any, List, Union, cast
 from jsonschema_gentypes import (
     Type,
     jsonschema_draft_04,
-    jsonschema_draft_2019_09_applicator,
     jsonschema_draft_2019_09_core,
+    jsonschema_draft_2020_12_applicator,
+    jsonschema_draft_2020_12_core,
 )
 from jsonschema_gentypes.api_draft_07 import APIv7
 
@@ -46,7 +47,7 @@ class APIv201909(APIv7):
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
     ) -> None:
@@ -66,7 +67,7 @@ class APIv201909(APIv7):
     def get_type_end(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
     ) -> None:
@@ -82,7 +83,7 @@ class APIv201909(APIv7):
 
     def ref(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_core.JSONSchemaItemD2019],
+        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
         proposed_name: str,
     ) -> Type:
         """

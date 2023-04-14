@@ -19,6 +19,7 @@ import jsonschema_gentypes.api_draft_04
 import jsonschema_gentypes.api_draft_06
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
+import jsonschema_gentypes.api_draft_2020_12
 import jsonschema_gentypes.resolver
 from jsonschema_gentypes import configuration
 
@@ -132,6 +133,7 @@ def process_config(config: configuration.Configuration) -> None:
             "draft-06": jsonschema_gentypes.api_draft_06.APIv6,
             "draft-07": jsonschema_gentypes.api_draft_07.APIv7,
             "draft/2019-09": jsonschema_gentypes.api_draft_2019_09.APIv201909,
+            "draft/2020-12": jsonschema_gentypes.api_draft_2020_12.APIv202012,
         }.get(
             schema_match.group(1) if schema_match else "default",
             jsonschema_gentypes.api_draft_2019_09.APIv201909,
