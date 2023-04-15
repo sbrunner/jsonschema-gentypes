@@ -51,6 +51,13 @@ jobs:
       - run: git reset --hard
 
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
+      - name: Init pypi
+        run: |
+          echo "[pypi]" > ~/.pypirc
+          echo "username = ${{ secrets.PYPI_USERNAME }}" >> ~/.pypirc
+          echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
+          python3 -m pip install --user wheel twine
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
