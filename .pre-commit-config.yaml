@@ -18,11 +18,11 @@ repos:
         language: python
         files: |-
           (?x)^(
-              jsonschema-gentypes\.yaml
-              |jsonschema_gentypes/schema\.json
-              |jsonschema_gentypes/__init__\.py
-              |jsonschema_gentypes/cli\.py
-              |jsonschema_gentypes/api.*\.py
+            jsonschema-gentypes\.yaml
+            |jsonschema_gentypes/schema\.json
+            |jsonschema_gentypes/__init__\.py
+            |jsonschema_gentypes/cli\.py
+            |jsonschema_gentypes/api.*\.py
           )$
         verbose: true
         pass_filenames: false
@@ -33,7 +33,7 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@2.8.4
+          - prettier@2.8.4 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
