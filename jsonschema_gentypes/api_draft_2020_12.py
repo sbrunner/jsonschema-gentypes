@@ -33,6 +33,7 @@ class APIv202012(APIv201909):
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
+        proposed_name: str,
     ) -> None:
         """
         Get the type for a schema.
@@ -44,7 +45,7 @@ class APIv202012(APIv201909):
             self.dynamic_anchor[schema_core["$dynamicAnchor"]] = proxy
             del schema_core["$dynamicAnchor"]
 
-        super().get_type_start(schema, proxy)
+        super().get_type_start(schema, proxy, proposed_name)
 
     def ref(
         self,

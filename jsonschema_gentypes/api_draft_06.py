@@ -26,6 +26,7 @@ class APIv6(APIv4):
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
+        proposed_name: str,
     ) -> None:
         """
         Get the type for a schema.
@@ -42,16 +43,41 @@ class APIv6(APIv4):
             property_names["__type__"] = property_names["type"]  # type: ignore
             del property_names["type"]  # type: ignore
 
-        super().get_type_start(schema, proxy)
+        super().get_type_start(schema, proxy, proposed_name)
 
-    def const(
+    def build_type(
         self,
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proposed_name: str,
     ) -> Type:
+        """Build a type for a schema."""
+
+        if "const" in schema:
+            return self.const(
+                cast(
+                    Union[
+                        jsonschema_draft_06.JSONSchemaItemD6,
+                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    ],
+                    schema,
+                )
+            )
+
+        return super().build_type(schema, proposed_name)
+
+    def const(
+        self,
+        schema: Union[
+            jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+    ) -> Type:
         """
+        Treat the const  keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/generic.html#constant-values
+
         Generate a ``Literal`` for a const value.
         """
 

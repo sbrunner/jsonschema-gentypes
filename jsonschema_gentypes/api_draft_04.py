@@ -31,18 +31,6 @@ class APIv4(API):
     JSON Schema draft 4.
     """
 
-    def const(
-        self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-        ],
-        proposed_name: str,
-    ) -> Type:
-        """
-        Generate a ``Literal`` for a const value.
-        """
-        raise NotImplementedError("const is not supported in draft 4")
-
     def enum(
         self,
         schema: Union[
@@ -307,11 +295,23 @@ class APIv4(API):
         if resolve is None:
             resolved = self.resolver.lookup(ref)
             schema_casted.update(resolved)  # type: ignore
-            type_ = self.get_type(resolved, self.ref_to_proposed_name(ref))
+            resolved_all = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                resolved,
+            )
+            type_ = self.get_type(resolved_all, self.ref_to_proposed_name(ref))
         else:
             resolved = self.resolver.lookup(ref)
             schema_casted.update(resolved)  # type: ignore
-            type_ = self.get_type(resolved, self.ref_to_proposed_name(ref))
+            resolved_all = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                resolved,
+            )
+            type_ = self.get_type(resolved_all, self.ref_to_proposed_name(ref))
 
         if ref:
             self.ref_type[ref] = type_
