@@ -91,6 +91,41 @@ pre_commit:
     - --color=never
 ```
 
+## OpenAPI3
+
+We can also generate types for OpenAPI3 schemas (automatically detected).
+
+The result of our example in `tests/openapi3.json` can be used in pyramid with for example:
+
+```python
+import pyramid.request
+from pyramid.view import view_config
+from openaoi3 import *
+
+def open_api(func):
+    def wrapper(request: pyramid.request.Request, **kwargs) -> Any:
+        typed_request = {}
+        try:
+            typed_request{'request_body'} = request.json
+        except Exception as e:
+            pass
+        typed_request{'path'} = request.matchdict
+        typed_request{'query'} = request.params
+
+        return = func(request, request_typed=typed_request, **kwargs)
+
+    return wrapper
+
+
+@view_config(route_name="route_name", renderer="json")
+@open_api
+def view(
+  request: pyramid.request.Request,
+  request_typed: OgcapiCollectionsCollectionidGet,
+) -> OgcapiCollectionsCollectionidGetResponse:
+    return {...}
+```
+
 ## Contributing
 
 Install the pre-commit hooks:

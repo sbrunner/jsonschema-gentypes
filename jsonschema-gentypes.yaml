@@ -79,3 +79,7 @@ generate:
       _ValidationVocabularyMetaSchemaObject: JSONSchemaItemD2020
   - source: https://json-schema.org/draft/2020-12/meta/content
     destination: jsonschema_gentypes/jsonschema_draft_2020_12_content.py
+
+  - source: tests/openapi3.json
+    destination: tests/openapi3.py
+    root_name: OgcApi

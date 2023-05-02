@@ -50,6 +50,7 @@ class APIv201909(APIv7):
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
+        proposed_name: str,
     ) -> None:
         """
         Get the type for a schema.
@@ -62,7 +63,7 @@ class APIv201909(APIv7):
             del schema_core["$recursiveAnchor"]
             self.recursive_anchor_path.append(proxy)
 
-        super().get_type_start(schema, proxy)
+        super().get_type_start(schema, proxy, proposed_name)
 
     def get_type_end(
         self,

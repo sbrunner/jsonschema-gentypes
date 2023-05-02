@@ -10,7 +10,7 @@ import random
 import re
 import subprocess  # nosec
 import sys
-from typing import Dict, Optional, Set, Tuple, cast
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, cast
 
 import yaml
 
@@ -21,7 +21,7 @@ import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
 import jsonschema_gentypes.api_draft_2020_12
 import jsonschema_gentypes.resolver
-from jsonschema_gentypes import configuration
+from jsonschema_gentypes import configuration, jsonschema_draft_04, jsonschema_draft_2020_12_applicator
 
 LOG = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def _add_type(
 ) -> None:
     if added_types is None:
         added_types = set()
+
     if type_ in added_types:
         return
     added_types.add(type_)
@@ -104,6 +105,56 @@ def main() -> None:
     process_config(config)
 
 
+class _AddType:
+    def __init__(
+        self,
+        api: jsonschema_gentypes.api.API,
+        resolver: jsonschema_gentypes.resolver.RefResolver,
+        imports: Dict[str, Set[str]],
+        types: Dict[str, jsonschema_gentypes.Type],
+        gen: configuration.GenerateItem,
+        config: configuration.Configuration,
+        python_version: Tuple[int, ...],
+    ):
+        self.api = api
+        self.resolver = resolver
+        self.imports = imports
+        self.types = types
+        self.gen = gen
+        self.config = config
+        self.python_version = python_version
+
+    def __call__(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+        name: str,
+        force_name: bool = True,
+    ) -> jsonschema_gentypes.Type:
+        base_type = self.api.get_type(self.resolver.auto_resolve(schema), name)
+        if force_name and isinstance(base_type, jsonschema_gentypes.NamedType):
+            base_type.set_name(name)
+
+        _add_type(base_type, self.imports, self.types, self.gen, self.config, self.python_version)
+        return base_type
+
+
+class _BuildName:
+    def __init__(self, gen: configuration.GenerateItem):
+        self.gen = gen
+
+    def __call__(self, path: str, parts: List[str]) -> str:
+        parts = [*path.split("/"), *parts]
+        self.gen.get("root_name")
+        if "root_name" in self.gen:
+            parts = [self.gen["root_name"], *parts]
+        parts = [x.replace("{", "").replace("}", "") for x in parts]
+        parts = [x.lower() for x in parts if x]
+        parts = [x[0].upper() + x[1:] for x in parts]
+        return "".join(parts)
+
+
 def process_config(config: configuration.Configuration) -> None:
     """
     Run the tasks defined in the given configuration.
@@ -126,38 +177,154 @@ def process_config(config: configuration.Configuration) -> None:
             for vocab, uri in gen["vocabularies"].items():
                 resolver.add_vocabulary(vocab, uri)
 
-        schema_ref = schema.get("$schema", "default")
-        schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
-        api_version = {
-            "draft-04": jsonschema_gentypes.api_draft_04.APIv4,
-            "draft-06": jsonschema_gentypes.api_draft_06.APIv6,
-            "draft-07": jsonschema_gentypes.api_draft_07.APIv7,
-            "draft/2019-09": jsonschema_gentypes.api_draft_2019_09.APIv201909,
-            "draft/2020-12": jsonschema_gentypes.api_draft_2020_12.APIv202012,
-        }.get(
-            schema_match.group(1) if schema_match else "default",
-            jsonschema_gentypes.api_draft_2019_09.APIv201909,
-        )
+        openapi = "openapi" in schema
+        if "$schema" not in schema and openapi:
+            api_version: Callable[..., Any] = jsonschema_gentypes.api_draft_2020_12.APIv202012
+        else:
+            schema_ref = schema.get("$schema", "default")
+            assert isinstance(schema_ref, str)
+            schema_match = re.match(r"https?\:\/\/json\-schema\.org\/(.*)\/schema", schema_ref)
+            api_version = {
+                "draft-04": jsonschema_gentypes.api_draft_04.APIv4,
+                "draft-06": jsonschema_gentypes.api_draft_06.APIv6,
+                "draft-07": jsonschema_gentypes.api_draft_07.APIv7,
+                "draft/2019-09": jsonschema_gentypes.api_draft_2019_09.APIv201909,
+                "draft/2020-12": jsonschema_gentypes.api_draft_2020_12.APIv202012,
+            }.get(
+                schema_match.group(1) if schema_match else "default",
+                jsonschema_gentypes.api_draft_2020_12.APIv202012,
+            )
         api_args = gen.get("api_arguments", {})
         api = api_version(resolver, **api_args)
 
         types: Dict[str, jsonschema_gentypes.Type] = {}
         imports: Dict[str, Set[str]] = {}
 
-        root_name = gen.get("root_name", "Root")
-        base_type = api.get_type(schema, root_name)
-        if "root_name" in gen and isinstance(base_type, jsonschema_gentypes.NamedType):
-            assert gen["root_name"] is not None
-            base_type.set_name(gen["root_name"])
+        add_type = _AddType(api, resolver, imports, types, gen, config, python_version)
 
-        _add_type(base_type, imports, types, gen, config, python_version)
+        if openapi:
+            build_name = _BuildName(gen)
+
+            for path_name, path_config in schema.get("paths", {}).items():  # type: ignore
+                path_config = resolver.auto_resolve(path_config)
+                for method_name, method_config in path_config.items():
+                    method_config = resolver.auto_resolve(method_config)
+
+                    global_type: Dict[str, jsonschema_gentypes.Type] = {}
+                    global_type_required = set()
+
+                    # Add request parameters
+                    classed_parameters: Dict[str, Dict[str, jsonschema_gentypes.Type]] = {}
+                    classed_parameters_required: Dict[str, Set[str]] = {}
+                    for param_config in method_config.get("parameters", []):
+                        param_config = resolver.auto_resolve(param_config)
+                        classed_parameters.setdefault(param_config["in"], {})[
+                            param_config["name"]
+                        ] = add_type(
+                            param_config["schema"],
+                            build_name(
+                                path_name,
+                                [method_name, param_config["in"], param_config["name"]],
+                            ),
+                        )
+                        if param_config.get("required", param_config["in"] == "path"):
+                            classed_parameters_required.setdefault(param_config["in"], set()).add(
+                                param_config["name"]
+                            )
+
+                    for param_in, param_configs in classed_parameters.items():
+                        global_type_required.add(param_in)
+                        description = f"Parameter type '{param_in}' of request on path '{path_name}', using method '{method_name}'."
+                        type_: jsonschema_gentypes.Type = jsonschema_gentypes.TypedDictType(
+                            build_name(
+                                path_name,
+                                [method_name, param_in],
+                            ),
+                            param_configs,
+                            [description, "", "Request summary:", method_config["summary"]]
+                            if "summary" in method_config
+                            else [description],
+                            classed_parameters_required.get(param_in, set()),
+                        )
+                        global_type[param_in] = type_
+                        _add_type(type_, imports, types, gen, config, python_version)
+
+                    # Add request body
+                    if "requestBody" in method_config:
+                        method_config = resolver.auto_resolve(method_config)
+                        for content_type, content_config in method_config["requestBody"]["content"].items():
+                            content_config = resolver.auto_resolve(content_config)
+                            if content_type == "application/json":
+                                global_type_required.add("request_body")
+                                global_type["request_body"] = add_type(
+                                    content_config["schema"],
+                                    build_name(path_name, [method_name, "requestBody"]),
+                                )
+
+                    # Add responses
+                    all_responses = []
+                    for response_code, response_config in method_config.get("responses", {}).items():
+                        response_config = resolver.auto_resolve(response_config)
+                        for content_type, content_config in response_config["content"].items():
+                            content_config = resolver.auto_resolve(content_config)
+                            if content_type == "application/json":
+                                all_responses.append(
+                                    add_type(
+                                        content_config["schema"],
+                                        build_name(
+                                            path_name,
+                                            [method_name, "response", str(response_code)],
+                                        ),
+                                    )
+                                )
+                    type_ = jsonschema_gentypes.TypeAlias(
+                        build_name(
+                            path_name,
+                            [method_name, "response"],
+                        ),
+                        jsonschema_gentypes.CombinedType(
+                            jsonschema_gentypes.NativeType("Union"), all_responses
+                        ),
+                    )
+                    global_type["response"] = type_
+                    _add_type(type_, imports, types, gen, config, python_version)
+
+                    description = (
+                        f"Description of request on path '{path_name}', using method '{method_name}'."
+                    )
+                    _add_type(
+                        jsonschema_gentypes.TypedDictType(
+                            build_name(
+                                path_name,
+                                [method_name],
+                            ),
+                            global_type,
+                            [description, "", method_config["summary"]]
+                            if "summary" in method_config
+                            else [description],
+                            global_type_required,
+                        ),
+                        imports,
+                        types,
+                        gen,
+                        config,
+                        python_version,
+                    )
+        else:
+            schema_all = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                schema,
+            )
+            add_type(schema_all, gen.get("root_name", "Root"), force_name="root_name" in gen)
 
         lines = []
         for imp, names in imports.items():
             lines.append(f'from {imp} import {", ".join(names)}')
 
-        for type_ in sorted(types.values(), key=lambda type_: type_.name()):
-            lines += type_.definition(config.get("lineLength"))
+        for type_2 in sorted(types.values(), key=lambda type_3: type_3.name()):
+            lines += type_2.definition(config.get("lineLength"))
 
         with open(gen["destination"], "w", encoding="utf-8") as destination_file:
             headers = config.get("headers")

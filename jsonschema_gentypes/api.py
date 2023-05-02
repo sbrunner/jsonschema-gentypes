@@ -30,8 +30,22 @@ ISSUE_URL = "https://github.com/camptcamp/jsonschema-gentypes"
 
 
 class API:
-    """
+    r"""
     Base class for JSON schema types API.
+
+    Call tree:
+      get_type()
+        |-> get_type_start()
+        |-> build_type()
+        |     |-> _resolve_ref()
+        |     |-> get_type()
+        |     |-> ref()
+        |     |-> any_of()
+        |     |-> enum()
+        |     |-> default()
+        |     \-> _get_type()
+        |           \-> get_type_handler()
+        \-> get_type_end()
     """
 
     def __init__(
@@ -88,6 +102,7 @@ class API:
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proxy: Type,
+        proposed_name: str,
     ) -> None:
         """
         Start getting the type for a schema.
@@ -138,9 +153,9 @@ class API:
 
         proxy = TypeProxy()
 
-        self.get_type_start(schema, proxy)
+        self.get_type_start(schema, proxy, proposed_name)
 
-        the_type = self._get_type_internal(schema, proposed_name)
+        the_type = self.build_type(schema, proposed_name)
         assert the_type is not None
         additional_description = the_type.comments()
         description = get_description(schema_meta_data)
@@ -182,16 +197,14 @@ class API:
                 schema.update(resolved)
         return schema
 
-    def _get_type_internal(
+    def build_type(
         self,
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Get a :class:`.Type` for a JSON schema.
-        """
+        """Get a :class:`.Type` for a JSON schema."""
 
         schema_meta_data = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019],
@@ -201,17 +214,16 @@ class API:
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
             schema,
         )
-        schema_validation = cast(
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020],
-            schema,
-        )
 
         proposed_name = schema_meta_data.get("title", proposed_name)
 
         if "if" in schema:
-            base_schema: Union[
-                jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-            ] = {}
+            base_schema = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                {},
+            )
             base_schema.update(schema)  # type: ignore
             for key in ("if", "then", "else", "title", "description"):
                 if key in base_schema:
@@ -249,9 +261,12 @@ class API:
             ).get("properties", {})
             assert if_properties
             then_properties.update(if_properties)  # type: ignore
-            else_schema: Union[
-                jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-            ] = {}
+            else_schema = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                {},
+            )
             else_schema.update(base_schema)  # type: ignore
             else_schema.update(
                 self._resolve_ref(  # type: ignore
@@ -276,8 +291,14 @@ class API:
         if "$ref" in schema or "$recursiveRef" in schema or "$dynamicRef" in schema:
             return self.ref(schema_core, proposed_name)
 
-        if "const" in schema:
-            return self.const(schema, proposed_name)
+        schema_meta_data = cast(
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019],
+            schema,
+        )
+        schema_validation = cast(
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020],
+            schema,
+        )
 
         # 6.1.1. type
         # The value of this keyword MUST be either a string or an array. If it
@@ -433,7 +454,7 @@ class API:
         """
         Treat the ref keyword.
 
-        See: https://json-schema.org/understanding-json-schema/structuring.html.
+        See: https://json-schema.org/understanding-json-schema/structuring.html#ref.
         """
 
     @abstractmethod
@@ -452,20 +473,6 @@ class API:
         Treat the anyOf keyword.
 
         See: https://json-schema.org/understanding-json-schema/reference/combining.html#anyof.
-        """
-
-    @abstractmethod
-    def const(
-        self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-        ],
-        proposed_name: str,
-    ) -> Type:
-        """
-        Treat the const  keyword.
-
-        See: https://json-schema.org/understanding-json-schema/reference/generic.html#constant-values
         """
 
     @abstractmethod
