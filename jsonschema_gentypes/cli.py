@@ -252,9 +252,11 @@ def process_config(config: configuration.Configuration) -> None:
                     # Add request body
                     if "requestBody" in method_config:
                         method_config = resolver.auto_resolve(method_config)
-                        for content_type, content_config in method_config["requestBody"]["content"].items():
+                        for content_type, content_config in (
+                            method_config.get("requestBody", {}).get("content", {}).items()
+                        ):
                             content_config = resolver.auto_resolve(content_config)
-                            if content_type == "application/json":
+                            if content_type == "application/json" and "schema" in content_config:
                                 global_type_required.add("request_body")
                                 global_type["request_body"] = add_type(
                                     content_config["schema"],
@@ -265,9 +267,9 @@ def process_config(config: configuration.Configuration) -> None:
                     all_responses = []
                     for response_code, response_config in method_config.get("responses", {}).items():
                         response_config = resolver.auto_resolve(response_config)
-                        for content_type, content_config in response_config["content"].items():
+                        for content_type, content_config in response_config.get("content", {}).items():
                             content_config = resolver.auto_resolve(content_config)
-                            if content_type == "application/json":
+                            if content_type == "application/json" and "schema" in content_config:
                                 all_responses.append(
                                     add_type(
                                         content_config["schema"],

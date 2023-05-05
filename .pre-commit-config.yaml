@@ -16,13 +16,18 @@ repos:
         name: Generate Python types based on TypedDict from a JSON schema
         entry: jsonschema-gentypes
         language: python
+        # files: |-
+        #   (?x)^(
+        #     jsonschema-gentypes\.yaml
+        #     |jsonschema_gentypes/schema\.json
+        #     |jsonschema_gentypes/__init__\.py
+        #     |jsonschema_gentypes/cli\.py
+        #     |jsonschema_gentypes/api.*\.py
+        #     )$
         files: |-
           (?x)^(
             jsonschema-gentypes\.yaml
             |jsonschema_gentypes/schema\.json
-            |jsonschema_gentypes/__init__\.py
-            |jsonschema_gentypes/cli\.py
-            |jsonschema_gentypes/api.*\.py
           )$
         verbose: true
         pass_filenames: false
