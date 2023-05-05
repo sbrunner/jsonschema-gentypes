@@ -9,6 +9,7 @@ import re
 from typing import Any, Dict, List, Optional, Union, cast
 
 import requests
+import yaml
 from referencing import Registry, Resource
 
 from jsonschema_gentypes import (
@@ -59,13 +60,18 @@ def _open_uri(
         )
     else:
         with open(uri, encoding="utf-8") as open_file:
+            file_content = open_file.read()
+            try:
+                schema = yaml.load(file_content, Loader=yaml.SafeLoader)
+            except Exception:  # pylint: disable=broad-except
+                schema = json.loads(file_content)
             return _openapi_schema(
                 cast(
                     Union[
                         jsonschema_draft_06.JSONSchemaItemD6,
                         jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                     ],
-                    json.load(open_file),
+                    schema,
                 )
             )
 
