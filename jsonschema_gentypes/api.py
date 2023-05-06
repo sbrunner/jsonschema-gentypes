@@ -139,13 +139,13 @@ class API:
         if root:
             self.root = TypeProxy()
         if schema is True:
-            type_ = NativeType("Any")
+            type_: Type = NativeType("Any")
             if root:
                 assert self.root is not None
                 self.root.set_type(type_)
             return type_
         if schema is False:
-            type_ = NativeType("None")
+            type_ = BuiltinType("None")
             if root:
                 assert self.root is not None
                 self.root.set_type(type_)
