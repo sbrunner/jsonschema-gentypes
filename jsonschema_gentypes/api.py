@@ -138,13 +138,13 @@ class API:
         if root:
             self.root = TypeProxy()
         if schema is True:
-            type_ = NativeType("Any")
+            type_: Type = NativeType("Any")
             if root:
                 assert self.root is not None
                 self.root.set_type(type_)
             return type_
         if schema is False:
-            type_ = NativeType("None")
+            type_ = BuiltinType("None")
             if root:
                 assert self.root is not None
                 self.root.set_type(type_)
@@ -399,7 +399,7 @@ class API:
                 return self.default(schema_meta_data, proposed_name)
 
         if schema_type is None:
-            type_ = BuiltinType("Any")
+            type_ = NativeType("Any")
             type_.set_comments(["WARNING: we get an schema without any type"])
             return type_
         assert isinstance(schema_type, str), (
