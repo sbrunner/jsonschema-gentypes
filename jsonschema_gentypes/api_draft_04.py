@@ -382,7 +382,7 @@ class APIv4(API):
         See: https://json-schema.org/understanding-json-schema/reference/generic.html
         """
 
-        type_ = "Any"
+        type_: Type = NativeType("Any")
         for test_type, type_name in [
             (str, "str"),
             (int, "int"),
@@ -390,6 +390,5 @@ class APIv4(API):
             (bool, "bool"),
         ]:
             if isinstance(schema["default"], test_type):
-                type_ = type_name
-        the_type = BuiltinType(type_)
-        return the_type
+                type_ = BuiltinType(type_name)
+        return type_
