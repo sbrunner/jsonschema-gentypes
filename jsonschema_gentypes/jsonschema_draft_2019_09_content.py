@@ -13,3 +13,4 @@ class _ContentVocabularyMetaSchemaObject(TypedDict, total=False):
     contentMediaType: str
     contentEncoding: str
     contentSchema: "ContentVocabularyMetaSchema"
+    """ Content vocabulary meta-schema. """

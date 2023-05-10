@@ -288,7 +288,7 @@ class LiteralType(Type):
     A literal type like: `Literal["text"]`.
     """
 
-    def __init__(self, const: Union[int, float, bool, str, None]) -> None:
+    def __init__(self, const: Union[int, float, bool, str, None, Dict[str, Any], List[Any]]) -> None:
         """
         Init.
 
@@ -302,10 +302,7 @@ class LiteralType(Type):
         """
         Return what we need to use the type.
         """
-        if isinstance(self.const, str):
-            return f'Literal["{self.const}"]'
-        else:
-            return f"Literal[{self.const}]"
+        return f"Literal[{repr(self.const)}]"
 
     def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
         """
@@ -429,7 +426,7 @@ class TypeAlias(NamedType):
         """
         super().__init__(name)
         self.sub_type = sub_type
-        self.descriptions = [] if descriptions is None else descriptions
+        self._comments = [] if descriptions is None else descriptions
 
     def depends_on(self) -> List[Type]:
         """
@@ -443,7 +440,7 @@ class TypeAlias(NamedType):
         """
         result = ["", ""]
         result.append(f"{self._name} = {self.sub_type.name()}")
-        comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
+        comments = split_comment(self.comments(), line_length - 2 if line_length else None)
         if len(comments) == 1:
             result += [f'""" {comments[0]} """', ""]
         elif comments:
@@ -476,12 +473,14 @@ class TypeEnum(NamedType):
         """
         Return the needed sub types.
         """
+
         return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> List[str]:
         """
         Return the type declaration.
         """
+
         result = ["", ""]
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name()}")
@@ -719,25 +718,17 @@ def get_description(
     result: List[str] = []
     if "title" in schema:
         result.append(f"{schema['title']}.")
+        schema.setdefault("used", set()).add("title")  # type: ignore[typeddict-item]
     if "description" in schema:
+        schema.setdefault("used", set()).add("description")  # type: ignore[typeddict-item]
         if result:
             result.append("")
         result += schema["description"].split("\n")
     first = True
     for key, value in schema.items():
         if (
-            key
-            not in (
-                "title",
-                "description",
-                "$ref",
-                "$schema",
-                "$id",
-                "const",
-                "type",
-                "items",
-                "additionalProperties",
-            )
+            key not in schema.get("used", set())  # type: ignore[operator]
+            and key not in ("$schema", "$id", "type", "used")
             and not isinstance(value, list)
             and not isinstance(value, dict)
         ):

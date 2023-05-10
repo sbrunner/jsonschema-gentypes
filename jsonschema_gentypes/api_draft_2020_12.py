@@ -25,7 +25,11 @@ class APIv202012(APIv201909):
     def __init__(self, *args: Any, **kwargs: Any):
         """Initialize."""
         super().__init__(*args, **kwargs)
-        self.dynamic_anchor: Dict[str, Type] = {}
+        self.dynamic_anchor_type: Dict[str, Type] = {}
+        self.dynamic_anchor_schema: Dict[
+            str,
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
+        ] = {}
 
     def get_type_start(
         self,
@@ -42,8 +46,9 @@ class APIv202012(APIv201909):
         schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
 
         if "$dynamicAnchor" in schema_core:
-            self.dynamic_anchor[schema_core["$dynamicAnchor"]] = proxy
-            del schema_core["$dynamicAnchor"]
+            self.dynamic_anchor_type[schema_core["$dynamicAnchor"]] = proxy
+            self.dynamic_anchor_schema[schema_core["$dynamicAnchor"]] = schema
+            schema.setdefault("used", set()).add("$dynamicAnchor")  # type: ignore[typeddict-item]
 
         super().get_type_start(schema, proxy, proposed_name)
 
@@ -60,10 +65,28 @@ class APIv202012(APIv201909):
 
         if "$dynamicRef" in schema_core:
             dynamic_ref = schema_core["$dynamicRef"]
-            del schema_core["$dynamicRef"]
-            return self.dynamic_anchor[dynamic_ref[1:]]  # Remove the starting '#' character
+            schema.setdefault("used", set()).add("$dynamicRef")  # type: ignore[typeddict-item]
+            return self.dynamic_anchor_type[dynamic_ref[1:]]  # Remove the starting '#' character
 
         return super().ref(schema, proposed_name)
+
+    def resolve_ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """
+        Handle the `$dynamicRef`.
+        """
+
+        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+
+        if "$dynamicRef" in schema_core:
+            dynamic_ref = schema_core["$dynamicRef"]
+            return self.dynamic_anchor_schema[dynamic_ref[1:]]  # Remove the starting '#' character
+
+        return super().resolve_ref(schema)
 
     def array(
         self,

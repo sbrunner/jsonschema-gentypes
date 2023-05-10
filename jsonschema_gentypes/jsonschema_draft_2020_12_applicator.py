@@ -12,9 +12,13 @@ JSONSchemaD2020 = Union["JSONSchemaItemD2020", bool]
 JSONSchemaItemD2020 = TypedDict(
     "JSONSchemaItemD2020",
     {
+        # minItems: 1
         "prefixItems": "_SchemaArray",
+        # Applicator vocabulary meta-schema.
         "items": "JSONSchemaD2020",
+        # Applicator vocabulary meta-schema.
         "contains": "JSONSchemaD2020",
+        # Applicator vocabulary meta-schema.
         "additionalProperties": "JSONSchemaD2020",
         # default:
         #   {}
@@ -27,13 +31,21 @@ JSONSchemaItemD2020 = TypedDict(
         # default:
         #   {}
         "dependentSchemas": Dict[str, "JSONSchemaD2020"],
+        # Applicator vocabulary meta-schema.
         "propertyNames": "JSONSchemaD2020",
+        # Applicator vocabulary meta-schema.
         "if": "JSONSchemaD2020",
+        # Applicator vocabulary meta-schema.
         "then": "JSONSchemaD2020",
+        # Applicator vocabulary meta-schema.
         "else": "JSONSchemaD2020",
+        # minItems: 1
         "allOf": "_SchemaArray",
+        # minItems: 1
         "anyOf": "_SchemaArray",
+        # minItems: 1
         "oneOf": "_SchemaArray",
+        # Applicator vocabulary meta-schema.
         "not": "JSONSchemaD2020",
     },
     total=False,

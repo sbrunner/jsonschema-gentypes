@@ -10,9 +10,13 @@ JSONSchemaD2020 = Union["JSONSchemaItemD2020", bool]
 
 
 class JSONSchemaItemD2020(TypedDict, total=False):
-    type: Union["_SimpleTypes", "_ValidationVocabularyMetaSchemaObjectTypeAnyof1"]
+    type: "_ValidationVocabularyMetaSchemaObjectType"
+    """ Aggregation type: anyOf """
+
     const: Any
     enum: List[Any]
+    """ items: True """
+
     multipleOf: Union[int, float]
     """ exclusiveMinimum: 0 """
 
@@ -21,20 +25,42 @@ class JSONSchemaItemD2020(TypedDict, total=False):
     minimum: Union[int, float]
     exclusiveMinimum: Union[int, float]
     maxLength: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     minLength: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     pattern: str
     """ format: regex """
 
     maxItems: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     minItems: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     uniqueItems: bool
     """ default: False """
 
     maxContains: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     minContains: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     maxProperties: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     minProperties: "_NonNegativeInteger"
+    """ minimum: 0 """
+
     required: "_StringArray"
+    """
+    uniqueItems: True
+    default:
+      []
+    """
+
     dependentRequired: Dict[str, "_StringArray"]
 
 
@@ -97,6 +123,12 @@ _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: List[Any] = []
 
 _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
 """ Default value of the field path 'Validation vocabulary meta-schema object uniqueItems' """
+
+
+_ValidationVocabularyMetaSchemaObjectType = Union[
+    "_SimpleTypes", "_ValidationVocabularyMetaSchemaObjectTypeAnyof1"
+]
+""" Aggregation type: anyOf """
 
 
 _ValidationVocabularyMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]

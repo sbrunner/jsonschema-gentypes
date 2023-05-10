@@ -24,7 +24,10 @@ class APIv201909(APIv7):
         """Initialize."""
         super().__init__(*args, **kwargs)
         self.is_recursive_anchor_path: List[bool] = []
-        self.recursive_anchor_path: List[Type] = []
+        self.recursive_anchor_path_type: List[Type] = []
+        self.recursive_anchor_path_schema: List[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ] = []
 
     def ref_to_proposed_name(self, ref: str) -> str:
         """
@@ -60,8 +63,9 @@ class APIv201909(APIv7):
 
         self.is_recursive_anchor_path.append(schema_core.get("$recursiveAnchor", False))
         if self.is_recursive_anchor_path[-1]:
-            del schema_core["$recursiveAnchor"]
-            self.recursive_anchor_path.append(proxy)
+            schema.setdefault("used", set()).add("$recursiveAnchor")  # type: ignore[typeddict-item]
+            self.recursive_anchor_path_type.append(proxy)
+            self.recursive_anchor_path_schema.append(schema)
 
         super().get_type_start(schema, proxy, proposed_name)
 
@@ -79,7 +83,8 @@ class APIv201909(APIv7):
         super().get_type_end(schema, proxy)
 
         if self.is_recursive_anchor_path[-1]:
-            self.recursive_anchor_path.pop()
+            self.recursive_anchor_path_type.pop()
+            self.recursive_anchor_path_schema.pop()
         self.is_recursive_anchor_path.pop()
 
     def ref(
@@ -88,13 +93,30 @@ class APIv201909(APIv7):
         proposed_name: str,
     ) -> Type:
         """
-        Handle a `$ref`.
+        Handle the `$recursiveRef`.
         """
 
         schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
 
         if schema_core.get("$recursiveRef") == "#":
-            del schema_core["$recursiveRef"]
-            return self.recursive_anchor_path[-1]
+            schema.setdefault("used", set()).add("$recursiveRef")  # type: ignore[typeddict-item]
+            return self.recursive_anchor_path_type[-1]
 
         return super().ref(schema, proposed_name)
+
+    def resolve_ref(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """
+        Handle the `$recursiveRef`.
+        """
+
+        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+
+        if schema_core.get("$recursiveRef") == "#":
+            return self.recursive_anchor_path_schema[-1]
+
+        return super().resolve_ref(schema)
