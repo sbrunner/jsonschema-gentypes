@@ -18,6 +18,7 @@ from jsonschema_gentypes import (
     get_description,
     get_name,
     jsonschema_draft_04,
+    jsonschema_draft_06,
     jsonschema_draft_2019_09_meta_data,
     jsonschema_draft_2020_12_applicator,
     jsonschema_draft_2020_12_core,
@@ -151,7 +152,9 @@ class API:
             return type_
         assert not isinstance(schema, bool)
 
-        is_ref = "$ref" in schema or "$recursiveRef" in schema or "$dynamicRef" in schema
+        no_title = (
+            "$ref" in schema or "$recursiveRef" in schema or "$dynamicRef" in schema or "allOf" in schema
+        )
 
         proxy = TypeProxy()
 
@@ -160,7 +163,7 @@ class API:
         the_type = self.build_type(schema, proposed_name)
         assert the_type is not None
 
-        if not is_ref:
+        if not no_title:
             description = get_description(schema_meta_data)
 
             additional_description = the_type.comments()
@@ -198,15 +201,18 @@ class API:
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Resolve a reference in the schema."""
-        if "$ref" in schema:
-            with self.resolver.resolving(schema["$ref"]) as resolved:  # type: ignore
-                return cast(
-                    Union[
-                        jsonschema_draft_04.JSONSchemaD4,
-                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                    ],
-                    resolved,
-                )
+
+        schema_core = cast(
+            Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
+            schema,
+        )
+        if "$ref" in schema_core:
+            return cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                ],
+                self.resolver.lookup(schema_core["$ref"]),
+            )
         return schema
 
     def build_type(
@@ -313,7 +319,7 @@ class API:
         )
 
         if "allOf" in schema:
-            type_: Type = self.any_of(
+            return self.all_of(
                 schema,
                 cast(
                     List[
@@ -327,14 +333,6 @@ class API:
                 proposed_name,
                 "allof",
             )
-            if type_.comments():
-                type_.comments().append("")
-            type_.comments().append("WARNING: PEP 544 does not support an Intersection type,")
-            type_.comments().append("so `allOf` is interpreted as a `Union` for now.")
-            type_.comments().append("See: https://github.com/camptocamp/jsonschema-gentypes/issues/8")
-            type_.comments().append("")
-            type_.comments().append("Aggregation type: allOf")
-            return type_
         if "anyOf" in schema:
             type_ = self.any_of(
                 schema,
@@ -390,7 +388,11 @@ class API:
         # An instance validates if and only if the instance is in any of the
         # sets listed for this keyword.
         schema_type = schema.get("type", ["string", "number", "object", "array", "boolean", "null"])
+        if isinstance(schema_type, list) and len(schema_type) == 1:
+            schema_type = schema_type[0]
         if isinstance(schema_type, list):
+            if len(schema_type) == 0:
+                return BuiltinType("None")
             inner_types = []
             name = get_name(schema_meta_data, proposed_name)
             has_title = "title" in schema_meta_data
@@ -497,6 +499,24 @@ class API:
         Treat the anyOf keyword.
 
         See: https://json-schema.org/understanding-json-schema/reference/combining.html#anyof.
+        """
+
+    @abstractmethod
+    def all_of(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+        sub_schema: List[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ],
+        proposed_name: str,
+        sub_name: str,
+    ) -> Type:
+        """
+        Thread the allOf keyword.
+
+        See: https://json-schema.org/understanding-json-schema/reference/combining.html#allof.
         """
 
     @abstractmethod
