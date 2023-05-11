@@ -22,8 +22,7 @@ JSONSchemaD4 = TypedDict(
         "$schema": str,
         "title": str,
         "description": str,
-        # WARNING: we get an schema without any type
-        "default": Any,
+        "default": Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None],
         # minimum: 0
         # exclusiveMinimum: True
         "multipleOf": Union[int, float],
@@ -33,26 +32,52 @@ JSONSchemaD4 = TypedDict(
         "minimum": Union[int, float],
         # default: False
         "exclusiveMinimum": bool,
+        # minimum: 0
         "maxLength": "_PositiveInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minLength": "_PositiveIntegerDefault0",
         # format: regex
         "pattern": str,
         # default:
         #   {}
-        "additionalItems": Union[bool, "JSONSchemaD4"],
+        #
+        # Aggregation type: anyOf
+        "additionalItems": "_Jsonschemad4Additionalitems",
         # default:
         #   {}
-        "items": Union["JSONSchemaD4", "_SchemaArray"],
+        #
+        # Aggregation type: anyOf
+        "items": "_Jsonschemad4Items",
+        # minimum: 0
         "maxItems": "_PositiveInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minItems": "_PositiveIntegerDefault0",
         # default: False
         "uniqueItems": bool,
+        # minimum: 0
         "maxProperties": "_PositiveInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minProperties": "_PositiveIntegerDefault0",
+        # minItems: 1
+        # uniqueItems: True
         "required": "_StringArray",
         # default:
         #   {}
-        "additionalProperties": Union[bool, "JSONSchemaD4"],
+        #
+        # Aggregation type: anyOf
+        "additionalProperties": "_Jsonschemad4Additionalproperties",
         # default:
         #   {}
         "definitions": Dict[str, "JSONSchemaD4"],
@@ -62,17 +87,29 @@ JSONSchemaD4 = TypedDict(
         # default:
         #   {}
         "patternProperties": Dict[str, "JSONSchemaD4"],
-        "dependencies": Dict[str, Union["JSONSchemaD4", "_StringArray"]],
+        "dependencies": Dict[str, "_Jsonschemad4DependenciesAdditionalproperties"],
         # minItems: 1
         # uniqueItems: True
-        #
-        # WARNING: we get an array without any items
-        "enum": None,
-        "type": Union["_SimpleTypes", "_Jsonschemad4TypeAnyof1"],
+        "enum": List[Any],
+        # Aggregation type: anyOf
+        "type": "_Jsonschemad4Type",
         "format": str,
+        # minItems: 1
         "allOf": "_SchemaArray",
+        # minItems: 1
         "anyOf": "_SchemaArray",
+        # minItems: 1
         "oneOf": "_SchemaArray",
+        # Core schema meta-schema
+        #
+        # id: http://json-schema.org/draft-04/schema#
+        # dependencies:
+        #   exclusiveMaximum:
+        #   - maximum
+        #   exclusiveMinimum:
+        #   - minimum
+        # default:
+        #   {}
         "not": "JSONSchemaD4",
     },
     total=False,
@@ -119,6 +156,41 @@ _JSONSCHEMAD4_UNIQUEITEMS_DEFAULT = False
 """ Default value of the field path 'JSONSchemaD4 uniqueItems' """
 
 
+_Jsonschemad4Additionalitems = Union[bool, "JSONSchemaD4"]
+"""
+default:
+  {}
+
+Aggregation type: anyOf
+"""
+
+
+_Jsonschemad4Additionalproperties = Union[bool, "JSONSchemaD4"]
+"""
+default:
+  {}
+
+Aggregation type: anyOf
+"""
+
+
+_Jsonschemad4DependenciesAdditionalproperties = Union["JSONSchemaD4", "_StringArray"]
+""" Aggregation type: anyOf """
+
+
+_Jsonschemad4Items = Union["JSONSchemaD4", "_SchemaArray"]
+"""
+default:
+  {}
+
+Aggregation type: anyOf
+"""
+
+
+_Jsonschemad4Type = Union["_SimpleTypes", "_Jsonschemad4TypeAnyof1"]
+""" Aggregation type: anyOf """
+
+
 _Jsonschemad4TypeAnyof1 = List["_SimpleTypes"]
 """
 minItems: 1
@@ -139,10 +211,12 @@ _PositiveIntegerDefault0 = Union["_PositiveInteger", "_PositiveIntegerDefault0Al
 WARNING: PEP 544 does not support an Intersection type,
 so `allOf` is interpreted as a `Union` for now.
 See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+Aggregation type: allOf
 """
 
 
-_PositiveIntegerDefault0Allof1 = int
+_PositiveIntegerDefault0Allof1 = Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None]
 """ default: 0 """
 
 

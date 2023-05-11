@@ -37,7 +37,7 @@ class API:
       get_type()
         |-> get_type_start()
         |-> build_type()
-        |     |-> _resolve_ref()
+        |     |-> resolve_ref()
         |     |-> get_type()
         |     |-> ref()
         |     |-> any_of()
@@ -151,21 +151,26 @@ class API:
             return type_
         assert not isinstance(schema, bool)
 
+        is_ref = "$ref" in schema or "$recursiveRef" in schema or "$dynamicRef" in schema
+
         proxy = TypeProxy()
 
         self.get_type_start(schema, proxy, proposed_name)
 
         the_type = self.build_type(schema, proposed_name)
         assert the_type is not None
-        additional_description = the_type.comments()
-        description = get_description(schema_meta_data)
-        if description and additional_description:
-            description.append("")
-        description += additional_description
-        if not isinstance(the_type, NamedType) and description:
-            if auto_alias:
-                the_type = TypeAlias(get_name(schema_meta_data, proposed_name), the_type, description)
-            else:
+
+        if not is_ref:
+            description = get_description(schema_meta_data)
+
+            additional_description = the_type.comments()
+            if description and additional_description:
+                description.append("")
+            description += additional_description
+            if description:
+                if not isinstance(the_type, NamedType):
+                    if auto_alias:
+                        the_type = TypeAlias(get_name(schema_meta_data, proposed_name), the_type, description)
                 the_type.set_comments(description)
 
         if "default" in schema_meta_data:
@@ -186,15 +191,22 @@ class API:
 
         return the_type
 
-    def _resolve_ref(
+    def resolve_ref(
         self,
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """Resolve a reference in the schema."""
         if "$ref" in schema:
             with self.resolver.resolving(schema["$ref"]) as resolved:  # type: ignore
-                schema.update(resolved)
+                return cast(
+                    Union[
+                        jsonschema_draft_04.JSONSchemaD4,
+                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    ],
+                    resolved,
+                )
         return schema
 
     def build_type(
@@ -236,7 +248,7 @@ class API:
             )
             then_schema.update(base_schema)  # type: ignore
             then_schema.update(
-                self._resolve_ref(  # type: ignore
+                self.resolve_ref(  # type: ignore
                     cast(
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
@@ -250,7 +262,7 @@ class API:
                 then_schema["properties"] = {}
             then_properties = then_schema["properties"]
             assert then_properties
-            if_properties = self._resolve_ref(
+            if_properties = self.resolve_ref(
                 cast(
                     Union[
                         jsonschema_draft_04.JSONSchemaD4,
@@ -260,7 +272,7 @@ class API:
                 )
             ).get("properties", {})
             assert if_properties
-            then_properties.update(if_properties)  # type: ignore
+            then_properties.update(if_properties)  # type: ignore[arg-type]
             else_schema = cast(
                 Union[
                     jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
@@ -269,7 +281,7 @@ class API:
             )
             else_schema.update(base_schema)  # type: ignore
             else_schema.update(
-                self._resolve_ref(  # type: ignore
+                self.resolve_ref(  # type: ignore
                     cast(
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
@@ -300,6 +312,72 @@ class API:
             schema,
         )
 
+        if "allOf" in schema:
+            type_: Type = self.any_of(
+                schema,
+                cast(
+                    List[
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                        ]
+                    ],
+                    schema["allOf"],
+                ),
+                proposed_name,
+                "allof",
+            )
+            if type_.comments():
+                type_.comments().append("")
+            type_.comments().append("WARNING: PEP 544 does not support an Intersection type,")
+            type_.comments().append("so `allOf` is interpreted as a `Union` for now.")
+            type_.comments().append("See: https://github.com/camptocamp/jsonschema-gentypes/issues/8")
+            type_.comments().append("")
+            type_.comments().append("Aggregation type: allOf")
+            return type_
+        if "anyOf" in schema:
+            type_ = self.any_of(
+                schema,
+                cast(
+                    List[
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                        ]
+                    ],
+                    schema["anyOf"],
+                ),
+                proposed_name,
+                "anyof",
+            )
+            if not isinstance(type_, NamedType):
+                type_ = TypeAlias(get_name(schema_meta_data, proposed_name), type_)
+            elif type_.comments():
+                type_.comments().append("")
+            type_.comments().append("Aggregation type: anyOf")
+            return type_
+        if "oneOf" in schema:
+            type_ = self.any_of(
+                schema,
+                cast(
+                    List[
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                        ]
+                    ],
+                    schema["oneOf"],
+                ),
+                proposed_name,
+                "oneof",
+            )
+            if type_.comments():
+                type_.comments().append("")
+            type_.comments().append("Aggregation type: oneOf")
+            return type_
+        if "enum" in schema:
+            return self.enum(schema_validation, proposed_name)
+
         # 6.1.1. type
         # The value of this keyword MUST be either a string or an array. If it
         # is an array, elements of the array MUST be strings and MUST be
@@ -311,10 +389,13 @@ class API:
         #
         # An instance validates if and only if the instance is in any of the
         # sets listed for this keyword.
-        schema_type = schema.get("type")
+        schema_type = schema.get("type", ["string", "number", "object", "array", "boolean", "null"])
         if isinstance(schema_type, list):
             inner_types = []
+            name = get_name(schema_meta_data, proposed_name)
+            has_title = "title" in schema_meta_data
             proposed_name = schema_meta_data.get("title", proposed_name)
+
             schema_copy = cast(
                 Union[
                     jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
@@ -327,86 +408,29 @@ class API:
                 ],
                 schema_copy,
             )
-
             if "title" in schema_meta_data_copy:
                 del schema_meta_data_copy["title"]
+
             for primitive_type in schema_type:
                 inner_types.append(
                     self._get_type(
                         schema_copy, cast(str, primitive_type), f"{proposed_name} {primitive_type}"
                     )
                 )
-            return CombinedType(NativeType("Union"), inner_types)
-        elif schema_type is None:
-            if "allOf" in schema:
-                type_ = self.any_of(
-                    schema,
-                    cast(
-                        List[
-                            Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                            ]
-                        ],
-                        schema["allOf"],
-                    ),
-                    proposed_name,
-                    "allof",
-                )
-                if type_.comments():
-                    type_.comments().append("")
-                type_.comments().append("WARNING: PEP 544 does not support an Intersection type,")
-                type_.comments().append("so `allOf` is interpreted as a `Union` for now.")
-                type_.comments().append("See: https://github.com/camptocamp/jsonschema-gentypes/issues/8")
-                return type_
-            elif "anyOf" in schema:
-                return self.any_of(
-                    schema,
-                    cast(
-                        List[
-                            Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                            ]
-                        ],
-                        schema["anyOf"],
-                    ),
-                    proposed_name,
-                    "anyof",
-                )
-            elif "oneOf" in schema:
-                type_ = self.any_of(
-                    schema,
-                    cast(
-                        List[
-                            Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                            ]
-                        ],
-                        schema["oneOf"],
-                    ),
-                    proposed_name,
-                    "oneof",
-                )
-                if type_.comments():
-                    type_.comments().append("")
-                type_.comments().append("oneOf")
-                return type_
-            elif "enum" in schema:
-                return self.enum(schema_validation, proposed_name)
-            elif "default" in schema:
-                return self.default(schema_meta_data, proposed_name)
-
-        if schema_type is None:
-            type_ = BuiltinType("Any")
-            type_.set_comments(["WARNING: we get an schema without any type"])
+            type_ = CombinedType(NativeType("Union"), inner_types)
+            if has_title:
+                type_ = TypeAlias(name, type_)
             return type_
-        assert isinstance(schema_type, str), (
-            f"Expected to find a supported schema type, got {schema_type}" f"\nDuring parsing of {schema}"
-        )
 
-        return self._get_type(schema, schema_type, proposed_name)
+        if isinstance(schema_type, str):
+            return self._get_type(schema, schema_type, proposed_name)
+
+        if "default" in schema:
+            return self.default(schema_meta_data, proposed_name)
+
+        type_ = BuiltinType("Any")
+        type_.set_comments(["WARNING: we get an schema without any type"])
+        return type_
 
     def _get_type(
         self,

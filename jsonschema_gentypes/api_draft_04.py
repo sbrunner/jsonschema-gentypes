@@ -96,6 +96,7 @@ class APIv4(API):
 
         std_dict = None
         name = get_name(schema_meta_data, proposed_name)
+        schema.setdefault("used", set()).add("additionalProperties")  # type: ignore[typeddict-item]
         additional_properties = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
             schema.get("additionalProperties"),
@@ -108,6 +109,7 @@ class APIv4(API):
         elif isinstance(additional_properties, dict):
             sub_type = self.get_type(additional_properties, f"{proposed_name} additionalProperties")
             std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
+        schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
         properties = cast(
             Dict[
                 str,
@@ -120,6 +122,7 @@ class APIv4(API):
         proposed_name = schema_meta_data.get("title", proposed_name)
         if properties:
             required = set(schema_validation.get("required", []))
+            schema.setdefault("used", set()).add("required")  # type: ignore[typeddict-item]
 
             struct = {
                 prop: self.get_type(sub_schema, proposed_name + " " + prop, auto_alias=False)
@@ -159,6 +162,7 @@ class APIv4(API):
         """
         Generate a ``List[]`` annotation with the allowed types.
         """
+        schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
         items = schema.get("items")
         if items is True:
             return CombinedType(NativeType("List"), [NativeType("Any")])
@@ -208,9 +212,7 @@ class APIv4(API):
                 ],
             )
         else:
-            type_ = BuiltinType("None")
-            type_.set_comments(["WARNING: we get an array without any items"])
-            return type_
+            return CombinedType(NativeType("List"), [NativeType("Any")])
 
     def any_of(
         self,
@@ -271,7 +273,7 @@ class APIv4(API):
         )
 
         ref = schema_casted["$ref"]
-        del schema_casted["$ref"]
+        schema.setdefault("used", set()).add("$ref")  # type: ignore[typeddict-item]
 
         if ref == "#":  # Self ref.
             # Per @ilevkivskyi:

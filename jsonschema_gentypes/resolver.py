@@ -8,9 +8,10 @@ import json
 import re
 from typing import Any, Dict, List, Optional, Union, cast
 
+import referencing._core
+import referencing.exceptions
 import requests
 import yaml
-from referencing import Registry, Resource
 
 from jsonschema_gentypes import (
     jsonschema_draft_04,
@@ -23,7 +24,7 @@ from jsonschema_gentypes import (
 Json = Union[str, int, float, bool, None, List["Json"], Dict[str, "Json"]]
 JsonDict = Dict[str, "Json"]
 
-_RESOURCE_CACHE: Dict[str, Resource[Any]] = {}
+_RESOURCE_CACHE: Dict[str, referencing.Resource[Any]] = {}
 
 
 def _openapi_schema(
@@ -76,10 +77,10 @@ def _open_uri(
             )
 
 
-def _open_uri_resolver(uri: str) -> Resource[Any]:
+def _open_uri_resolver(uri: str) -> referencing.Resource[Any]:
     if uri in _RESOURCE_CACHE:
         return _RESOURCE_CACHE[uri]
-    my_resource = Resource.from_contents(_open_uri(uri))
+    my_resource = referencing.Resource.from_contents(_open_uri(uri))
     _RESOURCE_CACHE[uri] = my_resource
     return my_resource
 
@@ -87,6 +88,10 @@ def _open_uri_resolver(uri: str) -> Resource[Any]:
 _URL_PREFIX = "https://json-schema.org/draft/"
 _VOCAB_URL_RE = re.compile(rf"{re.escape(_URL_PREFIX)}([0-9-]+)/vocab/(.+)$")
 _META_RE = re.compile(r"^meta/([a-zA-Z0-9]+)#(.*)$")
+
+
+class UnRedolvedException(Exception):
+    """Exception for unresolved references."""
 
 
 class RefResolver:
@@ -117,12 +122,27 @@ class RefResolver:
             self.schema,
         )
         if "$schema" in self.schema:
-            _RESOURCE_CACHE[base_url] = Resource.from_contents(self.schema)
+            _RESOURCE_CACHE[base_url] = referencing.Resource.from_contents(self.schema)
 
-        registry = Registry(retrieve=_open_uri_resolver)  # type: ignore
-        self.resolver = registry.resolver(base_url)
+        self.registry = referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore
+        self.resolver: referencing._core.Resolver[
+            Union[
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            ]
+        ] = self.registry.resolver(base_url)
 
-        self.vocabulary: Dict[str, str] = {}
+        self.vocabulary_url: Dict[str, str] = {}
+        self.vocabulary_resolver: Dict[
+            str,
+            referencing._core.Resolver[
+                Union[
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                ]
+            ],
+        ] = {}
+
         for vocab, value in schema_vocabulary.get("$vocabulary", {}).items():
             if value is True:
                 vocab_match = _VOCAB_URL_RE.match(vocab)
@@ -132,29 +152,34 @@ class RefResolver:
 
     def add_vocabulary(self, vocab: str, url: str) -> None:
         """Add a vocabulary to the resolver."""
-        self.vocabulary[vocab] = url
+        self.vocabulary_url[vocab] = url
+        self.vocabulary_resolver[vocab] = self.registry.resolver(url)
 
     def lookup(
         self, uri: str
     ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Lookup for the reference."""
+
         match = _META_RE.match(uri)
         if match:
             vocab, path = match.groups()
-            if vocab in self.vocabulary:
-                return cast(
-                    Union[
-                        jsonschema_draft_06.JSONSchemaItemD6,
-                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                    ],
-                    self.resolver.lookup(f"{self.vocabulary[vocab]}#{path}").contents,
-                )
-        return cast(
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-            ],
-            self.resolver.lookup(uri).contents,
-        )
+            if vocab in self.vocabulary_url.values():
+                return self.resolver.lookup(f"{self.vocabulary_url[vocab]}#{path}").contents
+
+        exception = None
+        try:
+            return self.resolver.lookup(uri).contents
+        except (
+            referencing.exceptions.NoSuchResource,
+            referencing.exceptions.PointerToNowhere,
+        ) as curent_exeption:
+            exception = curent_exeption
+            for vocab, resolver in self.vocabulary_resolver.items():
+                try:
+                    return resolver.lookup(uri).contents
+                except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):
+                    pass
+        raise UnRedolvedException(f"Ref '{uri}' not found") from exception
 
     def auto_resolve(
         self,

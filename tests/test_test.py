@@ -41,6 +41,8 @@ def test_basic_types():
                 "boolean": {"type": "boolean"},
                 "null": {"type": "null"},
                 "const": {"const": 8},
+                "true": True,
+                "false": False,
             },
             "required": ["string_required", "number_required", "integer_required"],
         }
@@ -94,7 +96,9 @@ class TestBasicTypes(TypedDict, total=False):
     """
 
     null: None
-    const: Literal[8]'''
+    const: Literal[8]
+    true: Any
+    false: None'''
     )
 
 
@@ -163,7 +167,9 @@ def test_self_ref():
 class TestBasicTypes(TypedDict, total=False):
     """ test basic types. """
 
-    string: "TestBasicTypes"'''
+    string: "TestBasicTypes"
+    """ test basic types. """
+'''
     )
 
 
@@ -435,7 +441,11 @@ def test_any_of():
         == f'''
 
 TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]
-""" test basic types. """
+"""
+test basic types.
+
+Aggregation type: anyOf
+"""
 '''
     )
     assert len(type_.depends_on()) == 1
@@ -488,6 +498,8 @@ test basic types.
 WARNING: PEP 544 does not support an Intersection type,
 so `allOf` is interpreted as a `Union` for now.
 See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+Aggregation type: allOf
 """
 '''
     )
@@ -538,7 +550,7 @@ TestBasicTypes = Union["_TestBasicTypesOneof0", "_TestBasicTypesOneof1"]
 """
 test basic types.
 
-oneOf
+Aggregation type: oneOf
 """
 '''
     )
@@ -604,7 +616,7 @@ TestBasicTypes = Union["_TestBasicTypesThen", "_TestBasicTypesElse"]
 
 class _TestBasicTypesThen(TypedDict, total=False):
     text1: str
-    type: Literal["type"]"""
+    type: Literal['type']"""
     )
     assert (
         "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
@@ -616,7 +628,7 @@ class _TestBasicTypesElse(TypedDict, total=False):
 
 
 @pytest.mark.parametrize(
-    "value,expected_type", [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", '"test"'), (None, "None")]
+    "value,expected_type", [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")]
 )
 def test_const(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
@@ -637,13 +649,13 @@ def test_enum() -> None:
         "\n".join([d.rstrip() for d in type_.definition(None)])
         == '''
 
-TestBasicTypes = Union[Literal["red"], Literal["amber"], Literal["green"]]
+TestBasicTypes = Union[Literal['red'], Literal['amber'], Literal['green']]
 """ test basic types. """
-TESTBASICTYPES_RED: Literal["red"] = "red"
+TESTBASICTYPES_RED: Literal['red'] = "red"
 """The values for the 'test basic types' enum"""
-TESTBASICTYPES_AMBER: Literal["amber"] = "amber"
+TESTBASICTYPES_AMBER: Literal['amber'] = "amber"
 """The values for the 'test basic types' enum"""
-TESTBASICTYPES_GREEN: Literal["green"] = "green"
+TESTBASICTYPES_GREEN: Literal['green'] = "green"
 """The values for the 'test basic types' enum"""
 '''
     )
@@ -854,6 +866,8 @@ class Ref1(TypedDict, total=False):
     """ Ref1. """
 
     data: "Ref2"
+    """ Ref2. """
+
     children: List["Ref1"]'''
     )
     depends_on = [e for e in type_.depends_on() if e.definition(None)]
@@ -865,7 +879,9 @@ class Ref1(TypedDict, total=False):
 class Ref2(TypedDict, total=False):
     """ Ref2. """
 
-    data_child: "Ref2"'''
+    data_child: "Ref2"
+    """ Ref2. """
+'''
     )
 
 
@@ -907,7 +923,9 @@ def test_array_true():
 class TestBasicTypes(TypedDict, total=False):
     """ test basic types. """
 
-    array: List[Any]'''
+    array: List[Any]
+    """ items: True """
+'''
     )
 
 
@@ -938,5 +956,53 @@ class TestBasicTypes(TypedDict, total=False):
     minItems: 2
     maxItems: 2
     """
+'''
+    )
+
+
+def test_no_type():
+    type_ = get_types(
+        {
+            "title": "my type",
+            "properties": {"foo": {"type": "string"}},
+            "required": ["foo"],
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+MyType = Union[str, Union[int, float], "_MyTypeObject", List[Any], bool, None]
+""" my type. """
+'''
+    )
+
+    assert len(type_.depends_on()) == 1
+    depends_on = [e for e in type_.depends_on()[0].depends_on() if e.definition(None)]
+    assert len(depends_on) == 1
+    assert (
+        "\n".join([d.rstrip() for d in depends_on[0].definition(None)])
+        == '''
+
+class _MyTypeObject(TypedDict, total=False):
+    foo: Required[str]
+    """ Required property """
+'''
+    )
+
+
+def test_empty_array():
+    type_ = get_types(
+        {
+            "title": "my type",
+            "type": "array",
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+MyType = List[Any]
+""" my type. """
 '''
     )

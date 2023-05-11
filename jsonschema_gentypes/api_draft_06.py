@@ -2,7 +2,7 @@
 The API version draft 06.
 """
 
-from typing import Union, cast
+from typing import Any, Dict, List, Union, cast
 
 from jsonschema_gentypes import (
     LiteralType,
@@ -88,5 +88,6 @@ class APIv6(APIv4):
             schema,
         )
 
-        const_: Union[int, float, str, bool, None] = schema_casted["const"]
+        schema.setdefault("used", set()).add("const")  # type: ignore[typeddict-item]
+        const_: Union[int, float, str, bool, None, Dict[str, Any], List[Any]] = schema_casted["const"]
         return LiteralType(const_)

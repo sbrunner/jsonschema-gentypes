@@ -27,6 +27,11 @@ class ApiArguments(TypedDict, total=False):
     """
 
     additional_properties: "AdditionalProperties"
+    """
+    Additional properties.
+
+    Describe how to deal with additional properties
+    """
 
 
 class Configuration(TypedDict, total=False):
@@ -39,6 +44,12 @@ class Configuration(TypedDict, total=False):
     headers: str
     callbacks: List[List[str]]
     pre_commit: "PreCommitConfiguration"
+    """
+    Pre-commit configuration.
+
+    The pre-commit configuration
+    """
+
     lineLength: int
     """ The maximum line length """
 
@@ -70,6 +81,12 @@ class GenerateItem(TypedDict, total=False):
     """ The name of the root element """
 
     api_arguments: "ApiArguments"
+    """
+    API arguments.
+
+    The argument passed to the API
+    """
+
     name_mapping: Dict[str, str]
     """
     Name mapping.

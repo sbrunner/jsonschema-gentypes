@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Dict, List, Literal, TypedDict, Union
+from typing import Any, Dict, List, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
@@ -20,6 +20,8 @@ intervals and crs properties can be used to specify additional geometries.
 WARNING: PEP 544 does not support an Intersection type,
 so `allOf` is interpreted as a `Union` for now.
 See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+Aggregation type: allOf
 """
 
 
@@ -156,6 +158,19 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     """ Required property """
 
     extent: "ExtentWithUniformAdditionalDimensionsSchema"
+    """
+    Extent with Uniform Additional Dimensions Schema.
+
+    The extent module only addresses spatial and temporal extents. This module extends extent by specifying how
+    intervals and crs properties can be used to specify additional geometries.
+
+    WARNING: PEP 544 does not support an Intersection type,
+    so `allOf` is interpreted as a `Union` for now.
+    See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+    Aggregation type: allOf
+    """
+
     itemType: str
     """
     indicator about the type of the items in the collection if the collection has an accessible /collections/{collectionId}/items endpoint
@@ -172,13 +187,14 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     """
 
     dataType: Union[
-        "_Ogcapicollectionscollectionidgetresponse200DatatypeAllof0",
-        Union[str, "_ComponentsSchemasDatatypeAnyof1"],
+        "_Ogcapicollectionscollectionidgetresponse200DatatypeAllof0", "_ComponentsSchemasDatatype"
     ]
     """
     WARNING: PEP 544 does not support an Intersection type,
     so `allOf` is interpreted as a `Union` for now.
     See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+    Aggregation type: allOf
     """
 
     geometryDimension: int
@@ -210,6 +226,10 @@ _COMPONENTS_SCHEMAS_EXTENT_TEMPORAL_TRS_DEFAULT = "http://www.opengis.net/def/uo
 """ Default value of the field path 'components schemas extent temporal trs' """
 
 
+_ComponentsSchemasDatatype = Union[str, "_ComponentsSchemasDatatypeAnyof1"]
+""" Aggregation type: anyOf """
+
+
 _ComponentsSchemasDatatypeAnyof1 = Union[Literal["map"], Literal["vector"], Literal["coverage"]]
 _COMPONENTSSCHEMASDATATYPEANYOF1_MAP: Literal["map"] = "map"
 """The values for the '_ComponentsSchemasDatatypeAnyof1' enum"""
@@ -233,7 +253,10 @@ class _ComponentsSchemasExtent(TypedDict, total=False):
     """
 
     spatial: "_ComponentsSchemasExtentSpatial"
+    """ The spatial extent of the data in the collection. """
+
     temporal: "_ComponentsSchemasExtentTemporal"
+    """ The temporal extent of the features in the collection. """
 
 
 class _ComponentsSchemasExtentSpatial(TypedDict, total=False):
@@ -255,6 +278,17 @@ class _ComponentsSchemasExtentSpatial(TypedDict, total=False):
     """
 
     crs: "_ComponentsSchemasExtentSpatialCrs"
+    """
+    Coordinate reference system of the coordinates in the spatial extent
+    (property `bbox`). The default reference system is WGS 84 longitude/latitude.
+    In the Core the only other supported coordinate reference system is
+    WGS 84 longitude/latitude/ellipsoidal height for coordinates with height.
+    Extensions may support additional coordinate reference systems and add
+    additional enum values.
+
+    default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+    """
+
     grid: List["_ComponentsSchemasExtentSpatialGridItem"]
     """
     Provides information about the limited availability of data within the collection organized
@@ -265,7 +299,9 @@ class _ComponentsSchemasExtentSpatial(TypedDict, total=False):
     """
 
 
-_ComponentsSchemasExtentSpatialBboxItem = List[Union[int, float]]
+_ComponentsSchemasExtentSpatialBboxItem = Union[
+    "_ComponentsSchemasExtentSpatialBboxItemOneof0", "_ComponentsSchemasExtentSpatialBboxItemOneof1"
+]
 """
 Each bounding box is provided as four or six numbers, depending on
 whether the coordinate reference system includes a vertical axis
@@ -297,6 +333,26 @@ the bottom and the top of the 3-dimensional bounding box.
 If a feature has multiple spatial geometry properties, it is the decision of the
 server whether only a single spatial geometry property is used to determine
 the extent or all relevant geometries.
+
+Aggregation type: oneOf
+"""
+
+
+_ComponentsSchemasExtentSpatialBboxItemOneof0 = Union[
+    str, Union[int, float], Dict[str, Any], None, bool, None
+]
+"""
+minItems: 4
+maxItems: 4
+"""
+
+
+_ComponentsSchemasExtentSpatialBboxItemOneof1 = Union[
+    str, Union[int, float], Dict[str, Any], None, bool, None
+]
+"""
+minItems: 6
+maxItems: 6
 """
 
 
@@ -348,14 +404,14 @@ class _ComponentsSchemasExtentSpatialGridItem(TypedDict, total=False):
 
     example: 0.0006866455078
 
-    oneOf
+    Aggregation type: oneOf
     """
 
 
 _ComponentsSchemasExtentSpatialGridItemCoordinatesItem = Union[
     "_ComponentsSchemasExtentSpatialGridItemCoordinatesItemOneof0", Union[int, float]
 ]
-""" oneOf """
+""" Aggregation type: oneOf """
 
 
 _ComponentsSchemasExtentSpatialGridItemCoordinatesItemOneof0 = str
@@ -385,7 +441,18 @@ class _ComponentsSchemasExtentTemporal(TypedDict, total=False):
     """
 
     trs: "_ComponentsSchemasExtentTemporalTrs"
+    """
+    Coordinate reference system of the coordinates in the temporal extent
+    (property `interval`). The default reference system is the Gregorian calendar.
+    In the Core this is the only supported temporal coordinate reference system.
+    Extensions may support additional temporal coordinate reference systems and add
+    additional enum values.
+
+    default: http://www.opengis.net/def/uom/ISO-8601/0/Gregorian
+    """
+
     grid: "_ComponentsSchemasExtentTemporalGrid"
+    """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension. """
 
 
 class _ComponentsSchemasExtentTemporalGrid(TypedDict, total=False):
@@ -414,7 +481,7 @@ class _ComponentsSchemasExtentTemporalGrid(TypedDict, total=False):
 
     example: PT1H
 
-    oneOf
+    Aggregation type: oneOf
     """
 
 
@@ -515,102 +582,16 @@ class _ComponentsSchemasLink(TypedDict, total=False):
     length: int
 
 
-class _ExtentWithUniformAdditionalDimensionsSchemaAllof1Additionalproperties(TypedDict, total=False):
-    """The domain intervals for any additional dimensions of the extent (envelope) beyond those described in temporal and spatial."""
-
-    interval: List["_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItem"]
-    """
-    One or more intervals that describe the extent for this dimension of the dataset.
-    The value `null` is supported and indicates an unbounded or half-bounded interval.
-    The first interval describes the overall extent of the data for this dimension.
-    All subsequent intervals describe more precise intervals, e.g., to identify clusters of data.
-    Clients only interested in the overall extent will only need
-    to access the first item (a pair of lower and upper bound values).
-
-    minItems: 1
-    """
-
-    crs: str
-    """ generic coordinate reference system suitable for any type of dimensions """
-
-    trs: str
-    """ temporal coordinate reference system (e.g. as defined by Features for 'temporal') """
-
-    vrs: str
-    """ vertical coordinate reference system (e.g. as defined in EDR for 'vertical') """
-
-    grid: "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGrid"
-
-
-class _ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGrid(TypedDict, total=False):
-    """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension."""
-
-    coordinates: List[
-        "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridCoordinatesItem"
-    ]
-    """
-    List of coordinates along the temporal dimension for which data organized as an irregular grid in the collection is available
-    (e.g., 2, 10, 80, 100).
-
-    minItems: 1
-    """
-
-    cellsCount: int
-    """
-    Number of samples available along the dimension for data organized as a regular grid.
-    For values representing the whole area of contiguous cells spanning _resolution_ units along the dimension, this will be (_upperBound_ - _lowerBound_) / _resolution_.
-    For values representing infinitely small point cells spaced by _resolution_ units along the dimension, this will be (_upperBound_ - _lowerBound_) / _resolution_ + 1.
-
-    example: 50
-    """
-
-    resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridResolutionOneof0",
-        Union[int, float],
-    ]
-    """
-    Resolution of regularly gridded data along the dimension in the collection
-
-    oneOf
-    """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridCoordinatesItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridCoordinatesItemOneof0",
-    Union[int, float],
-]
-""" oneOf """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridCoordinatesItemOneof0 = str
-""" nullable: True """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesGridResolutionOneof0 = str
-""" nullable: True """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItem = List[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItemItem"
+_ExtentWithUniformAdditionalDimensionsSchemaAllof1Additionalproperties = Union[
+    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
+    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
+    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
 ]
 """
-Lower and upper bound values of the interval. The values
-are in the coordinate reference system specified in `crs`, `trs` or `vrs`.
+The domain intervals for any additional dimensions of the extent (envelope) beyond those described in temporal and spatial.
 
-minItems: 2
-maxItems: 2
+Aggregation type: oneOf
 """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItemItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItemItemOneof0",
-    Union[int, float],
-]
-""" oneOf """
-
-
-_ExtentWithUniformAdditionalDimensionsSchemaAllof1AdditionalpropertiesIntervalItemItemOneof0 = str
-""" nullable: True """
 
 
 _OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_CRS_DEFAULT = ["http://www.opengis.net/def/crs/OGC/1.3/CRS84"]
@@ -621,9 +602,7 @@ _OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = "unknown"
 """ Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 itemType' """
 
 
-_Ogcapicollectionscollectionidgetresponse200DatatypeAllof0 = Any
-"""
-Type of data represented in the collection
-
-WARNING: we get an schema without any type
-"""
+_Ogcapicollectionscollectionidgetresponse200DatatypeAllof0 = Union[
+    str, Union[int, float], Dict[str, Any], None, bool, None
+]
+""" Type of data represented in the collection """

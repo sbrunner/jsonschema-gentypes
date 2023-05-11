@@ -12,11 +12,17 @@ JSONSchemaD2020 = Union["JSONSchemaItemD2020", bool]
 JSONSchemaItemD2020 = TypedDict(
     "JSONSchemaItemD2020",
     {
+        # format: uri-reference
         "$id": "_UriReferenceString",
+        # format: uri
         "$schema": "_UriString",
+        # format: uri-reference
         "$ref": "_UriReferenceString",
+        # pattern: ^[A-Za-z_][-A-Za-z0-9._]*$
         "$anchor": "_AnchorString",
+        # format: uri-reference
         "$dynamicRef": "_UriReferenceString",
+        # pattern: ^[A-Za-z_][-A-Za-z0-9._]*$
         "$dynamicAnchor": "_AnchorString",
         # propertyNames:
         #   $ref: '#/$defs/uriString'

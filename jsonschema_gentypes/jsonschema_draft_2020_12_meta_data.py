@@ -20,6 +20,7 @@ class JSONSchemaItemD2020(TypedDict, total=False):
     """ default: False """
 
     examples: List[Any]
+    """ items: True """
 
 
 MetaDataVocabularyMetaSchema = Union["JSONSchemaItemD2020", bool]

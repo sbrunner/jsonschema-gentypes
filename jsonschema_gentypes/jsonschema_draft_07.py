@@ -42,21 +42,53 @@ JSONSchemaItemD7 = TypedDict(
         "exclusiveMaximum": Union[int, float],
         "minimum": Union[int, float],
         "exclusiveMinimum": Union[int, float],
+        # minimum: 0
         "maxLength": "_NonNegativeInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minLength": "_NonNegativeIntegerDefault0",
         # format: regex
         "pattern": str,
+        # Core schema meta-schema.
+        #
+        # default: True
         "additionalItems": "JSONSchemaD7",
         # default: True
-        "items": Union["JSONSchemaD7", "_SchemaArray"],
+        #
+        # Aggregation type: anyOf
+        "items": "_CoreSchemaMetaSchemaObjectItems",
+        # minimum: 0
         "maxItems": "_NonNegativeInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minItems": "_NonNegativeIntegerDefault0",
         # default: False
         "uniqueItems": bool,
+        # Core schema meta-schema.
+        #
+        # default: True
         "contains": "JSONSchemaD7",
+        # minimum: 0
         "maxProperties": "_NonNegativeInteger",
+        # WARNING: PEP 544 does not support an Intersection type,
+        # so `allOf` is interpreted as a `Union` for now.
+        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+        #
+        # Aggregation type: allOf
         "minProperties": "_NonNegativeIntegerDefault0",
+        # uniqueItems: True
+        # default:
+        #   []
         "required": "_StringArray",
+        # Core schema meta-schema.
+        #
+        # default: True
         "additionalProperties": "JSONSchemaD7",
         # default:
         #   {}
@@ -69,22 +101,41 @@ JSONSchemaItemD7 = TypedDict(
         # default:
         #   {}
         "patternProperties": Dict[str, "JSONSchemaD7"],
-        "dependencies": Dict[str, Union["JSONSchemaD7", "_StringArray"]],
+        "dependencies": Dict[str, "_CoreSchemaMetaSchemaObjectDependenciesAdditionalproperties"],
+        # Core schema meta-schema.
+        #
+        # default: True
         "propertyNames": "JSONSchemaD7",
         "const": Any,
         # minItems: 1
         # uniqueItems: True
         "enum": List[Any],
-        "type": Union["_SimpleTypes", "_CoreSchemaMetaSchemaObjectTypeAnyof1"],
+        # Aggregation type: anyOf
+        "type": "_CoreSchemaMetaSchemaObjectType",
         "format": str,
         "contentMediaType": str,
         "contentEncoding": str,
+        # Core schema meta-schema.
+        #
+        # default: True
         "if": "JSONSchemaD7",
+        # Core schema meta-schema.
+        #
+        # default: True
         "then": "JSONSchemaD7",
+        # Core schema meta-schema.
+        #
+        # default: True
         "else": "JSONSchemaD7",
+        # minItems: 1
         "allOf": "_SchemaArray",
+        # minItems: 1
         "anyOf": "_SchemaArray",
+        # minItems: 1
         "oneOf": "_SchemaArray",
+        # Core schema meta-schema.
+        #
+        # default: True
         "not": "JSONSchemaD7",
     },
     total=False,
@@ -123,6 +174,22 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
 """ Default value of the field path 'Core schema meta-schema object writeOnly' """
 
 
+_CoreSchemaMetaSchemaObjectDependenciesAdditionalproperties = Union["JSONSchemaD7", "_StringArray"]
+""" Aggregation type: anyOf """
+
+
+_CoreSchemaMetaSchemaObjectItems = Union["JSONSchemaD7", "_SchemaArray"]
+"""
+default: True
+
+Aggregation type: anyOf
+"""
+
+
+_CoreSchemaMetaSchemaObjectType = Union["_SimpleTypes", "_CoreSchemaMetaSchemaObjectTypeAnyof1"]
+""" Aggregation type: anyOf """
+
+
 _CoreSchemaMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
 """
 minItems: 1
@@ -143,10 +210,12 @@ _NonNegativeIntegerDefault0 = Union["_NonNegativeInteger", "_NonNegativeIntegerD
 WARNING: PEP 544 does not support an Intersection type,
 so `allOf` is interpreted as a `Union` for now.
 See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
+
+Aggregation type: allOf
 """
 
 
-_NonNegativeIntegerDefault0Allof1 = int
+_NonNegativeIntegerDefault0Allof1 = Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None]
 """ default: 0 """
 
 
