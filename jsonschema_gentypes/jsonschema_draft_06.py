@@ -41,11 +41,8 @@ JSONSchemaItemD6 = TypedDict(
         "exclusiveMinimum": Union[int, float],
         # minimum: 0
         "maxLength": "_NonNegativeInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minLength": "_NonNegativeIntegerDefault0",
         # format: regex
         "pattern": str,
@@ -61,11 +58,8 @@ JSONSchemaItemD6 = TypedDict(
         "items": "_CoreSchemaMetaSchemaObjectItems",
         # minimum: 0
         "maxItems": "_NonNegativeInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minItems": "_NonNegativeIntegerDefault0",
         # default: False
         "uniqueItems": bool,
@@ -76,11 +70,8 @@ JSONSchemaItemD6 = TypedDict(
         "contains": "JSONSchemaD6",
         # minimum: 0
         "maxProperties": "_NonNegativeInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minProperties": "_NonNegativeIntegerDefault0",
         # uniqueItems: True
         # default:
@@ -147,10 +138,6 @@ _CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
 """ Default value of the field path 'Core schema meta-schema object properties' """
 
 
-_CORE_SCHEMA_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: List[Any] = []
-""" Default value of the field path 'Core schema meta-schema object required' """
-
-
 _CORE_SCHEMA_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
 """ Default value of the field path 'Core schema meta-schema object uniqueItems' """
 
@@ -179,26 +166,19 @@ uniqueItems: True
 """
 
 
-_NON_NEGATIVE_INTEGER_DEFAULT0_ALLOF1_DEFAULT = 0
-""" Default value of the field path 'non negative integer default0 allof1' """
+_NON_NEGATIVE_INTEGER_DEFAULT0_DEFAULT = 0
+""" Default value of the field path 'non negative integer default0' """
 
 
 _NonNegativeInteger = int
 """ minimum: 0 """
 
 
-_NonNegativeIntegerDefault0 = Union["_NonNegativeInteger", "_NonNegativeIntegerDefault0Allof1"]
+_NonNegativeIntegerDefault0 = int
 """
-WARNING: PEP 544 does not support an Intersection type,
-so `allOf` is interpreted as a `Union` for now.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-
-Aggregation type: allOf
+minimum: 0
+default: 0
 """
-
-
-_NonNegativeIntegerDefault0Allof1 = Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None]
-""" default: 0 """
 
 
 _STRING_ARRAY_DEFAULT: List[Any] = []

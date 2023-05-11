@@ -34,11 +34,8 @@ JSONSchemaD4 = TypedDict(
         "exclusiveMinimum": bool,
         # minimum: 0
         "maxLength": "_PositiveInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minLength": "_PositiveIntegerDefault0",
         # format: regex
         "pattern": str,
@@ -54,21 +51,15 @@ JSONSchemaD4 = TypedDict(
         "items": "_Jsonschemad4Items",
         # minimum: 0
         "maxItems": "_PositiveInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minItems": "_PositiveIntegerDefault0",
         # default: False
         "uniqueItems": bool,
         # minimum: 0
         "maxProperties": "_PositiveInteger",
-        # WARNING: PEP 544 does not support an Intersection type,
-        # so `allOf` is interpreted as a `Union` for now.
-        # See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-        #
-        # Aggregation type: allOf
+        # minimum: 0
+        # default: 0
         "minProperties": "_PositiveIntegerDefault0",
         # minItems: 1
         # uniqueItems: True
@@ -198,26 +189,19 @@ uniqueItems: True
 """
 
 
-_POSITIVE_INTEGER_DEFAULT0_ALLOF1_DEFAULT = 0
-""" Default value of the field path 'positive integer default0 allof1' """
+_POSITIVE_INTEGER_DEFAULT0_DEFAULT = 0
+""" Default value of the field path 'positive integer default0' """
 
 
 _PositiveInteger = int
 """ minimum: 0 """
 
 
-_PositiveIntegerDefault0 = Union["_PositiveInteger", "_PositiveIntegerDefault0Allof1"]
+_PositiveIntegerDefault0 = int
 """
-WARNING: PEP 544 does not support an Intersection type,
-so `allOf` is interpreted as a `Union` for now.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-
-Aggregation type: allOf
+minimum: 0
+default: 0
 """
-
-
-_PositiveIntegerDefault0Allof1 = Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None]
-""" default: 0 """
 
 
 _SchemaArray = List["JSONSchemaD4"]

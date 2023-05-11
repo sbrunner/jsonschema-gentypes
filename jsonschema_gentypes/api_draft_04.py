@@ -3,7 +3,7 @@ The API version draft 04.
 """
 
 import re
-from typing import Dict, List, Union, cast
+from typing import Any, Dict, List, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
@@ -228,6 +228,8 @@ class APIv4(API):
         """
         Generate a ``Union`` annotation with the allowed types.
         """
+        del schema
+
         inner_types = list(
             filter(
                 lambda o: o is not None,
@@ -238,6 +240,81 @@ class APIv4(API):
             )
         )
         return CombinedType(NativeType("Union"), inner_types)
+
+    def all_of(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+        sub_schema: List[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ],
+        proposed_name: str,
+        sub_name: str,
+    ) -> Type:
+        """
+        Combine all the definitions.
+        """
+
+        all_schema: Dict[str, Any] = {}
+        for prop in ["title", "description", "default", "example"]:
+            if prop in schema:
+                all_schema[prop] = schema[prop]  # type: ignore[literal-required]
+
+        for new_schema in sub_schema:
+            new_schema = self.resolve_ref(new_schema)
+
+            all_schema_validation = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+                ],
+                all_schema,
+            )
+            new_schema_validation = cast(
+                Union[
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+                ],
+                new_schema,
+            )
+
+            combined_schema: Dict[str, Any] = {}
+            if "properties" in new_schema and "properties" in all_schema:
+                combined_schema["properties"] = {
+                    **all_schema["properties"],
+                    **new_schema["properties"],
+                }
+            if "required" in new_schema and "required" in all_schema:
+                combined_schema["required"] = list(
+                    {
+                        *all_schema_validation["required"],
+                        *new_schema_validation["required"],
+                    }
+                )
+            if "type" in new_schema and "type" in all_schema:
+                all_type = (
+                    all_schema_validation["type"]
+                    if isinstance(all_schema_validation["type"], list)
+                    else [all_schema_validation["type"]]
+                )
+                new_type = (
+                    new_schema_validation["type"]
+                    if isinstance(new_schema_validation["type"], list)
+                    else [new_schema_validation["type"]]
+                )
+                combined_schema["type"] = [t for t in all_type if t in new_type]
+
+            all_schema.update(new_schema)
+            all_schema.update(combined_schema)
+
+        return self.get_type(
+            cast(
+                Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
+                all_schema,
+            ),
+            proposed_name,
+        )
 
     def ref_to_proposed_name(self, ref: str) -> str:
         """
@@ -293,30 +370,16 @@ class APIv4(API):
         if ref in self.ref_type:
             return self.ref_type[ref]
 
-        resolve = getattr(self.resolver, "resolve", None)
-        if resolve is None:
-            resolved = self.resolver.lookup(ref)
-            schema_casted.update(resolved)  # type: ignore
-            resolved_all = cast(
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-                ],
-                resolved,
-            )
-            type_ = self.get_type(resolved_all, self.ref_to_proposed_name(ref))
-        else:
-            resolved = self.resolver.lookup(ref)
-            schema_casted.update(resolved)  # type: ignore
-            resolved_all = cast(
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
-                ],
-                resolved,
-            )
-            type_ = self.get_type(resolved_all, self.ref_to_proposed_name(ref))
+        resolved = self.resolver.lookup(ref)
 
-        if ref:
-            self.ref_type[ref] = type_
+        type_ = self.get_type(
+            cast(
+                Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
+                resolved,
+            ),
+            self.ref_to_proposed_name(ref),
+        )
+        self.ref_type[ref] = type_
         return type_
 
     def string(

@@ -113,14 +113,6 @@ _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_MINCONTAINS_DEFAULT = 1
 """ Default value of the field path 'Validation vocabulary meta-schema object minContains' """
 
 
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_MINLENGTH_DEFAULT = 0
-""" Default value of the field path 'Validation vocabulary meta-schema object minLength' """
-
-
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: List[Any] = []
-""" Default value of the field path 'Validation vocabulary meta-schema object required' """
-
-
 _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
 """ Default value of the field path 'Validation vocabulary meta-schema object uniqueItems' """
 

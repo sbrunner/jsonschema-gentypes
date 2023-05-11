@@ -5,123 +5,48 @@ Automatically generated file from a JSON schema.
 
 from typing import Any, Dict, List, Literal, TypedDict, Union
 
-ApplicatorVocabularyMetaSchema = Union["_ApplicatorVocabularyMetaSchemaObject", bool]
-""" Applicator vocabulary meta-schema. """
-
-
 ContentVocabularyMetaSchema = Union["_ContentVocabularyMetaSchemaObject", bool]
 """ Content vocabulary meta-schema. """
 
 
-CoreAndValidationSpecificationsMetaSchema = Union[
-    "CoreVocabularyMetaSchema",
-    "ApplicatorVocabularyMetaSchema",
-    "ValidationVocabularyMetaSchema",
-    "MetaDataVocabularyMetaSchema",
-    "FormatVocabularyMetaSchema",
-    "ContentVocabularyMetaSchema",
-]
-"""
-Core and Validation specifications meta-schema.
-
-WARNING: PEP 544 does not support an Intersection type,
-so `allOf` is interpreted as a `Union` for now.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-
-Aggregation type: allOf
-"""
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_DEPRECATED_DEFAULT = False
+""" Default value of the field path 'Content vocabulary meta-schema object deprecated' """
 
 
-CoreVocabularyMetaSchema = Union["_CoreVocabularyMetaSchemaObject", bool]
-""" Core vocabulary meta-schema. """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_MINCONTAINS_DEFAULT = 1
+""" Default value of the field path 'Content vocabulary meta-schema object minContains' """
 
 
-FormatVocabularyMetaSchema = Union["_FormatVocabularyMetaSchemaObject", bool]
-""" Format vocabulary meta-schema. """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
+""" Default value of the field path 'Content vocabulary meta-schema object patternProperties' """
 
 
-MetaDataVocabularyMetaSchema = Union["_MetaDataVocabularyMetaSchemaObject", bool]
-""" Meta-data vocabulary meta-schema. """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
+""" Default value of the field path 'Content vocabulary meta-schema object properties' """
 
 
-ValidationVocabularyMetaSchema = Union["_ValidationVocabularyMetaSchemaObject", bool]
-""" Validation vocabulary meta-schema. """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_READONLY_DEFAULT = False
+""" Default value of the field path 'Content vocabulary meta-schema object readOnly' """
 
 
-_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
-""" Default value of the field path 'Applicator vocabulary meta-schema object patternProperties' """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
+""" Default value of the field path 'Content vocabulary meta-schema object uniqueItems' """
 
 
-_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
-""" Default value of the field path 'Applicator vocabulary meta-schema object properties' """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
+""" Default value of the field path 'Content vocabulary meta-schema object writeOnly' """
 
 
-_ApplicatorVocabularyMetaSchemaObject = TypedDict(
-    "_ApplicatorVocabularyMetaSchemaObject",
-    {
-        # Applicator vocabulary meta-schema.
-        "additionalItems": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "unevaluatedItems": "ApplicatorVocabularyMetaSchema",
-        # Aggregation type: anyOf
-        "items": "_ApplicatorVocabularyMetaSchemaObjectItems",
-        # Applicator vocabulary meta-schema.
-        "contains": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "additionalProperties": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "unevaluatedProperties": "ApplicatorVocabularyMetaSchema",
-        # default:
-        #   {}
-        "properties": Dict[str, "ApplicatorVocabularyMetaSchema"],
-        # propertyNames:
-        #   format: regex
-        # default:
-        #   {}
-        "patternProperties": Dict[str, "ApplicatorVocabularyMetaSchema"],
-        "dependentSchemas": Dict[str, "ApplicatorVocabularyMetaSchema"],
-        # Applicator vocabulary meta-schema.
-        "propertyNames": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "if": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "then": "ApplicatorVocabularyMetaSchema",
-        # Applicator vocabulary meta-schema.
-        "else": "ApplicatorVocabularyMetaSchema",
-        # minItems: 1
-        "allOf": "_SchemaArray",
-        # minItems: 1
-        "anyOf": "_SchemaArray",
-        # minItems: 1
-        "oneOf": "_SchemaArray",
-        # Applicator vocabulary meta-schema.
-        "not": "ApplicatorVocabularyMetaSchema",
-    },
-    total=False,
-)
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: Dict[str, Any] = {}
+""" Default value of the field path 'Content vocabulary meta-schema object $defs' """
 
 
-_ApplicatorVocabularyMetaSchemaObjectItems = Union["ApplicatorVocabularyMetaSchema", "_SchemaArray"]
-""" Aggregation type: anyOf """
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT__RECURSIVEANCHOR_DEFAULT = False
+""" Default value of the field path 'Content vocabulary meta-schema object $recursiveAnchor' """
 
 
-_CORE_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: Dict[str, Any] = {}
-""" Default value of the field path 'Core vocabulary meta-schema object $defs' """
-
-
-_CORE_VOCABULARY_META_SCHEMA_OBJECT__RECURSIVEANCHOR_DEFAULT = False
-""" Default value of the field path 'Core vocabulary meta-schema object $recursiveAnchor' """
-
-
-class _ContentVocabularyMetaSchemaObject(TypedDict, total=False):
-    contentMediaType: str
-    contentEncoding: str
-    contentSchema: "ContentVocabularyMetaSchema"
-    """ Content vocabulary meta-schema. """
-
-
-_CoreVocabularyMetaSchemaObject = TypedDict(
-    "_CoreVocabularyMetaSchemaObject",
+_ContentVocabularyMetaSchemaObject = TypedDict(
+    "_ContentVocabularyMetaSchemaObject",
     {
         # format: uri-reference
         # $comment: Non-empty fragments not allowed.
@@ -144,42 +69,112 @@ _CoreVocabularyMetaSchemaObject = TypedDict(
         "$comment": str,
         # default:
         #   {}
-        "$defs": Dict[str, "CoreVocabularyMetaSchema"],
+        "$defs": Dict[str, "ContentVocabularyMetaSchema"],
+        # Content vocabulary meta-schema.
+        "additionalItems": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "unevaluatedItems": "ContentVocabularyMetaSchema",
+        # Aggregation type: anyOf
+        "items": "_ContentVocabularyMetaSchemaObjectItems",
+        # Content vocabulary meta-schema.
+        "contains": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "additionalProperties": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "unevaluatedProperties": "ContentVocabularyMetaSchema",
+        # default:
+        #   {}
+        "properties": Dict[str, "ContentVocabularyMetaSchema"],
+        # propertyNames:
+        #   format: regex
+        # default:
+        #   {}
+        "patternProperties": Dict[str, "ContentVocabularyMetaSchema"],
+        "dependentSchemas": Dict[str, "ContentVocabularyMetaSchema"],
+        # Content vocabulary meta-schema.
+        "propertyNames": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "if": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "then": "ContentVocabularyMetaSchema",
+        # Content vocabulary meta-schema.
+        "else": "ContentVocabularyMetaSchema",
+        # minItems: 1
+        "allOf": "_SchemaArray",
+        # minItems: 1
+        "anyOf": "_SchemaArray",
+        # minItems: 1
+        "oneOf": "_SchemaArray",
+        # Content vocabulary meta-schema.
+        "not": "ContentVocabularyMetaSchema",
+        # exclusiveMinimum: 0
+        "multipleOf": Union[int, float],
+        "maximum": Union[int, float],
+        "exclusiveMaximum": Union[int, float],
+        "minimum": Union[int, float],
+        "exclusiveMinimum": Union[int, float],
+        # minimum: 0
+        "maxLength": "_NonNegativeInteger",
+        # minimum: 0
+        "minLength": "_NonNegativeInteger",
+        # format: regex
+        "pattern": str,
+        # minimum: 0
+        "maxItems": "_NonNegativeInteger",
+        # minimum: 0
+        "minItems": "_NonNegativeInteger",
+        # default: False
+        "uniqueItems": bool,
+        # minimum: 0
+        "maxContains": "_NonNegativeInteger",
+        # minimum: 0
+        "minContains": "_NonNegativeInteger",
+        # minimum: 0
+        "maxProperties": "_NonNegativeInteger",
+        # minimum: 0
+        "minProperties": "_NonNegativeInteger",
+        # uniqueItems: True
+        # default:
+        #   []
+        "required": "_StringArray",
+        "dependentRequired": Dict[str, "_StringArray"],
+        "const": Any,
+        "enum": List[Any],
+        # Aggregation type: anyOf
+        "type": "_ContentVocabularyMetaSchemaObjectType",
+        "title": str,
+        "description": str,
+        "default": Any,
+        # default: False
+        "deprecated": bool,
+        # default: False
+        "readOnly": bool,
+        # default: False
+        "writeOnly": bool,
+        "examples": List[Any],
+        "format": str,
+        "contentMediaType": str,
+        "contentEncoding": str,
+        # Content vocabulary meta-schema.
+        "contentSchema": "ContentVocabularyMetaSchema",
     },
     total=False,
 )
 
 
-class _FormatVocabularyMetaSchemaObject(TypedDict, total=False):
-    format: str
+_ContentVocabularyMetaSchemaObjectItems = Union["ContentVocabularyMetaSchema", "_SchemaArray"]
+""" Aggregation type: anyOf """
 
 
-_META_DATA_VOCABULARY_META_SCHEMA_OBJECT_DEPRECATED_DEFAULT = False
-""" Default value of the field path 'Meta-data vocabulary meta-schema object deprecated' """
+_ContentVocabularyMetaSchemaObjectType = Union["_SimpleTypes", "_ContentVocabularyMetaSchemaObjectTypeAnyof1"]
+""" Aggregation type: anyOf """
 
 
-_META_DATA_VOCABULARY_META_SCHEMA_OBJECT_READONLY_DEFAULT = False
-""" Default value of the field path 'Meta-data vocabulary meta-schema object readOnly' """
-
-
-_META_DATA_VOCABULARY_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
-""" Default value of the field path 'Meta-data vocabulary meta-schema object writeOnly' """
-
-
-class _MetaDataVocabularyMetaSchemaObject(TypedDict, total=False):
-    title: str
-    description: str
-    default: Any
-    deprecated: bool
-    """ default: False """
-
-    readOnly: bool
-    """ default: False """
-
-    writeOnly: bool
-    """ default: False """
-
-    examples: List[Any]
+_ContentVocabularyMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
+"""
+minItems: 1
+uniqueItems: True
+"""
 
 
 _NON_NEGATIVE_INTEGER_DEFAULT0_DEFAULT = 0
@@ -194,7 +189,7 @@ _STRING_ARRAY_DEFAULT: List[Any] = []
 """ Default value of the field path 'string array' """
 
 
-_SchemaArray = List["ApplicatorVocabularyMetaSchema"]
+_SchemaArray = List["ContentVocabularyMetaSchema"]
 """ minItems: 1 """
 
 
@@ -228,85 +223,4 @@ _StringArray = List[str]
 uniqueItems: True
 default:
   []
-"""
-
-
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_MINCONTAINS_DEFAULT = 1
-""" Default value of the field path 'Validation vocabulary meta-schema object minContains' """
-
-
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_MINLENGTH_DEFAULT = 0
-""" Default value of the field path 'Validation vocabulary meta-schema object minLength' """
-
-
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_REQUIRED_DEFAULT: List[Any] = []
-""" Default value of the field path 'Validation vocabulary meta-schema object required' """
-
-
-_VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
-""" Default value of the field path 'Validation vocabulary meta-schema object uniqueItems' """
-
-
-class _ValidationVocabularyMetaSchemaObject(TypedDict, total=False):
-    multipleOf: Union[int, float]
-    """ exclusiveMinimum: 0 """
-
-    maximum: Union[int, float]
-    exclusiveMaximum: Union[int, float]
-    minimum: Union[int, float]
-    exclusiveMinimum: Union[int, float]
-    maxLength: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    minLength: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    pattern: str
-    """ format: regex """
-
-    maxItems: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    minItems: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    uniqueItems: bool
-    """ default: False """
-
-    maxContains: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    minContains: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    maxProperties: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    minProperties: "_NonNegativeInteger"
-    """ minimum: 0 """
-
-    required: "_StringArray"
-    """
-    uniqueItems: True
-    default:
-      []
-    """
-
-    dependentRequired: Dict[str, "_StringArray"]
-    const: Any
-    enum: List[Any]
-    type: "_ValidationVocabularyMetaSchemaObjectType"
-    """ Aggregation type: anyOf """
-
-
-_ValidationVocabularyMetaSchemaObjectType = Union[
-    "_SimpleTypes", "_ValidationVocabularyMetaSchemaObjectTypeAnyof1"
-]
-""" Aggregation type: anyOf """
-
-
-_ValidationVocabularyMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
-"""
-minItems: 1
-uniqueItems: True
 """

@@ -491,33 +491,92 @@ def test_all_of() -> None:
         "\n".join([d.rstrip() for d in type_.definition(None)])
         == f'''
 
-TestBasicTypes = Union["_TestBasicTypesAllof0", "_TestBasicTypesAllof1"]
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    string1: str
+    string2: str'''
+    )
+
+
+def test_all_of_2() -> None:
+    type_ = get_types(
+        {
+            "title": "test basic types",
+            "allOf": [{"type": "string"}, {"type": "number"}],
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == f'''
+
+TestBasicTypes = None
+""" test basic types. """
+'''
+    )
+
+
+def test_all_of_3() -> None:
+    type_ = get_types(
+        {
+            "title": "test basic types",
+            "allOf": [{"type": "string"}, {"maxLength": 5}],
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == f'''
+
+TestBasicTypes = str
 """
 test basic types.
 
-WARNING: PEP 544 does not support an Intersection type,
-so `allOf` is interpreted as a `Union` for now.
-See: https://github.com/camptocamp/jsonschema-gentypes/issues/8
-
-Aggregation type: allOf
+maxLength: 5
 """
 '''
     )
-    assert len(type_.depends_on()) == 1
-    assert len(type_.depends_on()[0].depends_on()) == 3
-    assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[1].definition(None)])
-        == f"""
 
-class _TestBasicTypesAllof0(TypedDict, total=False):
-    string1: str"""
+
+def test_all_of_4() -> None:
+    type_ = get_types(
+        {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": "https://example.com/fake",
+            "type": "object",
+            "title": "test basic types",
+            "definitions": {
+                "nonNegativeInteger": {"type": "integer", "minimum": 0},
+            },
+            "properties": {
+                "test": {"allOf": [{"$ref": "#/definitions/nonNegativeInteger"}, {"default": 0}]},
+            },
+        }
     )
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
-        == f"""
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == f'''
 
-class _TestBasicTypesAllof1(TypedDict, total=False):
-    string2: str"""
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    test: "_TestBasicTypesTest"
+    """
+    minimum: 0
+    default: 0
+    """
+'''
+    )
+    assert len(type_.depends_on()) == 2
+    assert (
+        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
+        == '''
+
+_TestBasicTypesTest = int
+"""
+minimum: 0
+default: 0
+"""
+'''
     )
 
 
