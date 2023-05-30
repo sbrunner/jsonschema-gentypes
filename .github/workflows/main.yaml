@@ -26,19 +26,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: camptocamp/initialise-gopass-summon-action@v2
-        with:
-          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
-          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
-          patterns: pypi docker
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
-
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --upgrade pip
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
       - name: Checks
         run: c2cciutils-checks
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - run: make prospector
       - run: make pytest
@@ -50,6 +45,16 @@ jobs:
       - run: git diff
         if: failure()
 
+      - run: python3 -m pip install --user --requirement=ci/requirements.txt
+      - name: Init pypi
+        run: |-
+          echo "[pypi]" > ~/.pypirc
+          echo "username = ${{ secrets.PYPI_USERNAME }}" >> ~/.pypirc
+          echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
