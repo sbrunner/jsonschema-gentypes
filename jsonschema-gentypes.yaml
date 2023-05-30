@@ -7,6 +7,12 @@ pre_commit:
   enabled: true
   arguments:
     - --color=never
+  hooks:
+    - trailing_whitespace
+    - isort
+    - black
+    - autoflake
+    - pyupgrade
 
 generate:
   - source: jsonschema_gentypes/schema.json
