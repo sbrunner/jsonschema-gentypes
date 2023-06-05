@@ -49,8 +49,8 @@ requests = "2.31.0"
 pinyin = { version = "0.4.0", optional = true }
 romkan = { version = "0.2.1", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "3.2.1", optional = true }
-referencing = "0.27.1"
+pre-commit = { version = "3.2.2", optional = true }
+referencing = "0.27.4"
 
 [tool.poetry.extras]
 generate = []
@@ -62,7 +62,7 @@ prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "
 pytest = "7.2.2"
 pytest-cov = "4.0.0"
 types-requests = "2.28.11.17"
-types-pyyaml = "6.0.12.9"
+types-pyyaml = "6.0.12.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning", "poetry-plugin-tweak-dependencies-version"]
