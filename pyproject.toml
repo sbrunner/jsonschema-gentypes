@@ -43,14 +43,14 @@ jsonschema-gentypes = "jsonschema_gentypes.cli:main"
 [tool.poetry.dependencies]
 python = ">=3.8,<4"
 jsonschema = "4.17.3"
-typing-extensions = "4.5.0"
+typing-extensions = "4.6.3"
 requests = "2.31.0"
 "PyYAML" = "6.0"
 pinyin = { version = "0.4.0", optional = true }
 romkan = { version = "0.2.1", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "3.2.2", optional = true }
-referencing = "0.27.4"
+pre-commit = { version = "3.3.2", optional = true }
+referencing = "0.29.0"
 
 [tool.poetry.extras]
 generate = []
@@ -58,10 +58,10 @@ tools = ["pre-commit"]
 extra = ['pinyin', 'romkan', 'romanize']
 
 [tool.poetry.dev-dependencies]
-prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.9.0" }
-pytest = "7.2.2"
-pytest-cov = "4.0.0"
-types-requests = "2.28.11.17"
+prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.10.2" }
+pytest = "7.3.1"
+pytest-cov = "4.1.0"
+types-requests = "2.31.0.1"
 types-pyyaml = "6.0.12.10"
 
 [build-system]
