@@ -1,5 +1,9 @@
 # https://pre-commit.com/hooks.html
 
+ci:
+  skip:
+    - jsonschema-gentypes
+
 repos:
   - repo: local
     hooks:
