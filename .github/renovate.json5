@@ -49,6 +49,12 @@
       groupName: 'all minor versions',
       automerge: true,
     },
+    /** Accept only the patch on stabilization branches */
+    {
+      matchBaseBranches: ['/[0-9]\\..*/'],
+      matchUpdateTypes: ['major', 'minor', 'pin', 'digest', 'lockFileMaintenance', 'rollback', 'bump'],
+      enabled: false,
+    },
     /** Group Poetry packages */
     {
       matchPackageNames: ['poetry', 'pip'],
@@ -57,12 +63,7 @@
       automerge: true,
       separateMajorMinor: false,
       separateMinorPatch: false,
-    },
-    /** Accept only the patch on stabilization branches */
-    {
-      matchBaseBranches: ['/[0-9]\\..*/'],
-      matchUpdateTypes: ['major', 'minor', 'pin', 'digest', 'lockFileMaintenance', 'rollback', 'bump'],
-      enabled: false,
+      enabled: true,
     },
   ],
 }
