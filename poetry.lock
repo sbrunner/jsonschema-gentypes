@@ -806,14 +806,14 @@ files = [
 
 [[package]]
 name = "pre-commit"
-version = "3.2.1"
+version = "3.2.2"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 category = "main"
 optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "pre_commit-3.2.1-py2.py3-none-any.whl", hash = "sha256:a06a7fcce7f420047a71213c175714216498b49ebc81fe106f7716ca265f5bb6"},
-    {file = "pre_commit-3.2.1.tar.gz", hash = "sha256:b5aee7d75dbba21ee161ba641b01e7ae10c5b91967ebf7b2ab0dfae12d07e1f1"},
+    {file = "pre_commit-3.2.2-py2.py3-none-any.whl", hash = "sha256:0b4210aea813fe81144e87c5a291f09ea66f199f367fa1df41b55e1d26e1e2b4"},
+    {file = "pre_commit-3.2.2.tar.gz", hash = "sha256:5b808fcbda4afbccf6d6633a56663fed35b6c2bc08096fd3d47ce197ac351d9d"},
 ]
 
 [package.dependencies]
@@ -1188,14 +1188,14 @@ files = [
 
 [[package]]
 name = "referencing"
-version = "0.27.1"
+version = "0.27.4"
 description = "JSON Referencing + Python"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "referencing-0.27.1-py3-none-any.whl", hash = "sha256:c682d9101fead4d2f2fbaafc586bb00e1f700b430021c92c78e7f6522b0eacc4"},
-    {file = "referencing-0.27.1.tar.gz", hash = "sha256:4a8fe98762b9188ce825012ec00b2ab89387e30622be8a7b9f441e5407b34bc2"},
+    {file = "referencing-0.27.4-py3-none-any.whl", hash = "sha256:809bd4214cae3fbfb7a788d10c4573a9fd16c52f3d4e7ce147127dbba06018f2"},
+    {file = "referencing-0.27.4.tar.gz", hash = "sha256:767fd6c491d1c4911d8fd39888b5be87136b31db6670cc7f20795b2e6b7e9683"},
 ]
 
 [package.dependencies]
@@ -1438,14 +1438,14 @@ files = [
 
 [[package]]
 name = "types-pyyaml"
-version = "6.0.12.9"
+version = "6.0.12.10"
 description = "Typing stubs for PyYAML"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-PyYAML-6.0.12.9.tar.gz", hash = "sha256:c51b1bd6d99ddf0aa2884a7a328810ebf70a4262c292195d3f4f9a0005f9eeb6"},
-    {file = "types_PyYAML-6.0.12.9-py3-none-any.whl", hash = "sha256:5aed5aa66bd2d2e158f75dda22b059570ede988559f030cf294871d3b647e3e8"},
+    {file = "types-PyYAML-6.0.12.10.tar.gz", hash = "sha256:ebab3d0700b946553724ae6ca636ea932c1b0868701d4af121630e78d695fc97"},
+    {file = "types_PyYAML-6.0.12.10-py3-none-any.whl", hash = "sha256:662fa444963eff9b68120d70cda1af5a5f2aa57900003c2006d7626450eaae5f"},
 ]
 
 [[package]]
@@ -1634,4 +1634,4 @@ tools = ["pre-commit"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "07be0cf52969cd4bb283e9236048fb0094d374cb714a7271c1e00c745b7f0efa"
+content-hash = "46bd3723c30fa6367ab0bc9f5d5081777baee082512ba9d475b11e445fdf01c0"
