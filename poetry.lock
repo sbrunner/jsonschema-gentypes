@@ -701,7 +701,7 @@ python-versions = "*"
 
 [[package]]
 name = "ruamel-yaml"
-version = "0.17.31"
+version = "0.17.32"
 description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
 category = "main"
 optional = false
@@ -892,7 +892,7 @@ tools = ["black", "isort", "pyupgrade"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4"
-content-hash = "1e38caac15d19c43ec570b14104a26679e669704937e49c64aad7a37b8a6112d"
+content-hash = "047ed1c1fdab2fdc50d231b311c36262eb27aa14d8d1305b99bbb7ec2ecd9ef7"
 
 [metadata.files]
 astroid = [
@@ -1291,8 +1291,8 @@ romkan = [
     {file = "romkan-0.2.1.tar.gz", hash = "sha256:a530245a38969704700e0ca8f9cb7158c4ede91c5fd1e24677dbe814cf91f33b"},
 ]
 ruamel-yaml = [
-    {file = "ruamel.yaml-0.17.31-py3-none-any.whl", hash = "sha256:3cf153f0047ced526e723097ac615d3009371779432e304dbd5596b6f3a4c777"},
-    {file = "ruamel.yaml-0.17.31.tar.gz", hash = "sha256:098ed1eb6d338a684891a72380277c1e6fc4d4ae0e120de9a447275056dda335"},
+    {file = "ruamel.yaml-0.17.32-py3-none-any.whl", hash = "sha256:23cd2ed620231677564646b0c6a89d138b6822a0d78656df7abda5879ec4f447"},
+    {file = "ruamel.yaml-0.17.32.tar.gz", hash = "sha256:ec939063761914e14542972a5cba6d33c23b0859ab6342f61cf070cfc600efc2"},
 ]
 ruamel-yaml-clib = [
     {file = "ruamel.yaml.clib-0.2.7-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d5859983f26d8cd7bb5c287ef452e8aacc86501487634573d260968f753e1d71"},
