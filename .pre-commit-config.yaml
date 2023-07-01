@@ -15,6 +15,6 @@ repos:
         verbose: true
         pass_filenames: false
         additional_dependencies:
-          - ruamel.yaml==0.17.31 # pypi
+          - ruamel.yaml==0.17.32 # pypi
           - jsonschema==4.17.3 # pypi
           - typing-extensions==4.5.0 # pypi
