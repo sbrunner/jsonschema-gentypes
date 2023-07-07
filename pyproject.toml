@@ -84,3 +84,4 @@ format-jinja = """
 
 [tool.poetry-plugin-tweak-dependencies-version]
 default = "present"
+jsonschema = "<4.18"
