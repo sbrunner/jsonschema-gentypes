@@ -42,7 +42,7 @@ jsonschema-gentypes = "jsonschema_gentypes.cli:main"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4"
-jsonschema = "4.17.3"
+jsonschema = "4.18.0"
 typing-extensions = "4.7.1"
 requests = "2.31.0"
 "PyYAML" = "6.0"
