@@ -51,6 +51,7 @@ romkan = { version = "0.2.1", optional = true }
 romanize = { version = "1.0.2", optional = true }
 pre-commit = { version = "3.2.2", optional = true }
 referencing = "0.27.4"
+certifi = "2023.7.22"
 
 [tool.poetry.extras]
 generate = []
