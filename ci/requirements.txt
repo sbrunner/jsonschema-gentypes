@@ -1,4 +1,4 @@
-c2cciutils==1.2.13
+c2cciutils==1.2.14
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography>=39.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
 pyopenssl>=22.1.0
