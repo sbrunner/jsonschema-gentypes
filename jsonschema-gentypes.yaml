@@ -83,3 +83,5 @@ generate:
   - source: tests/openapi3.json
     destination: tests/openapi3.py
     root_name: OgcApi
+  - source: tests/recursion.json
+    destination: tests/recursion.py
