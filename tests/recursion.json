@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "recursion.json",
+  "title": "Testsuite",
+  "description": "A json testsuite schema",
+  "type": "object",
+  "$defs": {
+    "teststep": {
+      "description": "Teststeps configuration",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Name of teststep",
+          "type": "string"
+        },
+        "desc": {
+          "description": "Description of teststep",
+          "type": "string"
+        },
+        "params": {
+          "description": "Parameter given of teststep",
+          "type": "object",
+          "properties": {}
+        },
+        "repeat_block": {
+          "description": "Repeat teststep x times",
+          "type": "object",
+          "properties": {
+            "times": {
+              "description": "Repeat teststep x times",
+              "type": "integer",
+              "minimum": 2
+            },
+            "teststeps": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/teststep" }
+            }
+          }
+        }
+      },
+      "oneOf": [{ "required": ["type"] }, { "required": ["repeat_block"] }]
+    }
+  },
+  "properties": {
+    "configs": {
+      "description": "Additional config parameters used by teststeps",
+      "type": "object",
+      "patternProperties": {
+        "^[a-z_]+": {}
+      },
+      "uniqueItems": true
+    },
+    "startup_steps": {
+      "description": "Startup steps done before every testcase",
+      "type": "array",
+      "items": { "$ref": "#/$defs/teststep" }
+    },
+    "shutdown_steps": {
+      "description": "Shutdown steps done after every testcase",
+      "type": "array",
+      "items": { "$ref": "#/$defs/teststep" }
+    },
+    "testcases": {
+      "description": "Testcases creating a Testsuite",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "req": {
+            "description": "Reference to requirements",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "name": {
+            "description": "Short name of teststep. Must start with testnumber e.g. \"01 - Testname\"",
+            "type": "string",
+            "pattern": "^[0-9]+ - .*"
+          },
+          "desc": {
+            "description": "Description of teststep",
+            "type": "string"
+          },
+          "type": {
+            "description": "Testtype",
+            "enum": ["regression", "long_running", "skip", "known_failure"]
+          },
+          "comment": {
+            "description": "Commentary to the testcase",
+            "type": "string"
+          },
+          "parameterized_tests": {
+            "description": "Execute testcase with different parameters",
+            "type": "object",
+            "uniqueItems": true,
+            "patternProperties": {
+              "[a-z_]": {
+                "type": "array",
+                "minItems": 1,
+                "items": {}
+              }
+            }
+          },
+          "teststeps": {
+            "description": "Steps done for testcase",
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/teststep" }
+          }
+        },
+        "required": ["name", "type", "teststeps"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": ["testcases"]
+}
