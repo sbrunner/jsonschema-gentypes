@@ -9,6 +9,7 @@ ci:
     - ripsecrets
     - jsonschema-gentypes
     - jsonschema-validator
+
 repos:
   - repo: local
     hooks:
@@ -28,6 +29,7 @@ repos:
           (?x)^(
             jsonschema-gentypes\.yaml
             |jsonschema_gentypes/schema\.json
+            |tests/.*\.json
           )$
         verbose: true
         pass_filenames: false
