@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
@@ -42,7 +42,7 @@ class Configuration(TypedDict, total=False):
     """
 
     headers: str
-    callbacks: List[List[str]]
+    callbacks: list[list[str]]
     pre_commit: "PreCommitConfiguration"
     """
     Pre-commit configuration.
@@ -56,7 +56,7 @@ class Configuration(TypedDict, total=False):
     python_version: str
     """ The minimum Python version to support. """
 
-    generate: Required[List["GenerateItem"]]
+    generate: Required[list["GenerateItem"]]
     """ Required property """
 
 
@@ -87,14 +87,14 @@ class GenerateItem(TypedDict, total=False):
     The argument passed to the API
     """
 
-    name_mapping: Dict[str, str]
+    name_mapping: dict[str, str]
     """
     Name mapping.
 
     Used to map the name of an alternate name
     """
 
-    vocabularies: Dict[str, str]
+    vocabularies: dict[str, str]
     """
     vocabularies.
 
@@ -102,7 +102,7 @@ class GenerateItem(TypedDict, total=False):
     """
 
 
-PRE_COMMIT_ARGUMENTS_DEFAULT: List[Any] = []
+PRE_COMMIT_ARGUMENTS_DEFAULT: list[Any] = []
 """ Default value of the field path 'Pre-commit configuration arguments' """
 
 
@@ -124,7 +124,7 @@ class PreCommitConfiguration(TypedDict, total=False):
     default: False
     """
 
-    arguments: List[str]
+    arguments: list[str]
     """
     Pre-commit arguments.
 
@@ -134,14 +134,14 @@ class PreCommitConfiguration(TypedDict, total=False):
       []
     """
 
-    hooks: List[str]
+    hooks: list[str]
     """
     Pre-commit hooks.
 
     The hooks to run, all by default
     """
 
-    hooks_skip: List[str]
+    hooks_skip: list[str]
     """
     Pre-commit skipped hooks.
 

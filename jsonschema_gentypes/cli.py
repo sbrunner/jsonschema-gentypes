@@ -10,7 +10,7 @@ import random
 import re
 import subprocess  # nosec
 import sys
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, cast
+from typing import Any, Callable, Optional, Union, cast
 
 import yaml
 
@@ -28,12 +28,12 @@ LOG = logging.getLogger(__name__)
 
 def _add_type(
     type_: jsonschema_gentypes.Type,
-    imports: Dict[str, Set[str]],
-    types: Dict[str, jsonschema_gentypes.Type],
+    imports: dict[str, set[str]],
+    types: dict[str, jsonschema_gentypes.Type],
     gen: configuration.GenerateItem,
     config: configuration.Configuration,
-    minimal_python_version: Tuple[int, ...],
-    added_types: Optional[Set[jsonschema_gentypes.Type]] = None,
+    minimal_python_version: tuple[int, ...],
+    added_types: Optional[set[jsonschema_gentypes.Type]] = None,
 ) -> None:
     if added_types is None:
         added_types = set()
@@ -110,11 +110,11 @@ class _AddType:
         self,
         api: jsonschema_gentypes.api.API,
         resolver: jsonschema_gentypes.resolver.RefResolver,
-        imports: Dict[str, Set[str]],
-        types: Dict[str, jsonschema_gentypes.Type],
+        imports: dict[str, set[str]],
+        types: dict[str, jsonschema_gentypes.Type],
         gen: configuration.GenerateItem,
         config: configuration.Configuration,
-        python_version: Tuple[int, ...],
+        python_version: tuple[int, ...],
     ):
         self.api = api
         self.resolver = resolver
@@ -144,7 +144,7 @@ class _BuildName:
     def __init__(self, gen: configuration.GenerateItem):
         self.gen = gen
 
-    def __call__(self, path: str, parts: List[str]) -> str:
+    def __call__(self, path: str, parts: list[str]) -> str:
         parts = [*path.split("/"), *parts]
         self.gen.get("root_name")
         if "root_name" in self.gen:
@@ -197,8 +197,8 @@ def process_config(config: configuration.Configuration) -> None:
         api_args = gen.get("api_arguments", {})
         api = api_version(resolver, **api_args)
 
-        types: Dict[str, jsonschema_gentypes.Type] = {}
-        imports: Dict[str, Set[str]] = {}
+        types: dict[str, jsonschema_gentypes.Type] = {}
+        imports: dict[str, set[str]] = {}
 
         add_type = _AddType(api, resolver, imports, types, gen, config, python_version)
 
@@ -210,12 +210,12 @@ def process_config(config: configuration.Configuration) -> None:
                 for method_name, method_config in path_config.items():
                     method_config = resolver.auto_resolve(method_config)
 
-                    global_type: Dict[str, jsonschema_gentypes.Type] = {}
+                    global_type: dict[str, jsonschema_gentypes.Type] = {}
                     global_type_required = set()
 
                     # Add request parameters
-                    classed_parameters: Dict[str, Dict[str, jsonschema_gentypes.Type]] = {}
-                    classed_parameters_required: Dict[str, Set[str]] = {}
+                    classed_parameters: dict[str, dict[str, jsonschema_gentypes.Type]] = {}
+                    classed_parameters_required: dict[str, set[str]] = {}
                     for param_config in method_config.get("parameters", []):
                         param_config = resolver.auto_resolve(param_config)
                         classed_parameters.setdefault(param_config["in"], {})[

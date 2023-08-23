@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 JSONSchemaD2020 = Union["JSONSchemaItemD2020", bool]
 """ Validation vocabulary meta-schema. """
@@ -14,7 +14,7 @@ class JSONSchemaItemD2020(TypedDict, total=False):
     """ Aggregation type: anyOf """
 
     const: Any
-    enum: List[Any]
+    enum: list[Any]
     """ items: True """
 
     multipleOf: Union[int, float]
@@ -61,7 +61,7 @@ class JSONSchemaItemD2020(TypedDict, total=False):
       []
     """
 
-    dependentRequired: Dict[str, "_StringArray"]
+    dependentRequired: dict[str, "_StringArray"]
 
 
 _NON_NEGATIVE_INTEGER_DEFAULT0_DEFAULT = 0
@@ -72,7 +72,7 @@ _NonNegativeInteger = int
 """ minimum: 0 """
 
 
-_STRING_ARRAY_DEFAULT: List[Any] = []
+_STRING_ARRAY_DEFAULT: list[Any] = []
 """ Default value of the field path 'string array' """
 
 
@@ -101,7 +101,7 @@ _SIMPLETYPES_STRING: Literal["string"] = "string"
 """The values for the '_SimpleTypes' enum"""
 
 
-_StringArray = List[str]
+_StringArray = list[str]
 """
 uniqueItems: True
 default:
@@ -123,7 +123,7 @@ _ValidationVocabularyMetaSchemaObjectType = Union[
 """ Aggregation type: anyOf """
 
 
-_ValidationVocabularyMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
+_ValidationVocabularyMetaSchemaObjectTypeAnyof1 = list["_SimpleTypes"]
 """
 minItems: 1
 uniqueItems: True

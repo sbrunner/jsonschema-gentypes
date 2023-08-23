@@ -3,7 +3,7 @@ The API version draft 2019 09.
 """
 
 import re
-from typing import Any, List, Union, cast
+from typing import Any, Union, cast
 
 from jsonschema_gentypes import (
     Type,
@@ -23,9 +23,9 @@ class APIv201909(APIv7):
     def __init__(self, *args: Any, **kwargs: Any):
         """Initialize."""
         super().__init__(*args, **kwargs)
-        self.is_recursive_anchor_path: List[bool] = []
-        self.recursive_anchor_path_type: List[Type] = []
-        self.recursive_anchor_path_schema: List[
+        self.is_recursive_anchor_path: list[bool] = []
+        self.recursive_anchor_path_type: list[Type] = []
+        self.recursive_anchor_path_schema: list[
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ] = []
 

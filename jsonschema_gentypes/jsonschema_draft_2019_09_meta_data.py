@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, List, TypedDict, Union
+from typing import Any, TypedDict, Union
 
 
 class JSONSchemaItemD2019(TypedDict, total=False):
@@ -19,7 +19,7 @@ class JSONSchemaItemD2019(TypedDict, total=False):
     writeOnly: bool
     """ default: False """
 
-    examples: List[Any]
+    examples: list[Any]
 
 
 MetaDataVocabularyMetaSchema = Union["JSONSchemaItemD2019", bool]

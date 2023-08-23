@@ -3,12 +3,12 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
 ExtentWithUniformAdditionalDimensionsSchema = Union[
-    Dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"],
+    dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"],
     "ExtentWithUniformAdditionalDimensionsSchemaTyped",
 ]
 """
@@ -167,7 +167,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     example: A Digital Elevation Model.
     """
 
-    links: Required[List["_ComponentsSchemasLink"]]
+    links: Required[list["_ComponentsSchemasLink"]]
     """ Required property """
 
     extent: "ExtentWithUniformAdditionalDimensionsSchema"
@@ -196,7 +196,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     default: unknown
     """
 
-    crs: List[str]
+    crs: list[str]
     """
     the list of coordinate reference systems supported by the API; the first item is the default coordinate reference system
 
@@ -298,9 +298,9 @@ _EXTENT_WITH_UNIFORM_ADDITIONAL_DIMENSIONS_SCHEMA_TEMPORAL_TRS_DEFAULT = (
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties = Union[
-    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
-    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
-    Union[str, Union[int, float], Dict[str, Any], None, bool, None],
+    Union[str, Union[int, float], dict[str, Any], None, bool, None],
+    Union[str, Union[int, float], dict[str, Any], None, bool, None],
+    Union[str, Union[int, float], dict[str, Any], None, bool, None],
 ]
 """
 The domain intervals for any additional dimensions of the extent (envelope) beyond those described in temporal and spatial.
@@ -312,7 +312,7 @@ Aggregation type: oneOf
 class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False):
     """The spatial extent of the data in the collection."""
 
-    bbox: List["_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem"]
+    bbox: list["_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem"]
     """
     One or more bounding boxes that describe the spatial extent of the dataset.
     In the Core only a single bounding box is supported.
@@ -339,7 +339,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False
     default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
     """
 
-    grid: List["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem"]
+    grid: list["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem"]
     """
     Provides information about the limited availability of data within the collection organized
     as a grid (regular or irregular) along each spatial dimension.
@@ -390,7 +390,7 @@ Aggregation type: oneOf
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItemOneof0 = Union[
-    str, Union[int, float], Dict[str, Any], None, bool, None
+    str, Union[int, float], dict[str, Any], None, bool, None
 ]
 """
 minItems: 4
@@ -399,7 +399,7 @@ maxItems: 4
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItemOneof1 = Union[
-    str, Union[int, float], Dict[str, Any], None, bool, None
+    str, Union[int, float], dict[str, Any], None, bool, None
 ]
 """
 minItems: 6
@@ -432,7 +432,7 @@ _EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMASPATIALCRS_HTTP_COLON__SOLIDUS__SOLI
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, total=False):
-    coordinates: List["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem"]
+    coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem"]
     """
     List of coordinates along the dimension for which data organized as an irregular grid in the collection is available
     (e.g., 2, 10, 80, 100).
@@ -478,7 +478,7 @@ _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0 = st
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=False):
     """The temporal extent of the features in the collection."""
 
-    interval: List["_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem"]
+    interval: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem"]
     """
     One or more time intervals that describe the temporal extent of the dataset.
     In the Core only a single time interval is supported.
@@ -511,7 +511,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=Fals
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=False):
     """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension."""
 
-    coordinates: List["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridCoordinatesItem"]
+    coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridCoordinatesItem"]
     """
     List of coordinates along the temporal dimension for which data organized as an irregular grid in the collection is available
     (e.g., "2017-11-14T09:00Z","2017-11-14T12:00Z","2017-11-14T15:00Z","2017-11-14T18:00Z","2017-11-14T21:00Z").
@@ -548,7 +548,7 @@ _ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0 = str
 """ nullable: True """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem = List[
+_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem = list[
     "_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItemItem"
 ]
 """

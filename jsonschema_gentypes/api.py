@@ -3,7 +3,7 @@ The API base definition.
 """
 
 from abc import abstractmethod
-from typing import Callable, Dict, List, Optional, Union, cast
+from typing import Callable, Optional, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
@@ -60,7 +60,7 @@ class API:
         self.resolver = resolver
         self.additional_properties = additional_properties
         # types by reference
-        self.ref_type: Dict[str, Type] = {}
+        self.ref_type: dict[str, Type] = {}
         self.root: Optional[TypeProxy] = None
 
     def get_type_handler(
@@ -322,7 +322,7 @@ class API:
             return self.all_of(
                 schema,
                 cast(
-                    List[
+                    list[
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
                             jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
@@ -337,7 +337,7 @@ class API:
             type_ = self.any_of(
                 schema,
                 cast(
-                    List[
+                    list[
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
                             jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
@@ -358,7 +358,7 @@ class API:
             type_ = self.any_of(
                 schema,
                 cast(
-                    List[
+                    list[
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
                             jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
@@ -489,7 +489,7 @@ class API:
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: List[
+        sub_schema: list[
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ],
         proposed_name: str,
@@ -507,7 +507,7 @@ class API:
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: List[
+        sub_schema: list[
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ],
         proposed_name: str,

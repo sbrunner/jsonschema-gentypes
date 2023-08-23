@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, TypedDict, Union
 
 JSONSchemaD2019 = Union["JSONSchemaItemD2019", bool]
 """ Applicator vocabulary meta-schema. """
@@ -26,13 +26,13 @@ JSONSchemaItemD2019 = TypedDict(
         "unevaluatedProperties": "JSONSchemaD2019",
         # default:
         #   {}
-        "properties": Dict[str, "JSONSchemaD2019"],
+        "properties": dict[str, "JSONSchemaD2019"],
         # propertyNames:
         #   format: regex
         # default:
         #   {}
-        "patternProperties": Dict[str, "JSONSchemaD2019"],
-        "dependentSchemas": Dict[str, "JSONSchemaD2019"],
+        "patternProperties": dict[str, "JSONSchemaD2019"],
+        "dependentSchemas": dict[str, "JSONSchemaD2019"],
         # Applicator vocabulary meta-schema.
         "propertyNames": "JSONSchemaD2019",
         # Applicator vocabulary meta-schema.
@@ -54,11 +54,11 @@ JSONSchemaItemD2019 = TypedDict(
 )
 
 
-_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
+_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Applicator vocabulary meta-schema object patternProperties' """
 
 
-_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
+_APPLICATOR_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Applicator vocabulary meta-schema object properties' """
 
 
@@ -66,5 +66,5 @@ _ApplicatorVocabularyMetaSchemaObjectItems = Union["JSONSchemaD2019", "_SchemaAr
 """ Aggregation type: anyOf """
 
 
-_SchemaArray = List["JSONSchemaD2019"]
+_SchemaArray = list["JSONSchemaD2019"]
 """ minItems: 1 """

@@ -1,13 +1,13 @@
 [tool.black]
 line-length = 110
-target-version = ['py38']
+target-version = ["py39"]
 
 [tool.isort]
 profile = "black"
 line_length = 110
 
 [tool.mypy]
-python_version = 3.8
+python_version = 3.9
 warn_redundant_casts = true
 warn_unused_ignores = true
 ignore_missing_imports = true
@@ -29,8 +29,6 @@ classifiers = [
     "Environment :: Console",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: BSD License",
     "Topic :: Software Development :: Code Generators",
@@ -41,7 +39,7 @@ classifiers = [
 jsonschema-gentypes = "jsonschema_gentypes.cli:main"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4"
+python = ">=3.9,<4"
 jsonschema = "4.18.4"
 typing-extensions = "4.7.1"
 requests = "2.31.0"
