@@ -3,9 +3,9 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
-CORE_SCHEMA_META_SCHEMA_DEFAULT: Dict[str, Any] = {}
+CORE_SCHEMA_META_SCHEMA_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD6' """
 
 
@@ -31,8 +31,8 @@ JSONSchemaItemD6 = TypedDict(
         "$ref": str,
         "title": str,
         "description": str,
-        "default": Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None],
-        "examples": List[Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None]],
+        "default": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
+        "examples": list[Union[str, Union[int, float], dict[str, Any], list[Any], bool, None]],
         # exclusiveMinimum: 0
         "multipleOf": Union[int, float],
         "maximum": Union[int, float],
@@ -84,25 +84,25 @@ JSONSchemaItemD6 = TypedDict(
         "additionalProperties": "JSONSchemaD6",
         # default:
         #   {}
-        "definitions": Dict[str, "JSONSchemaD6"],
+        "definitions": dict[str, "JSONSchemaD6"],
         # default:
         #   {}
-        "properties": Dict[str, "JSONSchemaD6"],
+        "properties": dict[str, "JSONSchemaD6"],
         # propertyNames:
         #   format: regex
         # default:
         #   {}
-        "patternProperties": Dict[str, "JSONSchemaD6"],
-        "dependencies": Dict[str, "_CoreSchemaMetaSchemaObjectDependenciesAdditionalproperties"],
+        "patternProperties": dict[str, "JSONSchemaD6"],
+        "dependencies": dict[str, "_CoreSchemaMetaSchemaObjectDependenciesAdditionalproperties"],
         # Core schema meta-schema.
         #
         # default:
         #   {}
         "propertyNames": "JSONSchemaD6",
-        "const": Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None],
+        "const": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
         # minItems: 1
         # uniqueItems: True
-        "enum": List[Any],
+        "enum": list[Any],
         # Aggregation type: anyOf
         "type": "_CoreSchemaMetaSchemaObjectType",
         "format": str,
@@ -122,19 +122,19 @@ JSONSchemaItemD6 = TypedDict(
 )
 
 
-_CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: Dict[str, Any] = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_DEFINITIONS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Core schema meta-schema object definitions' """
 
 
-_CORE_SCHEMA_META_SCHEMA_OBJECT_ITEMS_DEFAULT: Dict[str, Any] = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_ITEMS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Core schema meta-schema object items' """
 
 
-_CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Core schema meta-schema object patternProperties' """
 
 
-_CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
+_CORE_SCHEMA_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Core schema meta-schema object properties' """
 
 
@@ -159,7 +159,7 @@ _CoreSchemaMetaSchemaObjectType = Union["_SimpleTypes", "_CoreSchemaMetaSchemaOb
 """ Aggregation type: anyOf """
 
 
-_CoreSchemaMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
+_CoreSchemaMetaSchemaObjectTypeAnyof1 = list["_SimpleTypes"]
 """
 minItems: 1
 uniqueItems: True
@@ -181,11 +181,11 @@ default: 0
 """
 
 
-_STRING_ARRAY_DEFAULT: List[Any] = []
+_STRING_ARRAY_DEFAULT: list[Any] = []
 """ Default value of the field path 'string array' """
 
 
-_SchemaArray = List["JSONSchemaD6"]
+_SchemaArray = list["JSONSchemaD6"]
 """ minItems: 1 """
 
 
@@ -214,7 +214,7 @@ _SIMPLETYPES_STRING: Literal["string"] = "string"
 """The values for the '_SimpleTypes' enum"""
 
 
-_StringArray = List[str]
+_StringArray = list[str]
 """
 uniqueItems: True
 default:

@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 ContentVocabularyMetaSchema = Union["_ContentVocabularyMetaSchemaObject", bool]
 """ Content vocabulary meta-schema. """
@@ -17,11 +17,11 @@ _CONTENT_VOCABULARY_META_SCHEMA_OBJECT_MINCONTAINS_DEFAULT = 1
 """ Default value of the field path 'Content vocabulary meta-schema object minContains' """
 
 
-_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PATTERNPROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Content vocabulary meta-schema object patternProperties' """
 
 
-_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: Dict[str, Any] = {}
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT_PROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Content vocabulary meta-schema object properties' """
 
 
@@ -37,7 +37,7 @@ _CONTENT_VOCABULARY_META_SCHEMA_OBJECT_WRITEONLY_DEFAULT = False
 """ Default value of the field path 'Content vocabulary meta-schema object writeOnly' """
 
 
-_CONTENT_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: Dict[str, Any] = {}
+_CONTENT_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Content vocabulary meta-schema object $defs' """
 
 
@@ -65,11 +65,11 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         # propertyNames:
         #   __type__: string
         #   format: uri
-        "$vocabulary": Dict[str, bool],
+        "$vocabulary": dict[str, bool],
         "$comment": str,
         # default:
         #   {}
-        "$defs": Dict[str, "ContentVocabularyMetaSchema"],
+        "$defs": dict[str, "ContentVocabularyMetaSchema"],
         # Content vocabulary meta-schema.
         "additionalItems": "ContentVocabularyMetaSchema",
         # Content vocabulary meta-schema.
@@ -84,13 +84,13 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         "unevaluatedProperties": "ContentVocabularyMetaSchema",
         # default:
         #   {}
-        "properties": Dict[str, "ContentVocabularyMetaSchema"],
+        "properties": dict[str, "ContentVocabularyMetaSchema"],
         # propertyNames:
         #   format: regex
         # default:
         #   {}
-        "patternProperties": Dict[str, "ContentVocabularyMetaSchema"],
-        "dependentSchemas": Dict[str, "ContentVocabularyMetaSchema"],
+        "patternProperties": dict[str, "ContentVocabularyMetaSchema"],
+        "dependentSchemas": dict[str, "ContentVocabularyMetaSchema"],
         # Content vocabulary meta-schema.
         "propertyNames": "ContentVocabularyMetaSchema",
         # Content vocabulary meta-schema.
@@ -137,9 +137,9 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         # default:
         #   []
         "required": "_StringArray",
-        "dependentRequired": Dict[str, "_StringArray"],
+        "dependentRequired": dict[str, "_StringArray"],
         "const": Any,
-        "enum": List[Any],
+        "enum": list[Any],
         # Aggregation type: anyOf
         "type": "_ContentVocabularyMetaSchemaObjectType",
         "title": str,
@@ -151,7 +151,7 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         "readOnly": bool,
         # default: False
         "writeOnly": bool,
-        "examples": List[Any],
+        "examples": list[Any],
         "format": str,
         "contentMediaType": str,
         "contentEncoding": str,
@@ -170,7 +170,7 @@ _ContentVocabularyMetaSchemaObjectType = Union["_SimpleTypes", "_ContentVocabula
 """ Aggregation type: anyOf """
 
 
-_ContentVocabularyMetaSchemaObjectTypeAnyof1 = List["_SimpleTypes"]
+_ContentVocabularyMetaSchemaObjectTypeAnyof1 = list["_SimpleTypes"]
 """
 minItems: 1
 uniqueItems: True
@@ -185,11 +185,11 @@ _NonNegativeInteger = int
 """ minimum: 0 """
 
 
-_STRING_ARRAY_DEFAULT: List[Any] = []
+_STRING_ARRAY_DEFAULT: list[Any] = []
 """ Default value of the field path 'string array' """
 
 
-_SchemaArray = List["ContentVocabularyMetaSchema"]
+_SchemaArray = list["ContentVocabularyMetaSchema"]
 """ minItems: 1 """
 
 
@@ -218,7 +218,7 @@ _SIMPLETYPES_STRING: Literal["string"] = "string"
 """The values for the '_SimpleTypes' enum"""
 
 
-_StringArray = List[str]
+_StringArray = list[str]
 """
 uniqueItems: True
 default:

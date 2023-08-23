@@ -6,7 +6,7 @@ import keyword
 import re
 import textwrap
 import unicodedata
-from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
+from typing import Any, Optional, Union, cast
 
 import yaml
 
@@ -45,7 +45,7 @@ def __greek(char: str) -> str:
     return cast(str, romanize.romanize(char))
 
 
-def __char_range(char1: str, char2: str) -> List[str]:
+def __char_range(char1: str, char2: str) -> list[str]:
     """
     Generate the characters range from `char1` to `char2`, inclusive.
 
@@ -119,8 +119,8 @@ class Type:
     The base Type object.
     """
 
-    _comments: Optional[List[str]] = None
-    _depends_on: Optional[List["Type"]] = None
+    _comments: Optional[list[str]] = None
+    _depends_on: Optional[list["Type"]] = None
 
     def __init__(self) -> None:
         """
@@ -134,14 +134,14 @@ class Type:
         """
         raise NotImplementedError
 
-    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """
         Return the needed imports.
         """
         del python_version
         return []
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
 
@@ -151,7 +151,7 @@ class Type:
         del line_length
         return []
 
-    def depends_on(self) -> List["Type"]:
+    def depends_on(self) -> list["Type"]:
         """
         Return the needed sub types.
         """
@@ -165,7 +165,7 @@ class Type:
         assert self._depends_on is not None
         self._depends_on.append(depends_on)
 
-    def comments(self) -> List[str]:
+    def comments(self) -> list[str]:
         """
         Additional comments shared by the type.
         """
@@ -173,7 +173,7 @@ class Type:
             self._comments = []
         return self._comments
 
-    def set_comments(self, comments: List[str]) -> None:
+    def set_comments(self, comments: list[str]) -> None:
         """
         Set comment on the type.
         """
@@ -194,14 +194,14 @@ class TypeProxy(Type):
         assert self._type is not None
         return self._type.name()
 
-    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """
         Return the needed imports.
         """
         assert self._type is not None
         return self._type.imports(python_version)
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
 
@@ -211,7 +211,7 @@ class TypeProxy(Type):
         assert self._type is not None
         return self._type.definition()
 
-    def depends_on(self) -> List["Type"]:
+    def depends_on(self) -> list["Type"]:
         """
         Return the needed sub types.
         """
@@ -224,13 +224,13 @@ class TypeProxy(Type):
         """
         raise NotImplementedError
 
-    def comments(self) -> List[str]:
+    def comments(self) -> list[str]:
         """
         Additional comments shared by the type.
         """
         return self._type.comments() if self._type is not None else []
 
-    def set_comments(self, comments: List[str]) -> None:
+    def set_comments(self, comments: list[str]) -> None:
         """
         Set comment on the type.
         """
@@ -288,7 +288,7 @@ class LiteralType(Type):
     A literal type like: `Literal["text"]`.
     """
 
-    def __init__(self, const: Union[int, float, bool, str, None, Dict[str, Any], List[Any]]) -> None:
+    def __init__(self, const: Union[int, float, bool, str, None, dict[str, Any], list[Any]]) -> None:
         """
         Init.
 
@@ -304,7 +304,7 @@ class LiteralType(Type):
         """
         return f"Literal[{repr(self.const)}]"
 
-    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """
         Return the needed imports.
         """
@@ -343,7 +343,7 @@ class NativeType(Type):
         self,
         name: str,
         package: str = "typing",
-        minimal_python_version: Optional[Tuple[int, ...]] = None,
+        minimal_python_version: Optional[tuple[int, ...]] = None,
         workaround_package: Optional[str] = None,
     ) -> None:
         """
@@ -367,7 +367,7 @@ class NativeType(Type):
         """
         return self._name
 
-    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """
         Return the needed imports.
         """
@@ -384,7 +384,7 @@ class CombinedType(Type):
     e.g.: Union[str, int] is an Combined type of `str` and `int` with `Union` as base.
     """
 
-    def __init__(self, base: Type, sub_types: List[Type]) -> None:
+    def __init__(self, base: Type, sub_types: list[Type]) -> None:
         """
         Init.
 
@@ -403,7 +403,7 @@ class CombinedType(Type):
         assert isinstance(self.base, Type)
         return f"{self.base.name()}[{', '.join([sub_type.name() for sub_type in self.sub_types])}]"
 
-    def depends_on(self) -> List[Type]:
+    def depends_on(self) -> list[Type]:
         """
         Return the needed sub types.
         """
@@ -415,7 +415,7 @@ class TypeAlias(NamedType):
     An alias on a type, essentially to add a description.
     """
 
-    def __init__(self, name: str, sub_type: Type, descriptions: Optional[List[str]] = None):
+    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None):
         """
         Init.
 
@@ -428,13 +428,13 @@ class TypeAlias(NamedType):
         self.sub_type = sub_type
         self._comments = [] if descriptions is None else descriptions
 
-    def depends_on(self) -> List[Type]:
+    def depends_on(self) -> list[Type]:
         """
         Return the needed sub types.
         """
         return [self.sub_type] + super().depends_on()
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
         """
@@ -454,7 +454,7 @@ class TypeEnum(NamedType):
     The Type that represent an Enum in Python.
     """
 
-    def __init__(self, name: str, values: List[Union[int, float, bool, str, None]], descriptions: List[str]):
+    def __init__(self, name: str, values: list[Union[int, float, bool, str, None]], descriptions: list[str]):
         """
         Init.
 
@@ -469,14 +469,14 @@ class TypeEnum(NamedType):
         self.descriptions = descriptions
         self.sub_type: Type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
 
-    def depends_on(self) -> List["Type"]:
+    def depends_on(self) -> list["Type"]:
         """
         Return the needed sub types.
         """
 
         return [self.sub_type] + super().depends_on()
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
         """
@@ -509,9 +509,9 @@ class TypedDictType(NamedType):
     def __init__(
         self,
         name: str,
-        struct: Dict[str, Type],
-        descriptions: List[str],
-        required: Set[str],
+        struct: dict[str, Type],
+        descriptions: list[str],
+        required: set[str],
     ):
         """
         Init.
@@ -538,15 +538,15 @@ class TypedDictType(NamedType):
             for name, prop_type in struct.items()
         }
 
-    def depends_on(self) -> List[Type]:
+    def depends_on(self) -> list[Type]:
         """
         Get the types that we requires to be valid.
         """
-        result: List[Type] = [NativeType("TypedDict")]
+        result: list[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
         return result + super().depends_on()
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Get the definition based on a dict.
         """
@@ -600,7 +600,7 @@ class Constant(NamedType):
     The Pseudo Type is used to add the default constants.
     """
 
-    def __init__(self, name: str, constant: Any, descriptions: List[str]):
+    def __init__(self, name: str, constant: Any, descriptions: list[str]):
         """
         Init.
 
@@ -613,7 +613,7 @@ class Constant(NamedType):
         self.constant = constant
         self.descriptions = descriptions
 
-    def definition(self, line_length: Optional[int] = None) -> List[str]:
+    def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
         """
@@ -631,7 +631,7 @@ class Constant(NamedType):
             result += ['"""', *comments, '"""', ""]
         return result
 
-    def imports(self, python_version: Tuple[int, ...]) -> List[Tuple[str, str]]:
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """
         Return the needed imports.
         """
@@ -645,7 +645,7 @@ class Constant(NamedType):
             return []
 
 
-def split_comment(text: List[str], line_length: Optional[int]) -> List[str]:
+def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:
     """
     Split the text at line length.
 
@@ -708,14 +708,14 @@ def get_description(
         jsonschema_draft_04.JSONSchemaD4,
         jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
     ]
-) -> List[str]:
+) -> list[str]:
     """
     Get the standard description for an element.
 
     Arguments:
         schema: the concerned schema
     """
-    result: List[str] = []
+    result: list[str] = []
     if "title" in schema:
         result.append(f"{schema['title']}.")
         schema.setdefault("used", set()).add("title")  # type: ignore[typeddict-item]

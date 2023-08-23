@@ -2,7 +2,7 @@
 The API version draft 2020 12.
 """
 
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
@@ -25,8 +25,8 @@ class APIv202012(APIv201909):
     def __init__(self, *args: Any, **kwargs: Any):
         """Initialize."""
         super().__init__(*args, **kwargs)
-        self.dynamic_anchor_type: Dict[str, Type] = {}
-        self.dynamic_anchor_schema: Dict[
+        self.dynamic_anchor_type: dict[str, Type] = {}
+        self.dynamic_anchor_schema: dict[
             str,
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
         ] = {}
@@ -103,7 +103,7 @@ class APIv202012(APIv201909):
 
         prefix_items = schema_casted.get("prefixItems")
         items = schema_casted.get("items")
-        all_items: List[jsonschema_draft_2020_12_applicator.JSONSchemaD2020] = (
+        all_items: list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020] = (
             prefix_items if prefix_items is not None else []
         )
         if items is not None:

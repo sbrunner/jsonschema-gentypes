@@ -3,7 +3,7 @@ The API version draft 04.
 """
 
 import re
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
@@ -51,7 +51,7 @@ class APIv4(API):
 
         return TypeEnum(
             get_name(schema_meta_data, proposed_name),
-            cast(List[Union[int, float, bool, str, None]], schema["enum"]),
+            cast(list[Union[int, float, bool, str, None]], schema["enum"]),
             get_description(schema_meta_data),
         )
 
@@ -111,7 +111,7 @@ class APIv4(API):
             std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
         schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
         properties = cast(
-            Dict[
+            dict[
                 str,
                 Union[
                     jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
@@ -219,7 +219,7 @@ class APIv4(API):
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: List[
+        sub_schema: list[
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ],
         proposed_name: str,
@@ -246,7 +246,7 @@ class APIv4(API):
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: List[
+        sub_schema: list[
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ],
         proposed_name: str,
@@ -256,7 +256,7 @@ class APIv4(API):
         Combine all the definitions.
         """
 
-        all_schema: Dict[str, Any] = {}
+        all_schema: dict[str, Any] = {}
         for prop in ["title", "description", "default", "example"]:
             if prop in schema:
                 all_schema[prop] = schema[prop]  # type: ignore[literal-required]
@@ -279,7 +279,7 @@ class APIv4(API):
                 new_schema,
             )
 
-            combined_schema: Dict[str, Any] = {}
+            combined_schema: dict[str, Any] = {}
             if "properties" in new_schema and "properties" in all_schema:
                 combined_schema["properties"] = {
                     **all_schema["properties"],

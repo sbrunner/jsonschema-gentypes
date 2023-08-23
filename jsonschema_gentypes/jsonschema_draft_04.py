@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, List, Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 # Core schema meta-schema
 #
@@ -22,7 +22,7 @@ JSONSchemaD4 = TypedDict(
         "$schema": str,
         "title": str,
         "description": str,
-        "default": Union[str, Union[int, float], Dict[str, Any], List[Any], bool, None],
+        "default": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
         # minimum: 0
         # exclusiveMinimum: True
         "multipleOf": Union[int, float],
@@ -71,17 +71,17 @@ JSONSchemaD4 = TypedDict(
         "additionalProperties": "_Jsonschemad4Additionalproperties",
         # default:
         #   {}
-        "definitions": Dict[str, "JSONSchemaD4"],
+        "definitions": dict[str, "JSONSchemaD4"],
         # default:
         #   {}
-        "properties": Dict[str, "JSONSchemaD4"],
+        "properties": dict[str, "JSONSchemaD4"],
         # default:
         #   {}
-        "patternProperties": Dict[str, "JSONSchemaD4"],
-        "dependencies": Dict[str, "_Jsonschemad4DependenciesAdditionalproperties"],
+        "patternProperties": dict[str, "JSONSchemaD4"],
+        "dependencies": dict[str, "_Jsonschemad4DependenciesAdditionalproperties"],
         # minItems: 1
         # uniqueItems: True
-        "enum": List[Any],
+        "enum": list[Any],
         # Aggregation type: anyOf
         "type": "_Jsonschemad4Type",
         "format": str,
@@ -107,19 +107,19 @@ JSONSchemaD4 = TypedDict(
 )
 
 
-_JSONSCHEMAD4_ADDITIONALITEMS_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_ADDITIONALITEMS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 additionalItems' """
 
 
-_JSONSCHEMAD4_ADDITIONALPROPERTIES_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_ADDITIONALPROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 additionalProperties' """
 
 
-_JSONSCHEMAD4_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4' """
 
 
-_JSONSCHEMAD4_DEFINITIONS_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_DEFINITIONS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 definitions' """
 
 
@@ -131,15 +131,15 @@ _JSONSCHEMAD4_EXCLUSIVEMINIMUM_DEFAULT = False
 """ Default value of the field path 'JSONSchemaD4 exclusiveMinimum' """
 
 
-_JSONSCHEMAD4_ITEMS_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_ITEMS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 items' """
 
 
-_JSONSCHEMAD4_PATTERNPROPERTIES_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_PATTERNPROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 patternProperties' """
 
 
-_JSONSCHEMAD4_PROPERTIES_DEFAULT: Dict[str, Any] = {}
+_JSONSCHEMAD4_PROPERTIES_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'JSONSchemaD4 properties' """
 
 
@@ -182,7 +182,7 @@ _Jsonschemad4Type = Union["_SimpleTypes", "_Jsonschemad4TypeAnyof1"]
 """ Aggregation type: anyOf """
 
 
-_Jsonschemad4TypeAnyof1 = List["_SimpleTypes"]
+_Jsonschemad4TypeAnyof1 = list["_SimpleTypes"]
 """
 minItems: 1
 uniqueItems: True
@@ -204,7 +204,7 @@ default: 0
 """
 
 
-_SchemaArray = List["JSONSchemaD4"]
+_SchemaArray = list["JSONSchemaD4"]
 """ minItems: 1 """
 
 
@@ -233,7 +233,7 @@ _SIMPLETYPES_STRING: Literal["string"] = "string"
 """The values for the '_SimpleTypes' enum"""
 
 
-_StringArray = List[str]
+_StringArray = list[str]
 """
 minItems: 1
 uniqueItems: True

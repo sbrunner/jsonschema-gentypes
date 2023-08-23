@@ -6,7 +6,7 @@ Encapsulate the referencing logic to be able to use it in the code generation.
 
 import json
 import re
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 import referencing._core
 import referencing.exceptions
@@ -21,10 +21,10 @@ from jsonschema_gentypes import (
     jsonschema_draft_2020_12_core,
 )
 
-Json = Union[str, int, float, bool, None, List["Json"], Dict[str, "Json"]]
-JsonDict = Dict[str, "Json"]
+Json = Union[str, int, float, bool, None, list["Json"], dict[str, "Json"]]
+JsonDict = dict[str, "Json"]
 
-_RESOURCE_CACHE: Dict[str, referencing.Resource[Any]] = {}
+_RESOURCE_CACHE: dict[str, referencing.Resource[Any]] = {}
 
 
 def _openapi_schema(
@@ -132,8 +132,8 @@ class RefResolver:
             ]
         ] = self.registry.resolver(base_url)
 
-        self.vocabulary_url: Dict[str, str] = {}
-        self.vocabulary_resolver: Dict[
+        self.vocabulary_url: dict[str, str] = {}
+        self.vocabulary_resolver: dict[
             str,
             referencing._core.Resolver[
                 Union[

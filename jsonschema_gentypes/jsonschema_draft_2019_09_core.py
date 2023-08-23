@@ -3,7 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Dict, TypedDict, Union
+from typing import Any, TypedDict, Union
 
 JSONSchemaD2019 = Union["JSONSchemaItemD2019", bool]
 """ Core vocabulary meta-schema. """
@@ -29,17 +29,17 @@ JSONSchemaItemD2019 = TypedDict(
         # propertyNames:
         #   __type__: string
         #   format: uri
-        "$vocabulary": Dict[str, bool],
+        "$vocabulary": dict[str, bool],
         "$comment": str,
         # default:
         #   {}
-        "$defs": Dict[str, "JSONSchemaD2019"],
+        "$defs": dict[str, "JSONSchemaD2019"],
     },
     total=False,
 )
 
 
-_CORE_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: Dict[str, Any] = {}
+_CORE_VOCABULARY_META_SCHEMA_OBJECT__DEFS_DEFAULT: dict[str, Any] = {}
 """ Default value of the field path 'Core vocabulary meta-schema object $defs' """
 
 
