@@ -36,11 +36,11 @@ repos:
         additional_dependencies:
           - pre-commit==3.3.3 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0
+    rev: v3.0.3
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.0.0 # npm
+          - prettier@3.0.3 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -74,7 +74,7 @@ repos:
               |tests/openapi3\.json
           )$
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.2
+    rev: v0.9.0.5
     hooks:
       - id: shellcheck
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
@@ -97,7 +97,7 @@ repos:
         additional_dependencies:
           - pyjson5==1.6.4 # pypi
   - repo: https://github.com/sirwart/ripsecrets
-    rev: v0.1.5
+    rev: v0.1.6
     hooks:
       - id: ripsecrets
   - repo: https://github.com/asottile/pyupgrade
@@ -107,7 +107,7 @@ repos:
         args:
           - --py39-plus
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.0
+    rev: v2.2.1
     hooks:
       - id: autoflake
   - repo: https://github.com/PyCQA/isort
