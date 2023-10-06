@@ -28,10 +28,8 @@ jobs:
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
-      - name: Checks
-        run: c2cciutils-checks
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Print environment information
+        run: c2cciutils-env
 
       - run: pip install -e .
       - uses: actions/cache@v3
