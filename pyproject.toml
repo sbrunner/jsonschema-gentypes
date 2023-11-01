@@ -59,10 +59,10 @@ tools = ["pre-commit"]
 extra = ['pinyin', 'romkan', 'romanize']
 
 [tool.poetry.dev-dependencies]
-prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.10.2" }
-pytest = "7.4.2"
+prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.10.3" }
+pytest = "7.4.3"
 pytest-cov = "4.1.0"
-types-requests = "2.31.0.7"
+types-requests = "2.31.0.10"
 types-pyyaml = "6.0.12.12"
 
 [tool.poetry.group.dev.dependencies]
