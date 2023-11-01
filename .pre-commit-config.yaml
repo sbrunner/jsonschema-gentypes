@@ -15,7 +15,7 @@ repos:
         verbose: true
         pass_filenames: false
         additional_dependencies:
-          - ruamel.yaml==0.17.33 # pypi
+          - ruamel.yaml==0.17.40 # pypi
           - jsonschema==4.17.3 # pypi
           - typing-extensions==4.5.0 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -23,4 +23,4 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@2.8.4 # npm
+          - prettier@2.8.8 # npm
