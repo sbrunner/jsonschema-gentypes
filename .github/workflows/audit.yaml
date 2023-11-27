@@ -65,4 +65,3 @@ jobs:
         if: steps.dpkg-versions.outputs.files_exists == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
