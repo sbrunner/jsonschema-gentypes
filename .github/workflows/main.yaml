@@ -15,8 +15,8 @@ env:
 
 jobs:
   main:
-    runs-on: ubuntu-22.04
     name: Continuous integration
+    runs-on: ubuntu-22.04
     timeout-minutes: 40
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
 
@@ -56,6 +56,11 @@ jobs:
           echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
           python3 -m pip install --user wheel twine
         if: env.HAS_SECRETS == 'HAS_SECRETS'
+      - name: Init pypi
+        run: |-
+          echo "[pypi]" > ~/.pypirc
+          echo "username = ${{ secrets.PYPI_USERNAME }}" >> ~/.pypirc
+          echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
       - name: Publish
         run: c2cciutils-publish
         if: env.HAS_SECRETS == 'HAS_SECRETS'
