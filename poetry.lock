@@ -495,13 +495,13 @@ requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "jsonschema"
-version = "4.19.2"
+version = "4.20.0"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.19.2-py3-none-any.whl", hash = "sha256:eee9e502c788e89cb166d4d37f43084e3b64ab405c795c03d343a4dbc2c810fc"},
-    {file = "jsonschema-4.19.2.tar.gz", hash = "sha256:c9ff4d7447eed9592c23a12ccee508baf0dd0d59650615e847feb6cdca74f392"},
+    {file = "jsonschema-4.20.0-py3-none-any.whl", hash = "sha256:ed6231f0429ecf966f5bc8dfef245998220549cbbcf140f913b7464c52c3b6b3"},
+    {file = "jsonschema-4.20.0.tar.gz", hash = "sha256:4f614fd46d8d61258610998997743ec5492a648b33cf478c1ddc23ed4598a5fa"},
 ]
 
 [package.dependencies]
@@ -839,13 +839,13 @@ with-vulture = ["vulture (>=1.5)"]
 
 [[package]]
 name = "prospector-profile-duplicated"
-version = "0.3.0"
+version = "0.4.0"
 description = "Profile that can be used to disable the duplicated or conflict rules between Prospector and other tools"
 optional = false
 python-versions = "*"
 files = [
-    {file = "prospector_profile_duplicated-0.3.0-py2.py3-none-any.whl", hash = "sha256:5c9bc909c0bc024421bbd38e75015b56425769233aad31437c41835c8d3a34e7"},
-    {file = "prospector_profile_duplicated-0.3.0.tar.gz", hash = "sha256:142dd353a2e65f3c39c36eba7d1a5f4ffc3869381425bed43a47cc158a122a8a"},
+    {file = "prospector_profile_duplicated-0.4.0-py2.py3-none-any.whl", hash = "sha256:f648c2e81d3e4592143b678378278df6d309ae9e20bf9595b5777ee8bcdaf85d"},
+    {file = "prospector_profile_duplicated-0.4.0.tar.gz", hash = "sha256:862e332c9413aca07c2b747abf9275531cebdf82a0db887e99b63b2f424301da"},
 ]
 
 [[package]]
@@ -1129,13 +1129,13 @@ files = [
 
 [[package]]
 name = "referencing"
-version = "0.30.2"
+version = "0.31.1"
 description = "JSON Referencing + Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "referencing-0.30.2-py3-none-any.whl", hash = "sha256:449b6669b6121a9e96a7f9e410b245d471e8d48964c67113ce9afe50c8dd7bdf"},
-    {file = "referencing-0.30.2.tar.gz", hash = "sha256:794ad8003c65938edcdbc027f1933215e0d0ccc0291e3ce20a4d87432b59efc0"},
+    {file = "referencing-0.31.1-py3-none-any.whl", hash = "sha256:c19c4d006f1757e3dd75c4f784d38f8698d87b649c54f9ace14e5e8c9667c01d"},
+    {file = "referencing-0.31.1.tar.gz", hash = "sha256:81a1471c68c9d5e3831c30ad1dd9815c45b558e596653db751a2bfdd17b3b9ec"},
 ]
 
 [package.dependencies]
@@ -1627,4 +1627,4 @@ tools = ["pre-commit"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "4f57e584b297b480a41c002ce54eb9947a85f752d0ba35f33210a363cb833d56"
+content-hash = "69ca1e5e1124371333b9685bc84df7f61cc1ad8eafd70f2b07aa4e447707fcb2"
