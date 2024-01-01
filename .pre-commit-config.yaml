@@ -40,7 +40,7 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.1.0 # npm
+          - prettier@3.1.1 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
@@ -82,7 +82,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.2
+    rev: 0.27.3
     hooks:
       - id: check-github-workflows
       - id: check-jsonschema
@@ -95,7 +95,7 @@ repos:
           - github-workflows-require-timeout
       - id: check-renovate
         additional_dependencies:
-          - pyjson5==1.6.4 # pypi
+          - pyjson5==1.6.5 # pypi
   - repo: https://github.com/sirwart/ripsecrets
     rev: v0.1.7
     hooks:
