@@ -109,6 +109,23 @@ class APIv4(API):
         elif isinstance(additional_properties, dict):
             sub_type = self.get_type(additional_properties, f"{proposed_name} additionalProperties")
             std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
+        else:
+            pattern_properties = cast(
+                dict[
+                    str,
+                    Union[
+                        jsonschema_draft_04.JSONSchemaD4,
+                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    ],
+                ],
+                schema.get("patternProperties"),
+            )
+            if pattern_properties and len(pattern_properties) == 1:
+                schema.setdefault("used", set()).add("patternProperties")  # type: ignore[typeddict-item]
+                pattern_prop = list(pattern_properties.values())[0]
+                sub_type = self.get_type(pattern_prop, f"{proposed_name} Type")
+                std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
+
         schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
         properties = cast(
             dict[

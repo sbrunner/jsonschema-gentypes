@@ -360,6 +360,77 @@ TestBasicTypes = Dict[str, Any]
     )
 
 
+def test_pattern_properties_multiple():
+    type_ = get_types(
+        {
+            "type": "object",
+            "Title": "Pattern properties with tow patterns",
+            "patternProperties": {"^[a-z]+$": {"type": "string"}, "^[0-9]+$": {"type": "number"}},
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+_Base = Dict[str, Any]
+""" Title: Pattern properties with tow patterns """
+'''
+    )
+
+
+def test_pattern_properties_string():
+    type_ = get_types(
+        {
+            "type": "object",
+            "title": "Pattern properties with one pattern as string",
+            "patternProperties": {
+                "^[a-z]+$": {"type": "string"},
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+PatternPropertiesWithOnePatternAsString = Dict[str, str]
+""" Pattern properties with one pattern as string. """
+'''
+    )
+
+
+def test_pattern_properties_object():
+    type_ = get_types(
+        {
+            "type": "object",
+            "title": "Pattern properties with one pattern as object",
+            "patternProperties": {
+                "^[a-z]+$": {
+                    "type": "object",
+                    "properties": {
+                        "prop": {"type": "string"},
+                    },
+                },
+            },
+        }
+    )
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition(None)])
+        == '''
+
+PatternPropertiesWithOnePatternAsObject = Dict[str, "_PatternPropertiesWithOnePatternAsObjectType"]
+""" Pattern properties with one pattern as object. """
+'''
+    )
+
+    assert (
+        "\n".join([d.rstrip() for d in type_.depends_on()[0].depends_on()[2].definition(None)])
+        == f"""
+
+class _PatternPropertiesWithOnePatternAsObjectType(TypedDict, total=False):
+    prop: str"""
+    )
+
+
 def test_boolean_const():
     type_ = get_types(
         {
