@@ -725,32 +725,33 @@ def get_description(
             result.append("")
         result += schema["description"].split("\n")
     first = True
+    used = cast(set[str], schema.get("used", set()))
+    used = {
+        *used,
+        "$schema",
+        "$id",
+        "type",
+        "used",
+        "required",
+        "$defs",
+        "definitions",
+        "properties",
+    }
     for key, value in schema.items():
-        if (
-            key not in schema.get("used", set())  # type: ignore[operator]
-            and key not in ("$schema", "$id", "type", "used")
-            and not isinstance(value, list)
-            and not isinstance(value, dict)
-        ):
-            if first:
-                if result:
-                    result.append("")
-                first = False
-            result.append(f"{key}: {value}")
-        elif key in (
-            "not",
-            "default",
-            "examples",
-            "contains",
-            "dependencies",
-            "propertyNames",
-        ):
-            if first:
-                if result:
-                    result.append("")
-                first = False
-            result.append(f"{key}:")
-            lines = yaml.dump(value, Dumper=yaml.SafeDumper).split("\n")
-            result += [f"  {line}" for line in lines if line]
+        if key not in used:
+            if not isinstance(value, (list, dict)):
+                if first:
+                    if result:
+                        result.append("")
+                    first = False
+                result.append(f"{key}: {value}")
+            else:
+                if first:
+                    if result:
+                        result.append("")
+                    first = False
+                result.append(f"{key}:")
+                lines = yaml.dump(value, Dumper=yaml.SafeDumper).split("\n")
+                result += [f"  {line}" for line in lines if line]
 
     return result

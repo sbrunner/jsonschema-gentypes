@@ -109,6 +109,7 @@ class APIv202012(APIv201909):
         if items is not None:
             all_items = [*all_items, items]
         if prefix_items is not None:
+            schema.setdefault("used", set()).add("prefixItems")  # type: ignore[typeddict-item]
             inner_types = [
                 self.get_type(
                     cast(
@@ -133,6 +134,7 @@ class APIv202012(APIv201909):
                 )
             return type_
         elif items is not None:
+            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return CombinedType(
                 NativeType("List"),
                 [

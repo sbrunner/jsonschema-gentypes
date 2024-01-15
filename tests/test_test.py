@@ -364,7 +364,7 @@ def test_pattern_properties_multiple():
     type_ = get_types(
         {
             "type": "object",
-            "Title": "Pattern properties with tow patterns",
+            "title": "Pattern properties with tow patterns",
             "patternProperties": {"^[a-z]+$": {"type": "string"}, "^[0-9]+$": {"type": "number"}},
         }
     )
@@ -372,8 +372,16 @@ def test_pattern_properties_multiple():
         "\n".join([d.rstrip() for d in type_.definition(None)])
         == '''
 
-_Base = Dict[str, Any]
-""" Title: Pattern properties with tow patterns """
+PatternPropertiesWithTowPatterns = Dict[str, Any]
+"""
+Pattern properties with tow patterns.
+
+patternProperties:
+  ^[0-9]+$:
+    type: number
+  ^[a-z]+$:
+    type: string
+"""
 '''
     )
 
@@ -1053,9 +1061,7 @@ def test_array_true():
 class TestBasicTypes(TypedDict, total=False):
     """ test basic types. """
 
-    array: List[Any]
-    """ items: True """
-'''
+    array: List[Any]'''
     )
 
 
