@@ -742,7 +742,6 @@ def get_description(
             "default",
             "examples",
             "contains",
-            "patternProperties",
             "dependencies",
             "propertyNames",
         ):
