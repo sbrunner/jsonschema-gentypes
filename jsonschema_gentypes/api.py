@@ -236,6 +236,7 @@ class API:
         proposed_name = schema_meta_data.get("title", proposed_name)
 
         if "if" in schema:
+            schema.setdefault("used", set()).add("if")  # type: ignore[typeddict-item]
             base_schema = cast(
                 Union[
                     jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
@@ -253,6 +254,7 @@ class API:
                 {},
             )
             then_schema.update(base_schema)  # type: ignore
+            schema.setdefault("used", set()).add("then")  # type: ignore[typeddict-item]
             then_schema.update(
                 self.resolve_ref(  # type: ignore
                     cast(
@@ -267,8 +269,9 @@ class API:
             if "properties" not in then_schema:
                 then_schema["properties"] = {}
             then_properties = then_schema["properties"]
+            then_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
             assert then_properties
-            if_properties = self.resolve_ref(
+            if_schema = self.resolve_ref(
                 cast(
                     Union[
                         jsonschema_draft_04.JSONSchemaD4,
@@ -276,7 +279,9 @@ class API:
                     ],
                     schema.get("if", {}),
                 )
-            ).get("properties", {})
+            )
+            if_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
+            if_properties = if_schema.get("properties", {})
             assert if_properties
             then_properties.update(if_properties)  # type: ignore[arg-type]
             else_schema = cast(
@@ -285,18 +290,19 @@ class API:
                 ],
                 {},
             )
-            else_schema.update(base_schema)  # type: ignore
-            else_schema.update(
-                self.resolve_ref(  # type: ignore
-                    cast(
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ],
-                        schema.get("else", {}),
-                    )
+            else_schema.update(base_schema)  # type: ignore[typeddict-item]
+            schema.setdefault("used", set()).add("else")  # type: ignore[typeddict-item]
+            original_else_schema = self.resolve_ref(
+                cast(
+                    Union[
+                        jsonschema_draft_04.JSONSchemaD4,
+                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    ],
+                    schema.get("else", {}),
                 )
             )
+            else_schema.update(original_else_schema)  # type: ignore[typeddict-item]
+            original_else_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
 
             return CombinedType(
                 NativeType("Union"),
@@ -334,6 +340,7 @@ class API:
                 "allof",
             )
         if "anyOf" in schema:
+            schema.setdefault("used", set()).add("anyOf")  # type: ignore[typeddict-item]
             type_ = self.any_of(
                 schema,
                 cast(
@@ -355,6 +362,7 @@ class API:
             type_.comments().append("Aggregation type: anyOf")
             return type_
         if "oneOf" in schema:
+            schema.setdefault("used", set()).add("oneOf")  # type: ignore[typeddict-item]
             type_ = self.any_of(
                 schema,
                 cast(

@@ -168,7 +168,35 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     """
 
     links: Required[list["_ComponentsSchemasLink"]]
-    """ Required property """
+    """
+    example:
+      - href: http://data.example.org/collections/dem?f=json
+        rel: self
+        title: Digital Elevation Model
+        type: application/json
+      - href: http://data.example.org/collections/dem?f=html
+        rel: alternate
+        title: Digital Elevation Model
+        type: application/json
+      - href: http://data.example.org/collections/dem/coverage
+        rel: coverage
+        title: Digital Elevation Model
+        type: image/tiff; application=geotiff
+      - href: http://data.example.org/collections/dem/coverage/domainset
+        rel: domainset
+        title: Digital Elevation Model
+        type: application/json
+      - href: http://data.example.org/collections/dem/coverage/rangetype
+        rel: rangetype
+        title: Digital Elevation Model
+        type: application/json
+      - href: http://data.example.org/collections/dem/coverage/metadata
+        rel: metadata
+        title: Digital Elevation Model
+        type: application/json
+
+    Required property
+    """
 
     extent: "ExtentWithUniformAdditionalDimensionsSchema"
     """
@@ -202,6 +230,9 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
 
     default:
       - http://www.opengis.net/def/crs/OGC/1.3/CRS84
+    example:
+      - http://www.opengis.net/def/crs/OGC/1.3/CRS84
+      - http://www.opengis.net/def/crs/EPSG/0/4326
     """
 
     dataType: "_Ogcapicollectionscollectionidgetresponse200Datatype"
@@ -385,6 +416,14 @@ If a feature has multiple spatial geometry properties, it is the decision of the
 server whether only a single spatial geometry property is used to determine
 the extent or all relevant geometries.
 
+items:
+  type: number
+example:
+  - -180
+  - -90
+  - 180
+  - 90
+
 Aggregation type: oneOf
 """
 
@@ -438,6 +477,11 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
     (e.g., 2, 10, 80, 100).
 
     minItems: 1
+    example:
+      - 2
+      - 10
+      - 80
+      - 100
     """
 
     cellsCount: int
@@ -517,6 +561,10 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=
     (e.g., "2017-11-14T09:00Z","2017-11-14T12:00Z","2017-11-14T15:00Z","2017-11-14T18:00Z","2017-11-14T21:00Z").
 
     minItems: 1
+    example:
+      - - 2020-11-12T12:15Z
+        - 2020-11-12T12:30Z
+        - 2020-11-12T12:45Z
     """
 
     cellsCount: int
@@ -560,6 +608,9 @@ The value `null` for start or end time is supported and indicates a half-bounded
 
 minItems: 2
 maxItems: 2
+example:
+  - '2011-11-11T12:22:11Z'
+  - null
 """
 
 

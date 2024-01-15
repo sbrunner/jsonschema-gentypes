@@ -107,7 +107,6 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         # Aggregation type: anyOf
         "type": "_ContentVocabularyMetaSchemaObjectType",
         "const": Any,
-        # items: True
         "enum": list[Any],
         # exclusiveMinimum: 0
         "multipleOf": Union[int, float],
@@ -149,7 +148,6 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         "readOnly": bool,
         # default: False
         "writeOnly": bool,
-        # items: True
         "examples": list[Any],
         "format": str,
         "contentEncoding": str,

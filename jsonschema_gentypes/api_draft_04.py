@@ -41,6 +41,8 @@ class APIv4(API):
         """
         Generate an enum.
         """
+        schema.setdefault("used", set()).add("enum")  # type: ignore[typeddict-item]
+
         schema_meta_data = cast(
             Union[
                 jsonschema_draft_04.JSONSchemaD4,
@@ -179,13 +181,17 @@ class APIv4(API):
         """
         Generate a ``List[]`` annotation with the allowed types.
         """
-        schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
         items = schema.get("items")
         if items is True:
+            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return CombinedType(NativeType("List"), [NativeType("Any")])
         elif items is False:
-            raise NotImplementedError('"items": false is not supported')
+            result = NativeType("None")
+            result.set_comments(["`items: false` is not supported"])
+            return result
         elif isinstance(items, list):
+            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
+            schema.setdefault("used", set()).add("additionalItems")  # type: ignore[typeddict-item]
             additional_items = schema.get("additionalItems")
             if additional_items:
                 items = [*items, additional_items]
@@ -213,6 +219,7 @@ class APIv4(API):
                 )
             return type_
         elif items is not None:
+            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return CombinedType(
                 NativeType("List"),
                 [
@@ -229,6 +236,7 @@ class APIv4(API):
                 ],
             )
         else:
+            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return CombinedType(NativeType("List"), [NativeType("Any")])
 
     def any_of(
@@ -298,6 +306,8 @@ class APIv4(API):
 
             combined_schema: dict[str, Any] = {}
             if "properties" in new_schema and "properties" in all_schema:
+                all_schema.setdefault("used", set()).add("properties")
+                new_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
                 combined_schema["properties"] = {
                     **all_schema["properties"],
                     **new_schema["properties"],

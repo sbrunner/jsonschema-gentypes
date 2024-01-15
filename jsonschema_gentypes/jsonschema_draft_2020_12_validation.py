@@ -15,8 +15,6 @@ class JSONSchemaItemD2020(TypedDict, total=False):
 
     const: Any
     enum: list[Any]
-    """ items: True """
-
     multipleOf: Union[int, float]
     """ exclusiveMinimum: 0 """
 
