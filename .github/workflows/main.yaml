@@ -14,6 +14,31 @@ env:
   PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
 
 jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          # On 3.12 we get something like https://github.com/pypa/setuptools/issues/4102 on install
+          # - '3.12'
+
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/checkout@v4
+      - run: make pytest
+
   main:
     name: Continuous integration
     runs-on: ubuntu-22.04
@@ -43,10 +68,7 @@ jobs:
       - run: git diff && false
         if: failure()
 
-      - run: pip install -e .
       - run: make prospector
-      - run: make pytest
-      - run: git reset --hard
 
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
       - name: Init pypi
