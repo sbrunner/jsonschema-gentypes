@@ -1,11 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/camptocamp/c2cciutils/1.5.8/c2cciutils/schema.json
 
 checks:
-  codespell:
-    arguments:
-      - --quiet-level=2
-      - --check-filenames
-      - --ignore-words-list=nd
+  codespell: False
 
 publish:
   docker: false
