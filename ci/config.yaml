@@ -3,11 +3,7 @@
 checks:
   versions:
     rebuild: False
-  codespell:
-    arguments:
-      - --quiet-level=2
-      - --check-filenames
-      - --ignore-words-list=nd
+  codespell: False
   required_workflows: False
 
 publish:
