@@ -79,7 +79,7 @@ jobs:
         if: env.HAS_SECRETS == 'HAS_SECRETS'
       - name: Publish
         run: c2cciutils-publish
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
