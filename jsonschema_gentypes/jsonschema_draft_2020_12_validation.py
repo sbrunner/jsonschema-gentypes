@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import Any, Literal, TypedDict, Union
 
 JSONSchemaD2020 = Union["JSONSchemaItemD2020", bool]

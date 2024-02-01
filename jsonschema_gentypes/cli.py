@@ -218,14 +218,14 @@ def process_config(config: configuration.Configuration) -> None:
                     classed_parameters_required: dict[str, set[str]] = {}
                     for param_config in method_config.get("parameters", []):
                         param_config = resolver.auto_resolve(param_config)
-                        classed_parameters.setdefault(param_config["in"], {})[
-                            param_config["name"]
-                        ] = add_type(
-                            param_config["schema"],
-                            build_name(
-                                path_name,
-                                [method_name, param_config["in"], param_config["name"]],
-                            ),
+                        classed_parameters.setdefault(param_config["in"], {})[param_config["name"]] = (
+                            add_type(
+                                param_config["schema"],
+                                build_name(
+                                    path_name,
+                                    [method_name, param_config["in"], param_config["name"]],
+                                ),
+                            )
                         )
                         if param_config.get("required", param_config["in"] == "path"):
                             classed_parameters_required.setdefault(param_config["in"], set()).add(
@@ -241,9 +241,11 @@ def process_config(config: configuration.Configuration) -> None:
                                 [method_name, param_in],
                             ),
                             param_configs,
-                            [description, "", "Request summary:", method_config["summary"]]
-                            if "summary" in method_config
-                            else [description],
+                            (
+                                [description, "", "Request summary:", method_config["summary"]]
+                                if "summary" in method_config
+                                else [description]
+                            ),
                             classed_parameters_required.get(param_in, set()),
                         )
                         global_type[param_in] = type_
@@ -301,9 +303,11 @@ def process_config(config: configuration.Configuration) -> None:
                                 [method_name],
                             ),
                             global_type,
-                            [description, "", method_config["summary"]]
-                            if "summary" in method_config
-                            else [description],
+                            (
+                                [description, "", method_config["summary"]]
+                                if "summary" in method_config
+                                else [description]
+                            ),
                             global_type_required,
                         ),
                         imports,
