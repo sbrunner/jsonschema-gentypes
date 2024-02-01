@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import TypedDict, Union
 
 ContentVocabularyMetaSchema = Union["_ContentVocabularyMetaSchemaObject", bool]

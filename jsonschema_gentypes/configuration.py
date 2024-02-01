@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required

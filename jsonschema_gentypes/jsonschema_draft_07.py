@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import Any, Literal, TypedDict, Union
 
 CORE_SCHEMA_META_SCHEMA_DEFAULT = True

@@ -63,9 +63,7 @@ class API:
         self.ref_type: dict[str, Type] = {}
         self.root: Optional[TypeProxy] = None
 
-    def get_type_handler(
-        self, schema_type: str
-    ) -> Callable[
+    def get_type_handler(self, schema_type: str) -> Callable[
         [
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
             str,
