@@ -15,3 +15,4 @@
 | 2.1     | Best effort     |
 | 2.2     | Best effort     |
 | 2.3     | Best effort     |
+| 2.4     | Best effort     |
