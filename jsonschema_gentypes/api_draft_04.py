@@ -3,15 +3,18 @@ The API version draft 04.
 """
 
 import re
-from typing import Any, Union, cast
+from typing import Literal, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
     CombinedType,
+    NamedType,
     NativeType,
     Type,
+    TypeAlias,
     TypedDictType,
     TypeEnum,
+    TypeProxy,
     configuration,
     get_description,
     get_name,
@@ -80,7 +83,6 @@ class APIv4(API):
         """
         Generate an annotation for an object, usually a TypedDict.
         """
-
         schema_meta_data = cast(
             Union[
                 jsonschema_draft_04.JSONSchemaD4,
@@ -244,104 +246,306 @@ class APIv4(API):
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: list[
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        sub_schemas: Union[
+            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
         ],
         proposed_name: str,
         sub_name: str,
-    ) -> Type:
+        recursion: int = 0,
+    ) -> tuple[
+        Type,
+        list[Type],
+        list[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ],
+    ]:
         """
         Generate a ``Union`` annotation with the allowed types.
         """
-        del schema
+        if recursion > 10:
+            raise ValueError("Recursion limit reached")
 
-        inner_types = list(
-            filter(
-                lambda o: o is not None,
-                [
-                    self.get_type(subs, f"{proposed_name} {sub_name}{index}")
-                    for index, subs in enumerate(sub_schema)
-                ],
-            )
+        additional_types: list[Type] = []
+        inner_types: list[Type] = []
+        inner_types_schema: list[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ] = []
+
+        for index, sub_schema in enumerate(sub_schemas):
+            assert not isinstance(sub_schema, bool)
+            sub_schema = self.combined_sub_type(schema, sub_schema)
+            force_sub_type = "title" in sub_schema
+            if "allOf" in sub_schema:
+                type_, named_types, combined_schema = self.all_of(
+                    sub_schema,
+                    sub_schema["allOf"],
+                    proposed_name + " " + sub_name,
+                    "allof",
+                    recursion=recursion + 1,
+                )
+                additional_types += named_types
+                if force_sub_type:
+                    combined_schema_meta_data = cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+                        ],
+                        combined_schema,
+                    )
+                    if not isinstance(type_, NamedType):
+                        type_ = TypeAlias(
+                            get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                        )
+
+                    additional_types.append(type_)
+                inner_types.append(type_)
+                inner_types_schema.append(combined_schema)
+            elif (
+                "anyOf" in sub_schema
+                and self.significative_sub_type(sub_schema["anyOf"])
+                or "oneOf" in sub_schema
+                and self.significative_sub_type(sub_schema["oneOf"])
+            ):
+                kind: Literal["anyOf", "oneOf"] = "anyOf" if "anyOf" in sub_schema else "oneOf"
+                sub_schema = self.combined_sub_type(schema, sub_schema)
+                type_, named_types, combined_schemas = self.any_of(
+                    sub_schema,
+                    sub_schema[kind],
+                    proposed_name + " " + sub_name,
+                    kind,
+                    recursion=recursion + 1,
+                )
+                additional_types += named_types
+                if force_sub_type:
+                    combined_schema_meta_data = cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+                        ],
+                        combined_schemas,
+                    )
+                    if not isinstance(type_, NamedType):
+                        type_ = TypeAlias(
+                            get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                        )
+                    additional_types.append(type_)
+                inner_types.append(type_)
+                inner_types_schema += combined_schemas
+            else:
+                sub_schema = self.combined_sub_type(schema, sub_schema)
+                inner_types_schema.append(sub_schema)
+                sub_type = self.get_type(sub_schema, f"{proposed_name} {sub_name}{index}")
+                if force_sub_type:
+                    additional_types.append(sub_type)
+                inner_types.append(sub_type)
+
+        return CombinedType(NativeType("Union"), inner_types), additional_types, inner_types_schema
+
+    def clean_schema(
+        self,
+        schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """Remove the properties that could not be combined with an other type."""
+        return {  # type: ignore[return-value]
+            k: v
+            for k, v in schema.items()
+            if k not in ["title", "description", "example", "allOf", "anyOf", "oneOf"]
+        }
+
+    def combined_sub_type(
+        self,
+        base_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+        sub_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """Create a sub schema with the elements from the base schema."""
+        combined_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ] = {}
+        combined_schema.update(self.clean_schema(base_schema))  # type: ignore[typeddict-item]
+        combined_schema.update(sub_schema)  # type: ignore[typeddict-item]
+        return combined_schema
+
+    def combined_base_type_all_of(
+        self,
+        base_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ],
+        sub_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020
+        ],
+    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        """Create a sub schema with the elements from the base schema."""
+        assert not isinstance(sub_schema, bool)
+
+        base_schema_validation = cast(
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+            ],
+            base_schema,
         )
-        return CombinedType(NativeType("Union"), inner_types)
+        sub_schema_validation = cast(
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+            ],
+            sub_schema,
+        )
+
+        combined_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ] = {}
+        combined_schema_validation = cast(
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+            ],
+            combined_schema,
+        )
+        combined_schema.update(base_schema)  # type: ignore[typeddict-item]
+        combined_schema.update(self.clean_schema(sub_schema))  # type: ignore[typeddict-item]
+
+        if "properties" in base_schema and "properties" in sub_schema:
+            base_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
+            sub_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
+            combined_schema["properties"] = {
+                **base_schema["properties"],  # type: ignore[dict-item]
+                **sub_schema["properties"],  # type: ignore[dict-item]
+            }
+        if "required" in base_schema and "required" in sub_schema_validation:
+            combined_schema_validation["required"] = list(
+                {
+                    *base_schema_validation["required"],
+                    *sub_schema_validation["required"],
+                }
+            )
+        if "type" in base_schema and "type" in sub_schema_validation:
+            base_type = (
+                base_schema_validation["type"]
+                if isinstance(base_schema_validation["type"], list)
+                else [base_schema_validation["type"]]
+            )
+            sub_type = (
+                sub_schema_validation["type"]
+                if isinstance(sub_schema_validation["type"], list)
+                else [sub_schema_validation["type"]]
+            )
+            combined_schema_validation["type"] = [t for t in base_type if t in sub_type]
+        return combined_schema
 
     def all_of(
         self,
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: list[
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        sub_schemas: Union[
+            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
         ],
         proposed_name: str,
         sub_name: str,
-    ) -> Type:
+        recursion: int = 0,
+    ) -> tuple[
+        Type,
+        list[Type],
+        Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
+    ]:
         """
         Combine all the definitions.
         """
+        if recursion > 10:
+            raise ValueError("Recursion limit reached")
 
-        all_schema: dict[str, Any] = {}
-        for prop in ["title", "description", "default", "example"]:
-            if prop in schema:
-                all_schema[prop] = schema[prop]  # type: ignore[literal-required]
+        additional_types: list[Type] = []
 
-        for new_schema in sub_schema:
+        all_schema: Union[
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        ] = {}
+        all_schema.update(schema)  # type: ignore[typeddict-item]
+        for prop in ["allOf", "anyOf", "oneOf"]:
+            if prop in all_schema:
+                del all_schema[prop]  # type: ignore[misc]
+
+        for index, new_schema in enumerate(sub_schemas):
+            assert not isinstance(new_schema, bool)
             new_schema = self.resolve_ref(new_schema)
-
-            all_schema_validation = cast(
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4,
-                    jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
-                ],
-                all_schema,
-            )
-            new_schema_validation = cast(
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4,
-                    jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
-                ],
-                new_schema,
-            )
-
-            combined_schema: dict[str, Any] = {}
-            if "properties" in new_schema and "properties" in all_schema:
-                all_schema.setdefault("used", set()).add("properties")
-                new_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
-                combined_schema["properties"] = {
-                    **all_schema["properties"],
-                    **new_schema["properties"],
-                }
-            if "required" in new_schema and "required" in all_schema:
-                combined_schema["required"] = list(
-                    {
-                        *all_schema_validation["required"],
-                        *new_schema_validation["required"],
-                    }
+            force_sub_type = "title" in new_schema
+            if "allOf" in new_schema and self.significative_sub_type(new_schema["allOf"]):
+                type_, named_types, combined_schema = self.all_of(
+                    self.combined_sub_type(schema, new_schema),
+                    new_schema["allOf"],
+                    f"{proposed_name} {sub_name}{index}",
+                    "allof",
+                    recursion=recursion + 1,
                 )
-            if "type" in new_schema and "type" in all_schema:
-                all_type = (
-                    all_schema_validation["type"]
-                    if isinstance(all_schema_validation["type"], list)
-                    else [all_schema_validation["type"]]
-                )
-                new_type = (
-                    new_schema_validation["type"]
-                    if isinstance(new_schema_validation["type"], list)
-                    else [new_schema_validation["type"]]
-                )
-                combined_schema["type"] = [t for t in all_type if t in new_type]
 
-            all_schema.update(new_schema)
-            all_schema.update(combined_schema)
+                additional_types += named_types
+                if force_sub_type:
+                    combined_schema_meta_data = cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+                        ],
+                        combined_schema,
+                    )
+                    if not isinstance(type_, NamedType):
+                        type_ = TypeAlias(
+                            get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
+                            type_,
+                            [],
+                        )
 
-        return self.get_type(
+                    additional_types.append(type_)
+                all_schema = self.combined_base_type_all_of(all_schema, combined_schema)
+            elif "anyOf" in new_schema or "oneOf" in new_schema:
+                kind_name = "anyOf" if "anyOf" in new_schema else "oneOf"
+                type_, named_types, combined_schemas = self.any_of(
+                    self.combined_sub_type(schema, new_schema),
+                    new_schema[kind_name],  # type: ignore[literal-required]
+                    f"{proposed_name} {sub_name}{index}",
+                    kind_name,
+                    recursion=recursion + 1,
+                )
+                additional_types += named_types
+                if force_sub_type:
+                    combined_schema_meta_data = cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+                        ],
+                        combined_schemas,
+                    )
+                    if not isinstance(type_, NamedType):
+                        type_ = TypeAlias(
+                            get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
+                            type_,
+                            [],
+                        )
+                    additional_types.append(type_)
+                for combined_schema in combined_schemas:
+                    all_schema = self.combined_base_type_all_of(all_schema, combined_schema)
+            else:
+                combined_schema = self.combined_sub_type(schema, new_schema)
+                if force_sub_type:
+                    additional_types.append(
+                        self.get_type(combined_schema, f"{proposed_name} {sub_name}{index}"),
+                    )
+                all_schema = self.combined_base_type_all_of(all_schema, combined_schema)
+
+        type_ = self.get_type(
             cast(
                 Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
                 all_schema,
             ),
             proposed_name,
         )
+
+        return type_, additional_types, all_schema
 
     def ref_to_proposed_name(self, ref: str) -> str:
         """
@@ -369,7 +573,6 @@ class APIv4(API):
         """
         Handle a `$ref`.
         """
-
         # ref is not correctly declared in draft 4.
         schema_casted = cast(
             Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
@@ -398,6 +601,8 @@ class APIv4(API):
             return self.ref_type[ref]
 
         resolved = self.resolver.lookup(ref)
+        proxy = TypeProxy()
+        self.ref_type[ref] = proxy
 
         type_ = self.get_type(
             cast(
@@ -406,7 +611,9 @@ class APIv4(API):
             ),
             self.ref_to_proposed_name(ref),
         )
+        proxy.set_type(type_)
         self.ref_type[ref] = type_
+
         return type_
 
     def string(
@@ -473,7 +680,6 @@ class APIv4(API):
 
         See: https://json-schema.org/understanding-json-schema/reference/generic.html
         """
-
         type_: Type = NativeType("Any")
         for test_type, type_name in [
             (str, "str"),

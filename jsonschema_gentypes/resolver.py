@@ -110,8 +110,13 @@ class RefResolver:
             ]
         ] = None,
     ) -> None:
-        """Initialize the resolver."""
+        """
+        Initialize the resolver.
 
+        Parameter:
+            base_url: The base URL of the schema.
+            schema: The schema to resolve.
+        """
         schema = _openapi_schema(schema) if schema is not None else None
         self.schema = _open_uri(base_url) if schema is None else schema
         schema_vocabulary = cast(
@@ -158,8 +163,12 @@ class RefResolver:
     def lookup(
         self, uri: str
     ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
-        """Lookup for the reference."""
+        """
+        Lookup for the reference.
 
+        Parameter:
+            uri: The reference to lookup.
+        """
         match = _META_RE.match(uri)
         if match:
             vocab, path = match.groups()
@@ -187,8 +196,12 @@ class RefResolver:
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
-        """Resolve if the config has a $ref key."""
+        """
+        Resolve if the config has a $ref key.
 
+        Parameter:
+            config: The config to resolve.
+        """
         config_with_ref = cast(
             Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
             config,

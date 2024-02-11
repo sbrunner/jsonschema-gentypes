@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/camptocamp/github-app-geo-project/github_app_geo_project/project-schema.json",
+  "type": "object",
+  "title": "Test combining allOf and anyOf",
+  "additionalProperties": false,
+  "properties": {
+    "withTitle": {
+      "title": "withTitle",
+      "type": "object",
+      "allOf": [
+        {
+          "title": "t1",
+          "properties": {
+            "t1": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "title": "t2",
+              "properties": {
+                "t2": {
+                  "type": "boolean"
+                }
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "title": "t3",
+                  "properties": {
+                    "t3": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                {
+                  "anyOf": [
+                    {
+                      "title": "t4",
+                      "properties": {
+                        "t4": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    {
+                      "title": "t5",
+                      "properties": {
+                        "t5": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "withoutTitle": {
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "p1": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "anyOf": [
+            {
+              "properties": {
+                "p2": {
+                  "type": "boolean"
+                }
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "properties": {
+                    "p3": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                {
+                  "anyOf": [
+                    {
+                      "properties": {
+                        "p4": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "p5": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

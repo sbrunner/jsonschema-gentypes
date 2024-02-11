@@ -49,7 +49,7 @@ def __char_range(char1: str, char2: str) -> list[str]:
     """
     Generate the characters range from `char1` to `char2`, inclusive.
 
-    Arguments:
+    Parameter:
         char1: the first char of the range
         char2: the last char of the range
     """
@@ -99,7 +99,6 @@ def __convert_char(char: str) -> str:
 
 def normalize(input_str: str) -> str:
     """Normalize the string to be a Python name."""
-
     # Unaccent, ...
     nfkd_form = unicodedata.normalize("NFKD", input_str)
     name = "".join([__convert_char(c) for c in nfkd_form])
@@ -145,7 +144,7 @@ class Type:
         """
         Return the type declaration.
 
-        Arguments:
+        Parameter:
             line_length: the maximum line length
         """
         del line_length
@@ -205,7 +204,7 @@ class TypeProxy(Type):
         """
         Return the type declaration.
 
-        Arguments:
+        Parameter:
             line_length: the maximum line length
         """
         assert self._type is not None
@@ -252,7 +251,7 @@ class NamedType(Type):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
         """
         super().__init__()
@@ -292,7 +291,7 @@ class LiteralType(Type):
         """
         Init.
 
-        Arguments:
+        Parameter:
             const: the constant
         """
         super().__init__()
@@ -321,7 +320,7 @@ class BuiltinType(Type):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
         """
         super().__init__()
@@ -349,7 +348,7 @@ class NativeType(Type):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
             package: the package of the type
             minimal_python_version: the minimal Python version to use the type
@@ -388,7 +387,7 @@ class CombinedType(Type):
         """
         Init.
 
-        Arguments:
+        Parameter:
             base: the base type (e.-g. for `Union[str, int]` the base type is `Union`)
             sub_types: the sub types (e.-g. for `Union[str]` the sub types are `str` and `int`)
         """
@@ -419,7 +418,7 @@ class TypeAlias(NamedType):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
             sub_type: the type that should be aliased
             descriptions: the type description
@@ -458,7 +457,7 @@ class TypeEnum(NamedType):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
             values: the values of the enum
             descriptions: the type description
@@ -473,14 +472,12 @@ class TypeEnum(NamedType):
         """
         Return the needed sub types.
         """
-
         return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
         """
-
         result = ["", ""]
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name()}")
@@ -516,13 +513,14 @@ class TypedDictType(NamedType):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: name of the type
             struct: the struct of the subtypes
             descriptions: the description
             required: the required properties names
         """
         super().__init__(name)
+
         self.descriptions = descriptions
 
         def get_required_type(prop_type: Type) -> Type:
@@ -604,7 +602,7 @@ class Constant(NamedType):
         """
         Init.
 
-        Arguments:
+        Parameter:
             name: the type name
             constant: the constant value
             descriptions: the type description
@@ -649,7 +647,7 @@ def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:
     """
     Split the text at line length.
 
-    Arguments:
+    Parameter:
         text: the lines to split
         line_length: the maximum line length
     """
@@ -679,7 +677,7 @@ def get_name(
     """
     Get the name for an element.
 
-    Arguments:
+    Parameter:
         schema: the concerned schema
         proposed_name: a name that we will use it the schema hasn't any title
         upper: should we use an upper case (For constants)
@@ -712,7 +710,7 @@ def get_description(
     """
     Get the standard description for an element.
 
-    Arguments:
+    Parameter:
         schema: the concerned schema
     """
     result: list[str] = []

@@ -57,8 +57,12 @@ class APIv201909(APIv7):
     ) -> None:
         """
         Get the type for a schema.
-        """
 
+        Parameter:
+            schema: The schema to get the type for.
+            proxy: The proxy used for late resolving.
+            proposed_name: The proposed name of the type.
+        """
         schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
 
         self.is_recursive_anchor_path.append(schema_core.get("$recursiveAnchor", False))
@@ -78,8 +82,11 @@ class APIv201909(APIv7):
     ) -> None:
         """
         End getting the type for a schema.
-        """
 
+        Parameter:
+            schema: The schema to get the type for.
+            proxy: The proxy to get the type for.
+        """
         super().get_type_end(schema, proxy)
 
         if self.is_recursive_anchor_path[-1]:
@@ -94,8 +101,10 @@ class APIv201909(APIv7):
     ) -> Type:
         """
         Handle the `$recursiveRef`.
-        """
 
+        Parameter:
+            schema: The schema to get the type for.
+        """
         schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
 
         if schema_core.get("$recursiveRef") == "#":
@@ -112,8 +121,10 @@ class APIv201909(APIv7):
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """
         Handle the `$recursiveRef`.
-        """
 
+        Parameter:
+            schema: The schema to resolve.
+        """
         schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
 
         if schema_core.get("$recursiveRef") == "#":

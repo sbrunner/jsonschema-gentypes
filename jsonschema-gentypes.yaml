@@ -85,3 +85,5 @@ generate:
     root_name: OgcApi
   - source: tests/recursion.json
     destination: tests/recursion.py
+  - source: tests/allanycombining.json
+    destination: tests/allanycombining.py

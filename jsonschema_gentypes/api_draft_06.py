@@ -31,7 +31,6 @@ class APIv6(APIv4):
         """
         Get the type for a schema.
         """
-
         schema_casted = cast(
             Union[
                 jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
@@ -52,8 +51,13 @@ class APIv6(APIv4):
         ],
         proposed_name: str,
     ) -> Type:
-        """Build a type for a schema."""
+        """
+        Build a type for a schema.
 
+        Parameter:
+            schema: The schema to get the type for.
+            proposed_name: The proposed name of the type.
+        """
         if "const" in schema:
             return self.const(
                 cast(
@@ -79,8 +83,10 @@ class APIv6(APIv4):
         See: https://json-schema.org/understanding-json-schema/reference/generic.html#constant-values
 
         Generate a ``Literal`` for a const value.
-        """
 
+        Parameter:
+            schema: The schema to get the type for.
+        """
         schema_casted = cast(
             Union[
                 jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020

@@ -2,5 +2,4 @@
   name: Generate Python types based on TypedDict from a JSON schema
   entry: jsonschema-gentypes
   language: python
-  pass_filenames: false
   files: ^jsonschema-gentypes.yaml$
