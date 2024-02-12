@@ -43,22 +43,23 @@ def _add_type(
     added_types.add(type_)
     if (
         isinstance(type_, jsonschema_gentypes.NamedType)
-        and type_.unescape_name() in types
+        and type_.name() in types
         and type_.definition(config.get("lineLength"))
-        == types[type_.unescape_name()].definition(config.get("lineLength"))
+        == types[type_.name()].definition(config.get("lineLength"))
     ):
         return
     name_mapping = gen.get("name_mapping", {})
     assert name_mapping is not None
-    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in name_mapping:
-        type_.set_name(name_mapping[type_.unescape_name()])
-    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in types:
-        print(f"WARNING: the type {type_.unescape_name()} is already defined, it will be renamed")
-        type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
-        _add_type(type_, imports, types, gen, config, minimal_python_version, added_types)
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in name_mapping:
+        type_.set_name(name_mapping[type_.name()])
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in types:
+        if types[type_.name()] != type_:
+            print(f"WARNING: the type {type_.name()} is already defined, it will be renamed")
+            type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
+            _add_type(type_, imports, types, gen, config, minimal_python_version, added_types)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
-            types[type_.unescape_name()] = type_
+            types[type_.name()] = type_
         for package, imp in type_.imports(minimal_python_version):
             if package not in imports:
                 imports[package] = set()
@@ -79,6 +80,7 @@ def main() -> None:
     parser.add_argument(
         "--python-version", help="The minimal Python version that will support the generate type stubs."
     )
+    parser.add_argument("files", nargs="*", help="The JSON schema files")
     args = parser.parse_args()
 
     if args.python is not None or args.json_schema is not None:
@@ -102,7 +104,7 @@ def main() -> None:
             data = yaml.load(data_file, Loader=yaml.SafeLoader)
         config = cast(configuration.Configuration, data)
 
-    process_config(config)
+    process_config(config, args.files)
 
 
 class _AddType:
@@ -155,11 +157,14 @@ class _BuildName:
         return "".join(parts)
 
 
-def process_config(config: configuration.Configuration) -> None:
+def process_config(config: configuration.Configuration, files: list[str]) -> None:
     """
     Run the tasks defined in the given configuration.
-    """
 
+    Parameter:
+        config: The configuration.
+        files: The files to process.
+    """
     str_python_version = config.get("python_version")
     if str_python_version is not None:
         python_version = tuple(int(x) for x in str_python_version.split("."))
@@ -168,6 +173,8 @@ def process_config(config: configuration.Configuration) -> None:
 
     for gen in config["generate"]:
         source = gen["source"]
+        if files and source not in files:
+            continue
         print(f"Processing {source}")
 
         resolver = jsonschema_gentypes.resolver.RefResolver(source)

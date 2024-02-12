@@ -32,7 +32,6 @@ repos:
             |tests/.*\.json
           )$
         verbose: true
-        pass_filenames: false
         additional_dependencies:
           - pre-commit==3.6.0 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -128,6 +127,7 @@ repos:
           - --output-format=pylint
         additional_dependencies:
           - prospector-profile-duplicated==0.5.1 # pypi
+          - prospector-profile-utils==1.7.2 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 0.1.0
     hooks:

@@ -127,7 +127,6 @@ class API:
         """
         Get a :class:`.Type` for a JSON schema.
         """
-
         schema_meta_data = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019],
             schema,
@@ -199,7 +198,6 @@ class API:
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Resolve a reference in the schema."""
-
         schema_core = cast(
             Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
             schema,
@@ -221,7 +219,6 @@ class API:
         proposed_name: str,
     ) -> Type:
         """Get a :class:`.Type` for a JSON schema."""
-
         schema_meta_data = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019],
             schema,
@@ -322,34 +319,25 @@ class API:
             schema,
         )
 
-        if "allOf" in schema:
-            return self.all_of(
+        if "allOf" in schema and self.significative_sub_type(schema["allOf"]):
+            type_, named_types, _ = self.all_of(
                 schema,
-                cast(
-                    list[
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ]
-                    ],
-                    schema["allOf"],
-                ),
+                schema["allOf"],
                 proposed_name,
                 "allof",
             )
-        if "anyOf" in schema:
+            if named_types:
+                for named_type in named_types:
+                    type_.add_depends_on(named_type)
+                additional_type_str = [t.name() for t in named_types]
+                type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
+
+            return type_
+        if "anyOf" in schema and self.significative_sub_type(schema["anyOf"]):
             schema.setdefault("used", set()).add("anyOf")  # type: ignore[typeddict-item]
-            type_ = self.any_of(
+            type_, named_types, _ = self.any_of(
                 schema,
-                cast(
-                    list[
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ]
-                    ],
-                    schema["anyOf"],
-                ),
+                schema["anyOf"],
                 proposed_name,
                 "anyof",
             )
@@ -358,26 +346,31 @@ class API:
             elif type_.comments():
                 type_.comments().append("")
             type_.comments().append("Aggregation type: anyOf")
+
+            if named_types:
+                for named_type in named_types:
+                    type_.add_depends_on(named_type)
+                additional_type_str = [t.name() for t in named_types]
+                type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
+
             return type_
-        if "oneOf" in schema:
+        if "oneOf" in schema and self.significative_sub_type(schema["oneOf"]):
             schema.setdefault("used", set()).add("oneOf")  # type: ignore[typeddict-item]
-            type_ = self.any_of(
+            type_, named_types, _ = self.any_of(
                 schema,
-                cast(
-                    list[
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ]
-                    ],
-                    schema["oneOf"],
-                ),
+                schema["oneOf"],
                 proposed_name,
                 "oneof",
             )
             if type_.comments():
                 type_.comments().append("")
             type_.comments().append("Aggregation type: oneOf")
+
+            if named_types:
+                for named_type in named_types:
+                    type_.add_depends_on(named_type)
+                additional_type_str = [t.name() for t in named_types]
+                type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
             return type_
         if "enum" in schema:
             return self.enum(schema_validation, proposed_name)
@@ -396,6 +389,7 @@ class API:
         schema_type = schema.get("type", ["string", "number", "object", "array", "boolean", "null"])
         if isinstance(schema_type, list) and len(schema_type) == 1:
             schema_type = schema_type[0]
+
         if isinstance(schema_type, list):
             if len(schema_type) == 0:
                 return BuiltinType("None")
@@ -495,17 +489,43 @@ class API:
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: list[
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        sub_schemas: Union[
+            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
         ],
         proposed_name: str,
         sub_name: str,
-    ) -> Type:
+        recursion: int = 0,
+    ) -> tuple[
+        Type,
+        list[Type],
+        list[
+            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        ],
+    ]:
         """
         Treat the anyOf keyword.
 
         See: https://json-schema.org/understanding-json-schema/reference/combining.html#anyof.
         """
+
+    def significative_sub_type(
+        self,
+        sub_schemas: Union[
+            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
+        ],
+    ) -> bool:
+        """
+        Are the the subtype significative.
+        """
+        if not sub_schemas:
+            return False
+        for sub_schema in sub_schemas:
+            assert not isinstance(sub_schema, bool)
+            sub_schema = self.resolve_ref(sub_schema)
+            for prop in ["type", "properties", "items", "additionalProperties", "enum"]:
+                if prop in sub_schema:
+                    return True
+        return False
 
     @abstractmethod
     def all_of(
@@ -513,12 +533,17 @@ class API:
         schema: Union[
             jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ],
-        sub_schema: list[
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+        sub_schemas: Union[
+            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
         ],
         proposed_name: str,
         sub_name: str,
-    ) -> Type:
+        recursion: int = 0,
+    ) -> tuple[
+        Type,
+        list[Type],
+        Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
+    ]:
         """
         Thread the allOf keyword.
 

@@ -4,21 +4,22 @@ import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
 import jsonschema_gentypes.api_draft_2020_12
 import jsonschema_gentypes.resolver
+from jsonschema_gentypes.api import Type
 
 
-def get_types(schema):
+def get_types(schema) -> Type:
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
     return api.get_type(schema, "Base")
 
 
-def get_types_2019_09(schema):
+def get_types_2019_09(schema) -> Type:
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
 
-def get_types_2020_12(schema):
+def get_types_2020_12(schema) -> Type:
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2020_12.APIv202012(resolver)
     return api.get_type(schema, "Base")
