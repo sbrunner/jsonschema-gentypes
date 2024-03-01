@@ -34,7 +34,7 @@ repos:
         verbose: true
         pass_filenames: false
         additional_dependencies:
-          - pre-commit==3.6.0 # pypi
+          - pre-commit==3.6.2 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
@@ -82,7 +82,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.3
+    rev: 0.27.4
     hooks:
       - id: check-github-workflows
       - id: check-jsonschema
@@ -95,13 +95,13 @@ repos:
           - github-workflows-require-timeout
       - id: check-renovate
         additional_dependencies:
-          - pyjson5==1.6.5 # pypi
+          - pyjson5==1.6.6 # pypi
   - repo: https://github.com/sirwart/ripsecrets
     rev: v0.1.7
     hooks:
       - id: ripsecrets
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.1
     hooks:
       - id: pyupgrade
         args:
