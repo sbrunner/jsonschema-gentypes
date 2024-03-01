@@ -1,4 +1,4 @@
-poetry==1.7.1
+poetry==1.8.1
 pip==23.3.2
 poetry-dynamic-versioning==1.2.0
 poetry-plugin-export==1.6.0
