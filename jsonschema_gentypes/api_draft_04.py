@@ -294,7 +294,9 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name),
+                            type_,
+                            [],
                         )
 
                     additional_types.append(type_)
@@ -326,7 +328,9 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name),
+                            type_,
+                            [],
                         )
                     additional_types.append(type_)
                 inner_types.append(type_)

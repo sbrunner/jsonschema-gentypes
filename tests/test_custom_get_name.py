@@ -1,8 +1,8 @@
 from typing import Callable, Optional, Union
+
 from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data, normalize
 from jsonschema_gentypes.cli import process_config
 from jsonschema_gentypes.configuration import Configuration
-
 
 GetNameFunction = Callable[
     [
@@ -73,6 +73,6 @@ def test_empty_array() -> None:
         ["tests/custom_get_name.json"],
     )
 
-    with open("tests/custom_get_name.py", "r") as f:
+    with open("tests/custom_get_name.py") as f:
         content = f.read()
         assert "class SubresourceUris" in content

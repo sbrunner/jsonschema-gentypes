@@ -18,8 +18,6 @@
       "$ref": "#/definitions/SubresourceUris"
     }
   },
-  "required": [
-    "subresource_uris"
-  ],
+  "required": ["subresource_uris"],
   "title": "ResponseType"
 }
