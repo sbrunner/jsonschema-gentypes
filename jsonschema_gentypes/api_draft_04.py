@@ -55,7 +55,7 @@ class APIv4(API):
         )
 
         return TypeEnum(
-            get_name(schema_meta_data, proposed_name),
+            self.get_name(schema_meta_data, proposed_name),
             cast(list[Union[int, float, bool, str, None]], schema["enum"]),
             get_description(schema_meta_data),
         )
@@ -99,7 +99,7 @@ class APIv4(API):
         )
 
         std_dict = None
-        name = get_name(schema_meta_data, proposed_name)
+        name = self.get_name(schema_meta_data, proposed_name)
         schema.setdefault("used", set()).add("additionalProperties")  # type: ignore[typeddict-item]
         additional_properties = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
@@ -294,7 +294,7 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
                         )
 
                     additional_types.append(type_)
@@ -326,7 +326,7 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
+                            self.get_name(combined_schema_meta_data, proposed_name + " " + sub_name), type_, []
                         )
                     additional_types.append(type_)
                 inner_types.append(type_)
@@ -495,7 +495,7 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
+                            self.get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
                             type_,
                             [],
                         )
@@ -522,7 +522,7 @@ class APIv4(API):
                     )
                     if not isinstance(type_, NamedType):
                         type_ = TypeAlias(
-                            get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
+                            self.get_name(combined_schema_meta_data, f"{proposed_name} {sub_name}{index}"),
                             type_,
                             [],
                         )

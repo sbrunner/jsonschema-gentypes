@@ -2,9 +2,11 @@
 Automatically generated file from a JSON schema.
 """
 
-from typing import Any, Literal, TypedDict, Union
+from typing import Any, Callable, Literal, Optional, TypedDict, Union
 
 from typing_extensions import Required
+
+from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data
 
 AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
 """
@@ -18,6 +20,21 @@ ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
 """The values for the 'Additional properties' enum"""
 
 
+GetNameFunction = Callable[
+    [
+        Optional[
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+            ]
+        ],
+        Optional[str],
+        bool,
+    ],
+    str,
+]
+
+
 class ApiArguments(TypedDict, total=False):
     """
     API arguments.
@@ -26,6 +43,7 @@ class ApiArguments(TypedDict, total=False):
     """
 
     additional_properties: "AdditionalProperties"
+    custom_get_name: GetNameFunction
     """
     Additional properties.
 
