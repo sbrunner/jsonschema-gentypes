@@ -4,20 +4,6 @@ from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_me
 from jsonschema_gentypes.cli import process_config
 from jsonschema_gentypes.configuration import Configuration
 
-GetNameFunction = Callable[
-    [
-        Optional[
-            Union[
-                jsonschema_draft_04.JSONSchemaD4,
-                jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
-            ]
-        ],
-        Optional[str],
-        bool,
-    ],
-    str,
-]
-
 
 def custom_get_name(
     schema: Optional[
