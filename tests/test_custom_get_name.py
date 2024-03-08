@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Union
+from typing import Optional, Union
 
 from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data, normalize
 from jsonschema_gentypes.cli import process_config
