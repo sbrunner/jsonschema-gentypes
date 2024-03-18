@@ -8,5 +8,4 @@ checks:
 
 publish:
   docker:
-    images:
-      - name: camptocamp/jsonschema-gentypes
+    images: []
