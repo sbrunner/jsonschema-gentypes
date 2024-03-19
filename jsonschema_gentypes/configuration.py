@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import Dict, List, Literal, TypedDict, Union
 
 AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
