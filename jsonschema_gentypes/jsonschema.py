@@ -2,7 +2,6 @@
 Automatically generated file from a JSON schema.
 """
 
-
 from typing import Any, Dict, List, Literal, TypedDict, Union
 
 # Core schema meta-schema
