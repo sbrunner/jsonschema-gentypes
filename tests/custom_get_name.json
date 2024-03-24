@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "SubresourceUris": {
+      "type": "object",
+      "properties": {
+        "feedback": {
+          "type": "string"
+        }
+      },
+      "required": ["feedback"],
+      "title": "SubresourceUris"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "subresource_uris": {
+      "$ref": "#/definitions/SubresourceUris"
+    }
+  },
+  "required": ["subresource_uris"],
+  "title": "ResponseType"
+}

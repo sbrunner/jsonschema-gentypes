@@ -53,12 +53,14 @@ class API:
         self,
         resolver: RefResolver,
         additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
+        custom_get_name: Optional[configuration.GetNameFunction] = None,
     ) -> None:
         """
         Initialize with a resolver.
         """
         self.resolver = resolver
         self.additional_properties = additional_properties
+        self.custom_get_name: Optional[configuration.GetNameFunction] = custom_get_name
         # types by reference
         self.ref_type: dict[str, Type] = {}
         self.root: Optional[TypeProxy] = None
@@ -170,13 +172,15 @@ class API:
             if description:
                 if not isinstance(the_type, NamedType):
                     if auto_alias:
-                        the_type = TypeAlias(get_name(schema_meta_data, proposed_name), the_type, description)
+                        the_type = TypeAlias(
+                            self.get_name(schema_meta_data, proposed_name), the_type, description
+                        )
                 the_type.set_comments(description)
 
         if "default" in schema_meta_data:
             the_type.add_depends_on(
                 Constant(
-                    f"{get_name(schema_meta_data, proposed_name, True)}_DEFAULT",
+                    f"{self.get_name(schema_meta_data, proposed_name, True)}_DEFAULT",
                     schema_meta_data["default"],
                     [f"Default value of the field path '{proposed_name}'"],
                 )
@@ -190,6 +194,22 @@ class API:
         self.get_type_end(schema, proxy)
 
         return the_type
+
+    def get_name(
+        self,
+        schema: Optional[
+            Union[
+                jsonschema_draft_04.JSONSchemaD4,
+                jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+            ]
+        ],
+        proposed_name: Optional[str] = None,
+        upper: bool = False,
+    ) -> str:
+        if self.custom_get_name:
+            return self.custom_get_name(schema, proposed_name, upper)
+        else:
+            return get_name(schema, proposed_name, upper)
 
     def resolve_ref(
         self,
@@ -342,7 +362,7 @@ class API:
                 "anyof",
             )
             if not isinstance(type_, NamedType):
-                type_ = TypeAlias(get_name(schema_meta_data, proposed_name), type_)
+                type_ = TypeAlias(self.get_name(schema_meta_data, proposed_name), type_)
             elif type_.comments():
                 type_.comments().append("")
             type_.comments().append("Aggregation type: anyOf")
@@ -394,7 +414,7 @@ class API:
             if len(schema_type) == 0:
                 return BuiltinType("None")
             inner_types = []
-            name = get_name(schema_meta_data, proposed_name)
+            name = self.get_name(schema_meta_data, proposed_name)
             has_title = "title" in schema_meta_data
             proposed_name = schema_meta_data.get("title", proposed_name)
 
