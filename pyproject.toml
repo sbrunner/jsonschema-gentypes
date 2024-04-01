@@ -59,8 +59,8 @@ extra = ['pinyin', 'romkan', 'romanize']
 prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.10.3" }
 pytest = "7.4.4"
 pytest-cov = "4.1.0"
-types-requests = "2.31.0.20240218"
-types-pyyaml = "6.0.12.12"
+types-requests = "2.31.0.20240311"
+types-pyyaml = "6.0.12.20240311"
 
 [tool.poetry.group.dev.dependencies]
 prospector-profile-duplicated = "0.5.1"
