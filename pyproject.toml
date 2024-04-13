@@ -52,6 +52,7 @@ romanize = { version = "1.0.2", optional = true }
 pre-commit = { version = "3.2.2", optional = true }
 certifi = "2023.7.22"
 urllib3 = "1.26.18"
+idna = "3.7"
 
 [tool.poetry.extras]
 generate = []
