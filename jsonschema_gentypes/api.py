@@ -53,14 +53,14 @@ class API:
         self,
         resolver: RefResolver,
         additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
-        custom_get_name: Optional[configuration.GetNameFunction] = None,
+        get_name_properties: configuration.GetNameProperties = configuration.GETNAMEPROPERTIES_TITLE,
     ) -> None:
         """
         Initialize with a resolver.
         """
         self.resolver = resolver
         self.additional_properties = additional_properties
-        self.custom_get_name: Optional[configuration.GetNameFunction] = custom_get_name
+        self.get_name_properties = get_name_properties
         # types by reference
         self.ref_type: dict[str, Type] = {}
         self.root: Optional[TypeProxy] = None
@@ -206,10 +206,7 @@ class API:
         proposed_name: Optional[str] = None,
         upper: bool = False,
     ) -> str:
-        if self.custom_get_name:
-            return self.custom_get_name(schema, proposed_name, upper)
-        else:
-            return get_name(schema, proposed_name, upper)
+        return get_name(schema, proposed_name, upper, self.get_name_properties)
 
     def resolve_ref(
         self,

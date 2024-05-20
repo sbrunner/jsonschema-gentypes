@@ -60,6 +60,12 @@
                 "title": "Additional properties",
                 "description": "Describe how to deal with additional properties",
                 "enum": ["Always", "Only explicit"]
+              },
+              "get_name_properties": {
+                "type": "string",
+                "title": "Get name properties",
+                "description": "Describe the rules to use to get the name of a field",
+                "enum": ["Title", "UpperFirst"]
               }
             }
           },

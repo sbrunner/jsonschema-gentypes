@@ -2,11 +2,9 @@
 Automatically generated file from a JSON schema.
 """
 
-from typing import Any, Callable, Literal, Optional, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
-
-from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_meta_data
 
 AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
 """
@@ -20,21 +18,6 @@ ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
 """The values for the 'Additional properties' enum"""
 
 
-GetNameFunction = Callable[
-    [
-        Optional[
-            Union[
-                jsonschema_draft_04.JSONSchemaD4,
-                jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
-            ]
-        ],
-        Optional[str],
-        bool,
-    ],
-    str,
-]
-
-
 class ApiArguments(TypedDict, total=False):
     """
     API arguments.
@@ -43,11 +26,17 @@ class ApiArguments(TypedDict, total=False):
     """
 
     additional_properties: "AdditionalProperties"
-    custom_get_name: GetNameFunction
     """
     Additional properties.
 
     Describe how to deal with additional properties
+    """
+
+    get_name_properties: "GetNameProperties"
+    """
+    Get name properties.
+
+    Describe the rules to use to get the name of a field
     """
 
 
@@ -117,6 +106,18 @@ class GenerateItem(TypedDict, total=False):
 
     Used to add some vocabularies
     """
+
+
+GetNameProperties = Union[Literal["Title"], Literal["UpperFirst"]]
+"""
+Get name properties.
+
+Describe the rules to use to get the name of a field
+"""
+GETNAMEPROPERTIES_TITLE: Literal["Title"] = "Title"
+"""The values for the 'Get name properties' enum"""
+GETNAMEPROPERTIES_UPPERFIRST: Literal["UpperFirst"] = "UpperFirst"
+"""The values for the 'Get name properties' enum"""
 
 
 PRE_COMMIT_ARGUMENTS_DEFAULT: list[Any] = []
