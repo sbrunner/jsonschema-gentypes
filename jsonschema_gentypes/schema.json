@@ -64,7 +64,7 @@
               "get_name_properties": {
                 "type": "string",
                 "title": "Get name properties",
-                "description": "Describe the rules to use to get the name of a field",
+                "description": "Describe the rules to use to get the name of an element",
                 "enum": ["Title", "UpperFirst"]
               }
             }

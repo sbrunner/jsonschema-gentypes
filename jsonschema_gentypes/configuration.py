@@ -36,7 +36,7 @@ class ApiArguments(TypedDict, total=False):
     """
     Get name properties.
 
-    Describe the rules to use to get the name of a field
+    Describe the rules to use to get the name of an element
     """
 
 
@@ -112,7 +112,7 @@ GetNameProperties = Union[Literal["Title"], Literal["UpperFirst"]]
 """
 Get name properties.
 
-Describe the rules to use to get the name of a field
+Describe the rules to use to get the name of an element
 """
 GETNAMEPROPERTIES_TITLE: Literal["Title"] = "Title"
 """The values for the 'Get name properties' enum"""
