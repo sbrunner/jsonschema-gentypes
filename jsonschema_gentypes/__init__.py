@@ -673,6 +673,7 @@ def get_name(
     ],
     proposed_name: Optional[str] = None,
     upper: bool = False,
+    get_name_properties: Optional[str] = None,
 ) -> str:
     """
     Get the name for an element.
@@ -694,6 +695,11 @@ def get_name(
         name = name.upper()
         # Remove spaces
         return prefix + "".join(["_" if char.isspace() else char for char in name])
+    elif get_name_properties == "UpperFirst":
+        # Change just the first letter to upper case
+        name = name[0].upper() + name[1:]
+        # Remove spaces
+        return prefix + "".join([char for char in name if not char.isspace()])
     else:
         # Title case
         name = name.title()

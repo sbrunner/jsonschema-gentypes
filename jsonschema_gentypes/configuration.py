@@ -32,6 +32,13 @@ class ApiArguments(TypedDict, total=False):
     Describe how to deal with additional properties
     """
 
+    get_name_properties: "GetNameProperties"
+    """
+    Get name properties.
+
+    Describe the rules to use to get the name of an element
+    """
+
 
 class Configuration(TypedDict, total=False):
     """
@@ -99,6 +106,18 @@ class GenerateItem(TypedDict, total=False):
 
     Used to add some vocabularies
     """
+
+
+GetNameProperties = Union[Literal["Title"], Literal["UpperFirst"]]
+"""
+Get name properties.
+
+Describe the rules to use to get the name of an element
+"""
+GETNAMEPROPERTIES_TITLE: Literal["Title"] = "Title"
+"""The values for the 'Get name properties' enum"""
+GETNAMEPROPERTIES_UPPERFIRST: Literal["UpperFirst"] = "UpperFirst"
+"""The values for the 'Get name properties' enum"""
 
 
 PRE_COMMIT_ARGUMENTS_DEFAULT: list[Any] = []
