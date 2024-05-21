@@ -17,3 +17,4 @@
 | 2.3     | Best effort     |
 | 2.4     | Best effort     |
 | 2.5     | Best effort     |
+| 2.6     | Best effort     |
