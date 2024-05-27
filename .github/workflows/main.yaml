@@ -65,9 +65,15 @@ jobs:
       - run: pre-commit run --all-files
         env:
           SKIP: poetry-lock,isort,black
-      - run: git diff && false
+      - run: git diff --exit-code --patch > /tmp/pre-commit.patch || true
         if: failure()
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Apply pre-commit fix.patch
+          path: /tmp/pre-commit.patch
+          retention-days: 1
+        if: failure()
       - run: make prospector
 
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
@@ -77,6 +83,14 @@ jobs:
           echo "username = ${{ secrets.PYPI_USERNAME }}" >> ~/.pypirc
           echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
         if: env.HAS_SECRETS == 'HAS_SECRETS'
+      - run: git diff --exit-code --patch > /tmp/dpkg-versions.patch || true
+        if: failure()
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Update dpkg versions list.patch
+          path: /tmp/dpkg-versions.patch
+          retention-days: 1
+        if: failure()
       - name: Publish
         run: c2cciutils-publish
         env:
