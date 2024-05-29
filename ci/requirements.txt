@@ -3,3 +3,4 @@ ruamel.yaml<0.18.0
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography>=39.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
 pyopenssl>=22.1.0
+requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
