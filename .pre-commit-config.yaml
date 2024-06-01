@@ -41,7 +41,7 @@ repos:
         additional_dependencies:
           - prettier@3.2.5 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: detect-private-key
       - id: check-merge-conflict
@@ -64,7 +64,7 @@ repos:
         additional_dependencies:
           - poetry==1.8.2 # pypi
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.3.0
     hooks:
       - id: codespell
         exclude: |-
@@ -114,7 +114,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/psf/black
-    rev: 24.3.0
+    rev: 24.4.2
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/prospector
@@ -126,7 +126,7 @@ repos:
           - --die-on-tool-error
           - --output-format=pylint
         additional_dependencies:
-          - prospector-profile-duplicated==1.2.0 # pypi
+          - prospector-profile-duplicated==1.5.0 # pypi
           - prospector-profile-utils==1.7.2 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 0.1.0
