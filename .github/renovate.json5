@@ -90,9 +90,9 @@
       groupName: 'CI dependencies',
       automerge: true,
     },
-    /** Don't upgrade types-pyyaml on branch 1.3 */
+    /** Don't upgrade types-pyyaml on branch 1.2 and 1.3 */
     {
-      matchBaseBranches: ['1.3'],
+      matchBaseBranches: ['1.2', '1.3'],
       enabled: false,
       matchDepNames: ['types-pyyaml'],
     },
