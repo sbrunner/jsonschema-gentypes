@@ -83,6 +83,12 @@ jobs:
           echo "username = ${{ secrets.PYPI_USERNAME }}" >> ~/.pypirc
           echo "password = ${{ secrets.PYPI_PASSWORD }}" >> ~/.pypirc
         if: env.HAS_SECRETS == 'HAS_SECRETS'
+      - name: Publish
+        run: c2cciutils-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        if: env.HAS_SECRETS == 'HAS_SECRETS'
       - run: git diff --exit-code --patch > /tmp/dpkg-versions.patch || true
         if: failure()
       - uses: actions/upload-artifact@v4
@@ -91,9 +97,3 @@ jobs:
           path: /tmp/dpkg-versions.patch
           retention-days: 1
         if: failure()
-      - name: Publish
-        run: c2cciutils-publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
