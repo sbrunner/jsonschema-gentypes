@@ -170,8 +170,13 @@ class API:
                 description.append("")
             description += additional_description
             if description:
-                if not isinstance(the_type, NamedType):
-                    if auto_alias:
+                if auto_alias:
+                    alias = True
+                    if isinstance(the_type, NamedType):
+                        alias = False
+                    elif isinstance(the_type, CombinedType):
+                        alias = not isinstance(the_type.base, NamedType)
+                    if alias:
                         the_type = TypeAlias(
                             self.get_name(schema_meta_data, proposed_name), the_type, description
                         )
@@ -205,8 +210,9 @@ class API:
         ],
         proposed_name: Optional[str] = None,
         upper: bool = False,
+        postfix: Optional[str] = None,
     ) -> str:
-        return get_name(schema, proposed_name, upper, self.get_name_properties)
+        return get_name(schema, proposed_name, upper, self.get_name_properties, postfix=postfix)
 
     def resolve_ref(
         self,

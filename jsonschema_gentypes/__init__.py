@@ -3,6 +3,7 @@ Generate the type structure based on the Type class from the JSON schema file.
 """
 
 import keyword
+import random
 import re
 import textwrap
 import unicodedata
@@ -375,6 +376,10 @@ class NativeType(Type):
             return [(self.workaround_package, self._name)]
         return [(self.package, self._name)]
 
+    def __repr__(self) -> str:
+        """Get the representation of the object."""
+        return f"NativeType({self.package!r}.{self._name!r})"
+
 
 class CombinedType(Type):
     """
@@ -479,6 +484,7 @@ class TypeEnum(NamedType):
         assert len(values) > 0
         super().__init__(name)
         self.values = values
+        self.value_names = {value: get_name({"title": f"{name} {value}"}, upper=True) for value in values}
         self.descriptions = descriptions
         self.sub_type: Type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
 
@@ -500,7 +506,7 @@ class TypeEnum(NamedType):
         elif comments:
             result += ['"""', *comments, '"""']
         for value in self.values:
-            name = get_name({"title": f"{self._name} {value}"}, upper=True)
+            name = self.value_names[value]
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
             result.append(f"{name}: {LiteralType(value).name()} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
@@ -688,6 +694,7 @@ def get_name(
     proposed_name: Optional[str] = None,
     upper: bool = False,
     get_name_properties: Optional[str] = None,
+    postfix: Optional[str] = None,
 ) -> str:
     """
     Get the name for an element.
@@ -704,21 +711,30 @@ def get_name(
     name = normalize(name)
 
     prefix = "" if has_title else "_"
+    rand = str(random.randint(0, 4006)) if name != "Root" else ""
     if upper:
         # Upper case
         name = name.upper()
         # Remove spaces
-        return prefix + "".join(["_" if char.isspace() else char for char in name])
+        output = prefix + "".join(["_" if char.isspace() else char for char in name])
     elif get_name_properties == "UpperFirst":
         # Change just the first letter to upper case
         name = name[0].upper() + name[1:]
         # Remove spaces
-        return prefix + "".join([char for char in name if not char.isspace()])
+        output = prefix + "".join([char for char in name if not char.isspace()])
     else:
         # Title case
         name = name.title()
         # Remove spaces
-        return prefix + "".join([char for char in name if not char.isspace()])
+        output = prefix + "".join([char for char in name if not char.isspace()])
+    if postfix:
+        output += postfix
+    if not get_name.__dict__.get("names"):
+        get_name.__dict__["names"] = set()
+    elif output in get_name.__dict__["names"]:
+        output += rand
+    get_name.__dict__["names"].add(output)
+    return output
 
 
 def get_description(
