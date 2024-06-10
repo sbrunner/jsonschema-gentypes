@@ -8,18 +8,21 @@ from jsonschema_gentypes.api import Type
 
 
 def get_types(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2019_09(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2020_12(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2020_12.APIv202012(resolver)
     return api.get_type(schema, "Base")
@@ -971,10 +974,12 @@ foundation and establish self publication rules.
     ],
 )
 def test_name(config, title, expected):
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name(config, title) == expected
 
 
 def test_name_upper():
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name({"title": "test"}, upper=True) == "TEST"
 
 

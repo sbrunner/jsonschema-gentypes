@@ -73,9 +73,9 @@ class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
 
 
 OgcapiCollectionsCollectionidGetQueryF = Union[Literal["json"], Literal["html"]]
-OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal["json"] = "json"
+_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal["json"] = "json"
 """The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
-OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal["html"] = "html"
+_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal["html"] = "html"
 """The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
 
 
