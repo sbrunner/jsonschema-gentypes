@@ -438,7 +438,10 @@ class TypeAlias(NamedType):
         Return the type declaration.
         """
         result = ["", ""]
-        result.append(f"{self._name} = {self.sub_type.name()}")
+        _type = (
+            ": TypeAlias" if isinstance(self.sub_type, BuiltinType) and self.sub_type.name() == "None" else ""
+        )
+        result.append(f"{self._name}{_type} = {self.sub_type.name()}")
         comments = split_comment(self.comments(), line_length - 2 if line_length else None)
         if len(comments) == 1:
             result += [f'""" {comments[0]} """', ""]
@@ -446,6 +449,17 @@ class TypeAlias(NamedType):
             result += ['"""', *comments, '"""', ""]
 
         return result
+
+    def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
+        """
+        Return the needed imports.
+        """
+        del python_version
+        return (
+            [("typing", "TypeAlias")]
+            if isinstance(self.sub_type, BuiltinType) and self.sub_type.name() == "None"
+            else []
+        )
 
 
 class TypeEnum(NamedType):
