@@ -177,7 +177,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
             continue
         print(f"Processing {source}")
 
-        resolver = jsonschema_gentypes.resolver.RefResolver(source)
+        resolver = jsonschema_gentypes.resolver.RefResolver(source, files=files)
         schema = resolver.schema
 
         if "vocabularies" in gen:
