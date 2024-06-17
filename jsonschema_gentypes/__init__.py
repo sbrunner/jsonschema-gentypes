@@ -597,11 +597,11 @@ class TypedDictType(NamedType):
                     result.append("")
         else:
             result += [
-                "# " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
+                "# | " + d for d in split_comment(self.descriptions, line_length - 2 if line_length else None)
             ]
             result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
             for property_, type_obj in self.struct.items():
-                result += [f"    # {comment}" for comment in type_obj.comments()]
+                result += [f"    # | {comment}" for comment in type_obj.comments()]
                 result.append(f"    '{property_}': {type_obj.name()},")
             result.append("}, total=False)")
         return result
