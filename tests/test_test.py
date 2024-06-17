@@ -590,7 +590,7 @@ def test_all_of_2() -> None:
         "\n".join([d.rstrip() for d in type_.definition(None)])
         == f'''
 
-TestBasicTypes = None
+TestBasicTypes: TypeAlias = None
 """ test basic types. """
 '''
     )
