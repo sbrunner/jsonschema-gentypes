@@ -462,7 +462,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_enum():
+def test_dict_enum():
     type_ = get_types(
         {
             "type": "object",
@@ -475,26 +475,37 @@ def test_enum():
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition(None)])
-        == f'''
+        == '''
 
-"""
-test basic types.
-"""
-TestBasicTypes = TypedDict('TestBasicTypes', {
-    'enum': "_TestBasicTypesEnum",
-}, total=False) """
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    enum: Required["Properties"]
+    """
+    properties.
+
+    Required property
+    """
 '''
     )
 
     assert len(type_.depends_on()) == 2
+    enum_type = type_.depends_on()[1]
+    assert len(enum_type.depends_on()) == 2
+    enum_type = enum_type.depends_on()[1]
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
+        "\n".join([d.rstrip() for d in enum_type.definition(None)])
         == '''
 
-class _TestBasicTypesEnum(Enum):
-    RED = "red"
-    AMBER = "amber"
-    GREEN = "green"'''
+Properties = Union[Literal['red'], Literal['amber'], Literal['green']]
+""" properties. """
+PROPERTIES_RED: Literal['red'] = "red"
+"""The values for the 'properties' enum"""
+PROPERTIES_AMBER: Literal['amber'] = "amber"
+"""The values for the 'properties' enum"""
+PROPERTIES_GREEN: Literal['green'] = "green"
+"""The values for the 'properties' enum"""
+'''
     )
 
 
