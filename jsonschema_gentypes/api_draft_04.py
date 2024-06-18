@@ -99,7 +99,7 @@ class APIv4(API):
         )
 
         std_dict = None
-        name = self.get_name(schema_meta_data, proposed_name)
+
         schema.setdefault("used", set()).add("additionalProperties")  # type: ignore[typeddict-item]
         additional_properties = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
@@ -150,8 +150,11 @@ class APIv4(API):
                 for prop, sub_schema in properties.items()
             }
 
+            name = self.get_name(
+                schema_meta_data, proposed_name, postfix="Typed" if std_dict is not None else ""
+            )
             type_: Type = TypedDictType(
-                name if std_dict is None else name + "Typed",
+                name,
                 struct,
                 get_description(schema_meta_data) if std_dict is None else [],
                 required=required,

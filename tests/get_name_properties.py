@@ -1,6 +1,4 @@
-from typing import TypedDict
-
-from typing_extensions import Required
+from typing import Required, TypedDict
 
 
 class ResponseType(TypedDict, total=False):

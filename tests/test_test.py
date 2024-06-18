@@ -8,18 +8,21 @@ from jsonschema_gentypes.api import Type
 
 
 def get_types(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_07.APIv7(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2019_09(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver)
     return api.get_type(schema, "Base")
 
 
 def get_types_2020_12(schema) -> Type:
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2020_12.APIv202012(resolver)
     return api.get_type(schema, "Base")
@@ -459,7 +462,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_enum():
+def test_dict_enum():
     type_ = get_types(
         {
             "type": "object",
@@ -472,26 +475,37 @@ def test_enum():
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition(None)])
-        == f'''
+        == '''
 
-"""
-test basic types.
-"""
-TestBasicTypes = TypedDict('TestBasicTypes', {
-    'enum': "_TestBasicTypesEnum",
-}, total=False) """
+class TestBasicTypes(TypedDict, total=False):
+    """ test basic types. """
+
+    enum: Required["Properties"]
+    """
+    properties.
+
+    Required property
+    """
 '''
     )
 
     assert len(type_.depends_on()) == 2
+    enum_type = type_.depends_on()[1]
+    assert len(enum_type.depends_on()) == 2
+    enum_type = enum_type.depends_on()[1]
     assert (
-        "\n".join([d.rstrip() for d in type_.depends_on()[1].definition(None)])
+        "\n".join([d.rstrip() for d in enum_type.definition(None)])
         == '''
 
-class _TestBasicTypesEnum(Enum):
-    RED = "red"
-    AMBER = "amber"
-    GREEN = "green"'''
+Properties = Union[Literal['red'], Literal['amber'], Literal['green']]
+""" properties. """
+PROPERTIES_RED: Literal['red'] = "red"
+"""The values for the 'properties' enum"""
+PROPERTIES_AMBER: Literal['amber'] = "amber"
+"""The values for the 'properties' enum"""
+PROPERTIES_GREEN: Literal['green'] = "green"
+"""The values for the 'properties' enum"""
+'''
     )
 
 
@@ -971,10 +985,12 @@ foundation and establish self publication rules.
     ],
 )
 def test_name(config, title, expected):
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name(config, title) == expected
 
 
 def test_name_upper():
+    jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name({"title": "test"}, upper=True) == "TEST"
 
 
