@@ -2,6 +2,7 @@
 
 checks:
   codespell: false
+  black: false
 
 audit:
   snyk:
