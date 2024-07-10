@@ -53,6 +53,7 @@ pre-commit = { version = "3.2.2", optional = true }
 certifi = "2024.7.4"
 urllib3 = "1.26.19"
 idna = "3.7"
+zipp = "3.19.1"
 
 [tool.poetry.extras]
 generate = []
