@@ -4,6 +4,7 @@ Resolve references in a JSON schema.
 Encapsulate the referencing logic to be able to use it in the code generation.
 """
 
+import copy
 import json
 import re
 from typing import Any, Optional, Union, cast
@@ -90,7 +91,7 @@ _VOCAB_URL_RE = re.compile(rf"{re.escape(_URL_PREFIX)}([0-9-]+)/vocab/(.+)$")
 _META_RE = re.compile(r"^meta/([a-zA-Z0-9]+)#(.*)$")
 
 
-class UnRedolvedException(Exception):
+class UnResolvedException(Exception):
     """Exception for unresolved references."""
 
 
@@ -109,6 +110,7 @@ class RefResolver:
                 jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
             ]
         ] = None,
+        files: Optional[list[str]] = None,
     ) -> None:
         """
         Initialize the resolver.
@@ -116,6 +118,7 @@ class RefResolver:
         Parameter:
             base_url: The base URL of the schema.
             schema: The schema to resolve.
+            files: Additional schema files to use for resolving references
         """
         schema = _openapi_schema(schema) if schema is not None else None
         self.schema = _open_uri(base_url) if schema is None else schema
@@ -128,8 +131,25 @@ class RefResolver:
         )
         if "$schema" in self.schema:
             _RESOURCE_CACHE[base_url] = referencing.Resource.from_contents(self.schema)
+            if "$id" in self.schema and self.schema.get("$id"):
+                _RESOURCE_CACHE[str(self.schema.get("$id"))] = _RESOURCE_CACHE[base_url]
 
-        self.registry = referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore
+        extra_resources: list[referencing.Resource[Any]] = []
+        if files:
+            for file in files:
+                with open(file, encoding="UTF-8") as schema_file:
+                    data = json.load(schema_file)
+                if "$schema" in data:
+                    if "$id" in data:  # If it has an $id, add the resource by id
+                        extra_resources.append(referencing.Resource.from_contents(data))
+                    # and always add it by filename
+                    data = copy.deepcopy(data)
+                    data["$id"] = file
+                    extra_resources.append(referencing.Resource.from_contents(data))
+                else:
+                    print(f"File {file} does not contain a $schema tag, so will not be used for resolving")
+
+        self.registry = extra_resources @ referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore
         self.resolver: referencing._core.Resolver[
             Union[
                 jsonschema_draft_06.JSONSchemaItemD6,
@@ -188,7 +208,7 @@ class RefResolver:
                     return resolver.lookup(uri).contents
                 except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):
                     pass
-        raise UnRedolvedException(f"Ref '{uri}' not found") from exception
+        raise UnResolvedException(f"Ref '{uri}' not found") from exception
 
     def auto_resolve(
         self,
