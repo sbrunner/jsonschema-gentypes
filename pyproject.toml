@@ -54,7 +54,7 @@ referencing = "0.30.2"
 urllib3 = "2.2.2"
 idna = "3.7"
 certifi = "2024.7.4"
-zipp = "3.19.1"
+zipp = "3.19.2"
 
 [tool.poetry.extras]
 generate = []
@@ -66,7 +66,7 @@ prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "
 pytest = "7.4.4"
 pytest-cov = "4.1.0"
 types-requests = "2.31.0.20240406"
-types-pyyaml = "6.0.12.20240311"
+types-pyyaml = "6.0.12.20240724"
 
 [tool.poetry.group.dev.dependencies]
 prospector-profile-duplicated = "0.1.0"
