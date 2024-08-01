@@ -58,7 +58,7 @@ romanize = { version = "1.0.2", optional = true }
 certifi = "2024.7.4"
 urllib3 = "1.26.19"
 idna = "3.7"
-zipp = "3.19.1"
+zipp = "3.19.2"
 
 [tool.poetry.extras]
 generate = ['requests', 'PyYAML']
