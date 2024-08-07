@@ -50,8 +50,8 @@ def _add_type(
         return
     name_mapping = gen.get("name_mapping", {})
     assert name_mapping is not None
-    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in name_mapping:
-        type_.set_name(name_mapping[type_.name()])
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in name_mapping:
+        type_.set_name(name_mapping[type_.unescape_name()])
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in types:
         if types[type_.name()] != type_:
             print(f"WARNING: the type {type_.name()} is already defined, it will be renamed")
