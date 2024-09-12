@@ -7,3 +7,4 @@ __pycache__
 /dist
 /.github/changelog-generator-cache
 /tests/recursion.py
+tests/get_name_properties.py
