@@ -121,7 +121,7 @@ def validate_config(config: Any) -> None:
     validator_class = validator_for(config)
     validator: Validator = validator_class(schema)
     errors = list(validator.iter_errors(config))
-    if errors and len(errors) > 0:
+    if errors:
         msg = "Validation Errors when validating configuration"
         for error in validator.iter_errors(config):
             path = create_json_path(error.relative_path)
