@@ -1,15 +1,5 @@
 # https://pre-commit.com/hooks.html
 
-ci:
-  autoupdate_schedule: quarterly
-  skip:
-    - copyright
-    - poetry-check
-    - poetry-lock
-    - ripsecrets
-    - jsonschema-gentypes
-    - jsonschema-validator
-
 repos:
   - repo: local
     hooks:
@@ -144,3 +134,7 @@ repos:
         args:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 37.428.1
+    hooks:
+      - id: renovate-config-validator
