@@ -711,7 +711,6 @@ def get_name(
     name = normalize(name)
 
     prefix = "" if has_title else "_"
-    rand = str(random.randint(0, 9999)) if name != "Root" else ""  # nosec
     if upper:
         # Upper case
         name = name.upper()
@@ -732,7 +731,7 @@ def get_name(
     if not get_name.__dict__.get("names"):
         get_name.__dict__["names"] = set()
     elif output in get_name.__dict__["names"]:
-        output += rand
+        output += str(random.randint(0, 9999))  # nosec
     get_name.__dict__["names"].add(output)
     return output
 

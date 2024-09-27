@@ -172,6 +172,8 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         python_version = sys.version_info[:3]
 
     for gen in config["generate"]:
+        if jsonschema_gentypes.get_name.__dict__.get("names"):
+            del jsonschema_gentypes.get_name.__dict__["names"]
         source = gen["source"]
         if files and source not in files:
             continue
