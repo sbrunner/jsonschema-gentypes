@@ -1,4 +1,4 @@
-c2cciutils==1.2.31
+c2cciutils==1.2.32
 ruamel.yaml<0.18.0
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography>=42.0.8 # not directly required, pinned by Snyk to avoid a vulnerability
