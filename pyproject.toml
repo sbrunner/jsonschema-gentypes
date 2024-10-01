@@ -51,7 +51,7 @@ romkan = { version = "0.2.1", optional = true }
 romanize = { version = "1.0.2", optional = true }
 pre-commit = { version = "3.3.3", optional = true }
 referencing = "0.30.2"
-urllib3 = "2.2.2"
+urllib3 = "2.2.3"
 idna = "3.7"
 certifi = "2024.7.4"
 zipp = "3.19.3"
@@ -66,7 +66,7 @@ prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "
 pytest = "7.4.4"
 pytest-cov = "4.1.0"
 types-requests = "2.31.0.20240406"
-types-pyyaml = "6.0.12.20240808"
+types-pyyaml = "6.0.12.20240917"
 
 [tool.poetry.group.dev.dependencies]
 prospector-profile-duplicated = "0.1.0"
