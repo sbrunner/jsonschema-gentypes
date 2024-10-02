@@ -13,6 +13,8 @@ pre_commit:
   arguments:
     - --color=never
 
+python_version: '3.10'
+
 generate:
   - source: jsonschema_gentypes/schema.json
     destination: jsonschema_gentypes/configuration.py
