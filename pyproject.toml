@@ -51,6 +51,7 @@ pre-commit = { version = "3.7.1", optional = true }
 referencing = "0.35.1"
 certifi = "2024.7.4"
 urllib3 = "2.2.3"
+virtualenv = "20.26.6"
 
 [tool.poetry.extras]
 generate = []
