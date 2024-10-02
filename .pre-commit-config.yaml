@@ -22,8 +22,6 @@ repos:
             |tests/.*\.json
           )$
         verbose: true
-        args:
-          - --python=3.9
         additional_dependencies:
           - pre-commit==3.8.0 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
