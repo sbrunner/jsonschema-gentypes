@@ -50,8 +50,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
-      - run: python3 -m pip install --user --requirement=ci/requirements.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python3 -m pip install --requirement=ci/requirements.txt
 
       - name: Print environment information
         run: c2cciutils-env
@@ -76,7 +78,7 @@ jobs:
         if: failure()
       - run: make prospector
 
-      - run: python3 -m pip install --user --requirement=ci/requirements.txt
+      - run: python3 -m pip install --requirement=ci/requirements.txt
       - name: Init pypi
         run: |-
           echo "[pypi]" > ~/.pypirc
