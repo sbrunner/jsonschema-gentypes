@@ -39,6 +39,7 @@ classifiers = [
 jsonschema-gentypes = "jsonschema_gentypes.cli:main"
 
 [tool.poetry.dependencies]
+# Minimal version should also be set in the jsonschema-gentypes.yaml file
 python = ">=3.9,<4"
 jsonschema = "4.23.0"
 typing-extensions = "4.12.2"
