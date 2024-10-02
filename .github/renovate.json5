@@ -12,23 +12,6 @@
     automerge: true,
     schedule: 'after 5pm on the first day of the month',
   },
-  baseBranches: [
-    '1.2',
-    '1.3',
-    '1.4',
-    '1.5',
-    '1.6',
-    '1.7',
-    '2.0',
-    '2.1',
-    '2.2',
-    '2.3',
-    '2.4',
-    '2.5',
-    '2.6',
-    '2.7',
-    'master',
-  ],
   'pre-commit': { enabled: true },
   vulnerabilityAlerts: {
     schedule: ['at any time'],
@@ -67,12 +50,6 @@
       groupName: 'all minor versions',
       automerge: true,
     },
-    /** Accept only the patch on stabilization branches */
-    {
-      matchBaseBranches: ['/^[0-9]+\\.[0-9]+$/'],
-      matchUpdateTypes: ['major', 'minor', 'pin', 'digest', 'lockFileMaintenance', 'rollback', 'bump'],
-      enabled: false,
-    },
     /** Group Poetry packages */
     {
       matchPackagePrefixes: ['poetry-'],
@@ -90,17 +67,6 @@
       matchFileNames: ['.github/**', '.pre-commit-config.yaml', 'ci/**'],
       groupName: 'CI dependencies',
       automerge: true,
-    },
-    /** Don't upgrade types-pyyaml on branch 1.2 and 1.3 */
-    {
-      matchBaseBranches: ['1.2', '1.3'],
-      enabled: false,
-      matchDepNames: ['types-pyyaml'],
-    },
-    /** Packages published very recently are not pushed to stabilization branches for security reasons */
-    {
-      matchBaseBranches: ['/^[0-9]+\\.[0-9]+$/'],
-      minimumReleaseAge: '7 days',
     },
   ],
 }
