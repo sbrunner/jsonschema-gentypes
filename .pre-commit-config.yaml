@@ -23,7 +23,7 @@ repos:
           )$
         verbose: true
         additional_dependencies:
-          - pre-commit==3.8.0 # pypi
+          - pre-commit==4.0.1 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
@@ -31,7 +31,7 @@ repos:
         additional_dependencies:
           - prettier@3.3.3 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: detect-private-key
       - id: check-merge-conflict
