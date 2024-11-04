@@ -17,7 +17,6 @@ from jsonschema_gentypes import (
     TypeProxy,
     configuration,
     get_description,
-    get_name,
     jsonschema_draft_04,
     jsonschema_draft_06,
     jsonschema_draft_2019_09_applicator,
