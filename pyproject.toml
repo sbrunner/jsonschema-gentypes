@@ -60,7 +60,7 @@ extra = ['pinyin', 'romkan', 'romanize']
 prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.12.1" }
 prospector-profile-duplicated = "1.6.0"
 prospector-profile-utils = "1.9.1"
-pytest = "8.3.3"
+pytest = "8.3.4"
 pytest-cov = "6.0.0"
 types-requests = "2.32.0.20241016"
 types-pyyaml = "6.0.12.20240917"
