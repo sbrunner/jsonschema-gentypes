@@ -29,7 +29,7 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.3.3 # npm
+          - prettier@3.4.1 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -71,7 +71,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.4
+    rev: 0.30.0
     hooks:
       - id: check-github-workflows
       - id: check-jsonschema
@@ -108,7 +108,7 @@ repos:
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/prospector
-    rev: v1.12.1
+    rev: v1.13.3
     hooks:
       - id: prospector
         args:
@@ -116,10 +116,10 @@ repos:
           - --die-on-tool-error
           - --output-format=pylint
         additional_dependencies:
-          - prospector-profile-duplicated==1.6.0 # pypi
-          - prospector-profile-utils==1.9.1 # pypi
+          - prospector-profile-duplicated==1.8.0 # pypi
+          - prospector-profile-utils==1.12.2 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
-    rev: 0.1.0
+    rev: 0.3.2
     hooks:
       - id: jsonschema-validator
         files: |-
