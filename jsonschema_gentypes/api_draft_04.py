@@ -1,6 +1,4 @@
-"""
-The API version draft 04.
-"""
+"""The API version draft 04."""
 
 import re
 from typing import Literal, Union, cast
@@ -29,9 +27,7 @@ from jsonschema_gentypes.api import API
 
 
 class APIv4(API):
-    """
-    JSON Schema draft 4.
-    """
+    """JSON Schema draft 4."""
 
     def enum(
         self,
@@ -40,9 +36,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate an enum.
-        """
+        """Generate an enum."""
         schema.setdefault("used", set()).add("enum")  # type: ignore[typeddict-item]
 
         schema_meta_data = cast(
@@ -66,9 +60,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate a ``bool`` annotation for a boolean object.
-        """
+        """Generate a ``bool`` annotation for a boolean object."""
         del schema, proposed_name
         return BuiltinType("bool")
 
@@ -79,9 +71,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate an annotation for an object, usually a TypedDict.
-        """
+        """Generate an annotation for an object, usually a TypedDict."""
         schema_meta_data = cast(
             Union[
                 jsonschema_draft_04.JSONSchemaD4,
@@ -182,9 +172,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate a ``List[]`` annotation with the allowed types.
-        """
+        """Generate a ``List[]`` annotation with the allowed types."""
         items = schema.get("items")
         if items is True:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
@@ -261,9 +249,7 @@ class APIv4(API):
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
         ],
     ]:
-        """
-        Generate a ``Union`` annotation with the allowed types.
-        """
+        """Generate a ``Union`` annotation with the allowed types."""
         if recursion > 10:
             raise ValueError("Recursion limit reached")
 
@@ -461,9 +447,7 @@ class APIv4(API):
         list[Type],
         Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
     ]:
-        """
-        Combine all the definitions.
-        """
+        """Combine all the definitions."""
         if recursion > 10:
             raise ValueError("Recursion limit reached")
 
@@ -576,9 +560,7 @@ class APIv4(API):
         schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
         proposed_name: str,
     ) -> Type:
-        """
-        Handle a `$ref`.
-        """
+        """Handle a `$ref`."""
         # ref is not correctly declared in draft 4.
         schema_casted = cast(
             Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
@@ -629,9 +611,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate a ``str`` annotation.
-        """
+        """Generate a ``str`` annotation."""
         del schema, proposed_name
         return BuiltinType("str")
 
@@ -642,9 +622,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate a ``Union[int, float]`` annotation.
-        """
+        """Generate a ``Union[int, float]`` annotation."""
         del schema, proposed_name
         return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
 
@@ -655,9 +633,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate an ``int`` annotation.
-        """
+        """Generate an ``int`` annotation."""
         del schema, proposed_name
         return BuiltinType("int")
 
@@ -668,9 +644,7 @@ class APIv4(API):
         ],
         proposed_name: str,
     ) -> Type:
-        """
-        Generate an ``None`` annotation.
-        """
+        """Generate an ``None`` annotation."""
         del schema, proposed_name
         return BuiltinType("None")
 

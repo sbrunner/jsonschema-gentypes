@@ -1,18 +1,3 @@
-[tool.black]
-line-length = 110
-target-version = ["py39"]
-
-[tool.isort]
-profile = "black"
-line_length = 110
-
-[tool.mypy]
-python_version = "3.9"
-warn_redundant_casts = true
-warn_unused_ignores = true
-ignore_missing_imports = true
-strict = true
-
 [tool.poetry]
 name = "jsonschema-gentypes"
 version = "0.0.0"
@@ -57,7 +42,7 @@ tools = ["pre-commit"]
 extra = ['pinyin', 'romkan', 'romanize']
 
 [tool.poetry.group.dev.dependencies]
-prospector = { extras = ["with_mypy", "with_bandit", "with_pyroma"], version = "1.13.3" }
+prospector = {  version = "1.13.3", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.8.1"
 prospector-profile-utils = "1.14.0"
 pytest = "8.3.4"

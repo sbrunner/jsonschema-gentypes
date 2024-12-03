@@ -1,6 +1,4 @@
-"""
-Generate the type structure based on the Type class from the JSON schema file.
-"""
+"""Generate the type structure based on the Type class from the JSON schema file."""
 
 import keyword
 import random
@@ -115,29 +113,21 @@ def normalize(input_str: str) -> str:
 
 
 class Type:
-    """
-    The base Type object.
-    """
+    """The base Type object."""
 
     _comments: Optional[list[str]] = None
     _depends_on: Optional[list["Type"]] = None
 
     def __init__(self) -> None:
-        """
-        Initialize the type.
-        """
+        """Initialize the type."""
         self._depends_on = []
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         raise NotImplementedError
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         del python_version
         return []
 
@@ -152,52 +142,38 @@ class Type:
         return []
 
     def depends_on(self) -> list["Type"]:
-        """
-        Return the needed sub types.
-        """
+        """Return the needed sub types."""
         assert self._depends_on is not None
         return self._depends_on
 
     def add_depends_on(self, depends_on: "Type") -> None:
-        """
-        Add a sub type.
-        """
+        """Add a sub type."""
         assert self._depends_on is not None
         self._depends_on.append(depends_on)
 
     def comments(self) -> list[str]:
-        """
-        Additional comments shared by the type.
-        """
+        """Additional comments shared by the type."""
         if self._comments is None:
             self._comments = []
         return self._comments
 
     def set_comments(self, comments: list[str]) -> None:
-        """
-        Set comment on the type.
-        """
+        """Set comment on the type."""
         self._comments = comments
 
 
 class TypeProxy(Type):
-    """
-    A proxy on a type that can be set later.
-    """
+    """A proxy on a type that can be set later."""
 
     _type: Optional[Type] = None
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         assert self._type is not None
         return self._type.name()
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         assert self._type is not None
         return self._type.imports(python_version)
 
@@ -212,41 +188,29 @@ class TypeProxy(Type):
         return self._type.definition()
 
     def depends_on(self) -> list["Type"]:
-        """
-        Return the needed sub types.
-        """
+        """Return the needed sub types."""
         assert self._type is not None
         return self._type.depends_on()
 
     def add_depends_on(self, depends_on: "Type") -> None:
-        """
-        Add a sub type.
-        """
+        """Add a sub type."""
         raise NotImplementedError
 
     def comments(self) -> list[str]:
-        """
-        Additional comments shared by the type.
-        """
+        """Additional comments shared by the type."""
         return self._type.comments() if self._type is not None else []
 
     def set_comments(self, comments: list[str]) -> None:
-        """
-        Set comment on the type.
-        """
+        """Set comment on the type."""
         print(f"Warning: set_comments on a TypeProxy, lost comments: {comments}")
 
     def set_type(self, type_: Type) -> None:
-        """
-        Set the type.
-        """
+        """Set the type."""
         self._type = type_
 
 
 class NamedType(Type):
-    """
-    The based type of named type.
-    """
+    """The based type of named type."""
 
     def __init__(self, name: str) -> None:
         """
@@ -259,34 +223,24 @@ class NamedType(Type):
         self._name = name
 
     def postfix_name(self, postfix: str) -> None:
-        """
-        Set a new name (Not available every time).
-        """
+        """Set a new name (Not available every time)."""
         self._name += postfix
 
     def set_name(self, name: str) -> None:
-        """
-        Set a new name (Not available every time).
-        """
+        """Set a new name (Not available every time)."""
         self._name = name
 
     def unescape_name(self) -> str:
-        """
-        Return the unescaped name.
-        """
+        """Return the unescaped name."""
         return self._name
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         return f'"{self._name}"'
 
 
 class LiteralType(Type):
-    """
-    A literal type like: `Literal["text"]`.
-    """
+    """A literal type like: `Literal["text"]`."""
 
     def __init__(self, const: Union[int, float, bool, str, None, dict[str, Any], list[Any]]) -> None:
         """
@@ -299,23 +253,17 @@ class LiteralType(Type):
         self.const = const
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         return f"Literal[{repr(self.const)}]"
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         del python_version
         return [("typing", "Literal")]
 
 
 class BuiltinType(Type):
-    """
-    Python builtin type, e.g.: str.
-    """
+    """Python builtin type, e.g.: str."""
 
     def __init__(self, name: str) -> None:
         """
@@ -328,16 +276,12 @@ class BuiltinType(Type):
         self._name = name
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         return self._name
 
 
 class NativeType(Type):
-    """
-    Native Type that will essentially generates a Python import.
-    """
+    """Native Type that will essentially generates a Python import."""
 
     def __init__(
         self,
@@ -362,15 +306,11 @@ class NativeType(Type):
         self.workaround_package = workaround_package
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         return self._name
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         if self.minimal_python_version is not None and python_version < self.minimal_python_version:
             assert self.workaround_package is not None
             return [(self.workaround_package, self._name)]
@@ -401,23 +341,17 @@ class CombinedType(Type):
         self.sub_types = sub_types
 
     def name(self) -> str:
-        """
-        Return what we need to use the type.
-        """
+        """Return what we need to use the type."""
         assert isinstance(self.base, Type)
         return f"{self.base.name()}[{', '.join([sub_type.name() for sub_type in self.sub_types])}]"
 
     def depends_on(self) -> list[Type]:
-        """
-        Return the needed sub types.
-        """
+        """Return the needed sub types."""
         return [self.base] + self.sub_types + super().depends_on()
 
 
 class TypeAlias(NamedType):
-    """
-    An alias on a type, essentially to add a description.
-    """
+    """An alias on a type, essentially to add a description."""
 
     def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None):
         """
@@ -433,15 +367,11 @@ class TypeAlias(NamedType):
         self._comments = [] if descriptions is None else descriptions
 
     def depends_on(self) -> list[Type]:
-        """
-        Return the needed sub types.
-        """
+        """Return the needed sub types."""
         return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> list[str]:
-        """
-        Return the type declaration.
-        """
+        """Return the type declaration."""
         result = ["", ""]
         _type = (
             ": TypeAlias" if isinstance(self.sub_type, BuiltinType) and self.sub_type.name() == "None" else ""
@@ -456,9 +386,7 @@ class TypeAlias(NamedType):
         return result
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         del python_version
         return (
             [("typing", "TypeAlias")]
@@ -468,9 +396,7 @@ class TypeAlias(NamedType):
 
 
 class TypeEnum(NamedType):
-    """
-    The Type that represent an Enum in Python.
-    """
+    """The Type that represent an Enum in Python."""
 
     def __init__(self, name: str, values: list[Union[int, float, bool, str, None]], descriptions: list[str]):
         """
@@ -489,15 +415,11 @@ class TypeEnum(NamedType):
         self.sub_type: Type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
 
     def depends_on(self) -> list["Type"]:
-        """
-        Return the needed sub types.
-        """
+        """Return the needed sub types."""
         return [self.sub_type] + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> list[str]:
-        """
-        Return the type declaration.
-        """
+        """Return the type declaration."""
         result = ["", ""]
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name()}")
@@ -519,9 +441,7 @@ class TypeEnum(NamedType):
 
 
 class TypedDictType(NamedType):
-    """
-    The Type that represent a TypedDict in Python.
-    """
+    """The Type that represent a TypedDict in Python."""
 
     def __init__(
         self,
@@ -557,22 +477,18 @@ class TypedDictType(NamedType):
         }
 
     def depends_on(self) -> list[Type]:
-        """
-        Get the types that we requires to be valid.
-        """
+        """Get the types that we requires to be valid."""
         result: list[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
         return result + super().depends_on()
 
     def definition(self, line_length: Optional[int] = None) -> list[str]:
-        """
-        Get the definition based on a dict.
-        """
+        """Get the definition based on a dict."""
         supported_re = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
         # Support to be a class
         supported = True
 
-        for property_ in self.struct.keys():
+        for property_ in self.struct:
             if not supported_re.match(property_) or property_ in keyword.kwlist:
                 supported = False
                 break
@@ -614,9 +530,7 @@ class TypedDictType(NamedType):
 
 
 class Constant(NamedType):
-    """
-    The Pseudo Type is used to add the default constants.
-    """
+    """The Pseudo Type is used to add the default constants."""
 
     def __init__(self, name: str, constant: Any, descriptions: list[str]):
         """
@@ -632,9 +546,7 @@ class Constant(NamedType):
         self.descriptions = descriptions
 
     def definition(self, line_length: Optional[int] = None) -> list[str]:
-        """
-        Return the type declaration.
-        """
+        """Return the type declaration."""
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
             result.append(f"{self._name}: Dict[str, Any] = {repr(self.constant)}")
@@ -650,9 +562,7 @@ class Constant(NamedType):
         return result
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
-        """
-        Return the needed imports.
-        """
+        """Return the needed imports."""
         del python_version
 
         if isinstance(self.constant, dict) and not self.constant:
@@ -731,7 +641,7 @@ def get_name(
     if not get_name.__dict__.get("names"):
         get_name.__dict__["names"] = set()
     elif output in get_name.__dict__["names"]:
-        output += str(random.randint(0, 9999))  # nosec
+        output += str(random.randint(0, 9999))  # noqa: S311
     get_name.__dict__["names"].add(output)
     return output
 
@@ -740,7 +650,7 @@ def get_description(
     schema: Union[
         jsonschema_draft_04.JSONSchemaD4,
         jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
-    ]
+    ],
 ) -> list[str]:
     """
     Get the standard description for an element.

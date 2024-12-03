@@ -1,6 +1,4 @@
-"""
-The API version draft 06.
-"""
+"""The API version draft 06."""
 
 from typing import Any, Union, cast
 
@@ -16,9 +14,7 @@ from jsonschema_gentypes.api_draft_04 import APIv4
 
 
 class APIv6(APIv4):
-    """
-    JSON Schema draft 6.
-    """
+    """JSON Schema draft 6."""
 
     def get_type_start(
         self,
@@ -28,9 +24,7 @@ class APIv6(APIv4):
         proxy: Type,
         proposed_name: str,
     ) -> None:
-        """
-        Get the type for a schema.
-        """
+        """Get the type for a schema."""
         schema_casted = cast(
             Union[
                 jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020

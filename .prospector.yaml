@@ -3,11 +3,8 @@ inherits:
   - utils:base
   - utils:fix
   - utils:no-design-checks
+  - utils:unsafe
 
 ignore-patterns:
   - jsonschema_gentypes/configuration.py
   - jsonschema_gentypes/jsonschema_draft_.*\.py
-
-bandit:
-  options:
-    config: .bandit.yaml
