@@ -775,19 +775,18 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prospector"
-version = "1.12.1"
+version = "1.13.3"
 description = "Prospector is a tool to analyse Python code by aggregating the result of other tools."
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "prospector-1.12.1-py3-none-any.whl", hash = "sha256:e2440b51f40626cbaea80edd97263d8c0a71a79e729415fb505096d4d39e2287"},
-    {file = "prospector-1.12.1.tar.gz", hash = "sha256:b9bb4bcdd77b943c597ee4f374960e851cdd2a0b4b60eaeeaf0da465facafc60"},
+    {file = "prospector-1.13.3-py3-none-any.whl", hash = "sha256:e7261c222ba54bc8aef8c9e31b2dcf5ed2a656c9b76fc0cceab294cd5ec3db6b"},
+    {file = "prospector-1.13.3.tar.gz", hash = "sha256:36ccb13f69aa27c5c4682afd4cc46219b9e0c80723e30dc64ff30c71f7b877a1"},
 ]
 
 [package.dependencies]
 bandit = {version = ">=1.5.1", optional = true, markers = "extra == \"with-bandit\" or extra == \"with_everything\""}
 dodgy = ">=0.2.1,<0.3.0"
-flake8 = "*"
 GitPython = ">=3.1.27,<4.0.0"
 mccabe = ">=0.7.0,<0.8.0"
 mypy = {version = ">=0.600", optional = true, markers = "extra == \"with-mypy\" or extra == \"with_everything\""}
@@ -802,39 +801,43 @@ pylint-django = ">=2.6.1"
 pylint-flask = "0.6"
 pyroma = {version = ">=2.4", optional = true, markers = "extra == \"with-pyroma\" or extra == \"with_everything\""}
 PyYAML = "*"
-requirements-detector = ">=1.3.1"
+requirements-detector = ">=1.3.2"
 setoptconf-tmp = ">=0.3.1,<0.4.0"
 toml = ">=0.10.2,<0.11.0"
 
 [package.extras]
 with-bandit = ["bandit (>=1.5.1)"]
-with-everything = ["bandit (>=1.5.1)", "mypy (>=0.600)", "pyright (>=1.1.3)", "pyroma (>=2.4)", "vulture (>=1.5)"]
+with-everything = ["bandit (>=1.5.1)", "mypy (>=0.600)", "pyright (>=1.1.3)", "pyroma (>=2.4)", "ruff", "vulture (>=1.5)"]
 with-mypy = ["mypy (>=0.600)"]
 with-pyright = ["pyright (>=1.1.3)"]
 with-pyroma = ["pyroma (>=2.4)"]
+with-ruff = ["ruff"]
 with-vulture = ["vulture (>=1.5)"]
 
 [[package]]
 name = "prospector-profile-duplicated"
-version = "1.6.0"
+version = "1.8.1"
 description = "Profile that can be used to disable the duplicated or conflict rules between Prospector and other tools"
 optional = false
 python-versions = "*"
 files = [
-    {file = "prospector_profile_duplicated-1.6.0-py2.py3-none-any.whl", hash = "sha256:bf6a6aae0c7de48043b95e4d42e23ccd090c6c7115b6ee8c8ca472ffb1a2022b"},
-    {file = "prospector_profile_duplicated-1.6.0.tar.gz", hash = "sha256:9c2d541076537405e8b2484cb6222276a2df17492391b6af1b192695770aab83"},
+    {file = "prospector_profile_duplicated-1.8.1-py2.py3-none-any.whl", hash = "sha256:a3c23517b9749ea0e61cc9b23d1526752c1eeb6c899cd0d9ec1fa77b1f373a49"},
+    {file = "prospector_profile_duplicated-1.8.1.tar.gz", hash = "sha256:a08fa1f5aa77bdbc908b0c4f66b2bdb306aba10c44c5db51e389cd5cf79bda04"},
 ]
 
 [[package]]
 name = "prospector-profile-utils"
-version = "1.9.1"
+version = "1.14.0"
 description = "Some utility Prospector profiles."
 optional = false
-python-versions = "*"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "prospector_profile_utils-1.9.1-py2.py3-none-any.whl", hash = "sha256:b458d8c4d59bdb1547e4630a2c6de4971946c4f0999443db6a9eef6d216b26b8"},
-    {file = "prospector_profile_utils-1.9.1.tar.gz", hash = "sha256:008efa6797a85233fd8093dcb9d86f5fa5d89673e431c15cb1496a91c9b2c601"},
+    {file = "prospector_profile_utils-1.14.0-py3-none-any.whl", hash = "sha256:15853e984314f90d688052c7dc09c9206779fdfb7f0606f6a4a617d167c6e693"},
+    {file = "prospector_profile_utils-1.14.0.tar.gz", hash = "sha256:258bbe70c7411c7c11a7a7fc202c9a021db3d775a3bf45e7e8bd9f96206bcc48"},
 ]
+
+[package.dependencies]
+prospector = ">=1.13.0"
 
 [[package]]
 name = "pycodestyle"
@@ -1561,4 +1564,4 @@ tools = ["pre-commit"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "721027c7d853710fb125da0c16c84233c6d56dcd22513c2e3d47fa356d16b57a"
+content-hash = "3ca89acb511ab53aa9dfcd6954f89ecbc5c93904d1eecf1991febf4eaaa5aec0"
