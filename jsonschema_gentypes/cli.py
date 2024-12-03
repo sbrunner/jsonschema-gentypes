@@ -1,6 +1,4 @@
-"""
-Generate the Python type files from the JSON schema files.
-"""
+"""Generate the Python type files from the JSON schema files."""
 
 import argparse
 import logging
@@ -21,7 +19,11 @@ import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
 import jsonschema_gentypes.api_draft_2020_12
 import jsonschema_gentypes.resolver
-from jsonschema_gentypes import configuration, jsonschema_draft_04, jsonschema_draft_2020_12_applicator
+from jsonschema_gentypes import (
+    configuration,
+    jsonschema_draft_04,
+    jsonschema_draft_2020_12_applicator,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -55,7 +57,7 @@ def _add_type(
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in types:
         if types[type_.name()] != type_:
             print(f"WARNING: the type {type_.name()} is already defined, it will be renamed")
-            type_.postfix_name(f"Gen{random.randrange(999999)}")  # nosec
+            type_.postfix_name(f"Gen{random.randrange(999999)}")  # noqa: S311
             _add_type(type_, imports, types, gen, config, minimal_python_version, added_types)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
@@ -69,9 +71,7 @@ def _add_type(
 
 
 def main() -> None:
-    """
-    Generate the Python type files from the JSON schema files.
-    """
+    """Generate the Python type files from the JSON schema files."""
     parser = argparse.ArgumentParser(usage="Generate the Python type files from the JSON schema files")
     parser.add_argument("--config", default="jsonschema-gentypes.yaml", help="The configuration file")
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")

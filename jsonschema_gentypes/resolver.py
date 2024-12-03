@@ -31,7 +31,7 @@ def _openapi_schema(
     config: Union[
         jsonschema_draft_06.JSONSchemaItemD6,
         jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-    ]
+    ],
 ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
     if "$schema" not in config and "openapi" in config:
         config_core = cast(
@@ -183,7 +183,7 @@ class RefResolver:
             referencing.exceptions.PointerToNowhere,
         ) as curent_exeption:
             exception = curent_exeption
-            for vocab, resolver in self.vocabulary_resolver.items():
+            for _, resolver in self.vocabulary_resolver.items():
                 try:
                     return resolver.lookup(uri).contents
                 except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):

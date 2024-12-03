@@ -1,6 +1,4 @@
-"""
-The API base definition.
-"""
+"""The API base definition."""
 
 from abc import abstractmethod
 from typing import Callable, Optional, Union, cast
@@ -55,9 +53,7 @@ class API:
         additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
         get_name_properties: configuration.GetNameProperties = configuration.GETNAMEPROPERTIES_TITLE,
     ) -> None:
-        """
-        Initialize with a resolver.
-        """
+        """Initialize with a resolver."""
         self.resolver = resolver
         self.additional_properties = additional_properties
         self.get_name_properties = get_name_properties
@@ -65,16 +61,16 @@ class API:
         self.ref_type: dict[str, Type] = {}
         self.root: Optional[TypeProxy] = None
 
-    def get_type_handler(self, schema_type: str) -> Callable[
+    def get_type_handler(
+        self, schema_type: str
+    ) -> Callable[
         [
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
             str,
         ],
         Type,
     ]:
-        """
-        Get a handler from this schema draft version.
-        """
+        """Get a handler from this schema draft version."""
         if schema_type.startswith("_"):
             raise AttributeError("No way friend")
         handler = cast(
@@ -105,9 +101,7 @@ class API:
         proxy: Type,
         proposed_name: str,
     ) -> None:
-        """
-        Start getting the type for a schema.
-        """
+        """Start getting the type for a schema."""
 
     def get_type_end(
         self,
@@ -116,9 +110,7 @@ class API:
         ],
         proxy: Type,
     ) -> None:
-        """
-        End getting the type for a schema.
-        """
+        """End getting the type for a schema."""
 
     def get_type(
         self,
@@ -126,9 +118,7 @@ class API:
         proposed_name: str,
         auto_alias: bool = True,
     ) -> Type:
-        """
-        Get a :class:`.Type` for a JSON schema.
-        """
+        """Get a :class:`.Type` for a JSON schema."""
         schema_meta_data = cast(
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019],
             schema,
@@ -212,6 +202,7 @@ class API:
         upper: bool = False,
         postfix: Optional[str] = None,
     ) -> str:
+        """Get the Python name for schema element."""
         return get_name(schema, proposed_name, upper, self.get_name_properties, postfix=postfix)
 
     def resolve_ref(
@@ -537,9 +528,7 @@ class API:
             list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
         ],
     ) -> bool:
-        """
-        Are the the subtype significative.
-        """
+        """Are the the subtype significative."""
         if not sub_schemas:
             return False
         for sub_schema in sub_schemas:

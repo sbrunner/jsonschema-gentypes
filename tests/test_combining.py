@@ -2,17 +2,13 @@ from typing import Any, Optional
 
 import pytest
 
-import jsonschema_gentypes.api_draft_07
-import jsonschema_gentypes.api_draft_2019_09
-import jsonschema_gentypes.api_draft_2020_12
-import jsonschema_gentypes.resolver
 from jsonschema_gentypes.api import Type
 
 from .test_test import get_types
 
 
 def get_definition(type_: Type) -> list[str]:
-    """Get the type full definition"""
+    """Get the type full definition."""
     actual = []
     actual += [e for e in type_.definition(None) if e]
 
@@ -26,7 +22,7 @@ def get_definition(type_: Type) -> list[str]:
 
 
 def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] = None) -> None:
-    """Assert that the full definition is correct"""
+    """Assert that the full definition is correct."""
     if path is None:
         path = []
 

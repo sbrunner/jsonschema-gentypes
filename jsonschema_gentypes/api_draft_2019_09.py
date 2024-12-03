@@ -1,6 +1,4 @@
-"""
-The API version draft 2019 09.
-"""
+"""The API version draft 2019 09."""
 
 import re
 from typing import Any, Union, cast
@@ -16,9 +14,7 @@ from jsonschema_gentypes.api_draft_07 import APIv7
 
 
 class APIv201909(APIv7):
-    """
-    JSON Schema draft 2019 09.
-    """
+    """JSON Schema draft 2019 09."""
 
     def __init__(self, *args: Any, **kwargs: Any):
         """Initialize."""
