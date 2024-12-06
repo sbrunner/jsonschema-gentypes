@@ -12,6 +12,7 @@ from jsonschema_gentypes import (
     Type,
     TypeAlias,
     TypeProxy,
+    UnionType,
     configuration,
     get_description,
     get_name,
@@ -50,11 +51,13 @@ class API:
     def __init__(
         self,
         resolver: RefResolver,
+        python_version: tuple[int, ...],
         additional_properties: configuration.AdditionalProperties = configuration.ADDITIONALPROPERTIES_ONLY_EXPLICIT,
         get_name_properties: configuration.GetNameProperties = configuration.GETNAMEPROPERTIES_TITLE,
     ) -> None:
         """Initialize with a resolver."""
         self.resolver = resolver
+        self.python_version = python_version
         self.additional_properties = additional_properties
         self.get_name_properties = get_name_properties
         # types by reference
@@ -343,7 +346,7 @@ class API:
             if named_types:
                 for named_type in named_types:
                     type_.add_depends_on(named_type)
-                additional_type_str = [t.name() for t in named_types]
+                additional_type_str = [t.name(self.python_version) for t in named_types]
                 type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
 
             return type_
@@ -364,7 +367,7 @@ class API:
             if named_types:
                 for named_type in named_types:
                     type_.add_depends_on(named_type)
-                additional_type_str = [t.name() for t in named_types]
+                additional_type_str = [t.name(self.python_version) for t in named_types]
                 type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
 
             return type_
@@ -383,7 +386,7 @@ class API:
             if named_types:
                 for named_type in named_types:
                     type_.add_depends_on(named_type)
-                additional_type_str = [t.name() for t in named_types]
+                additional_type_str = [t.name(self.python_version) for t in named_types]
                 type_.comments().append(f"Subtype: {', '.join(additional_type_str)}")
             return type_
         if "enum" in schema:
@@ -433,7 +436,7 @@ class API:
                         schema_copy, cast(str, primitive_type), f"{proposed_name} {primitive_type}"
                     )
                 )
-            type_ = CombinedType(NativeType("Union"), inner_types)
+            type_ = UnionType(inner_types)
             if has_title:
                 type_ = TypeAlias(name, type_)
             return type_

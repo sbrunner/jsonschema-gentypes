@@ -707,9 +707,5 @@ _EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMATEMPORALTRS_HTTP_COLON__SOLIDUS__SOL
 """The values for the 'Coordinate reference system of the coordinates in the temporal extent' enum"""
 
 
-_OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_CRS_DEFAULT = ["http://www.opengis.net/def/crs/OGC/1.3/CRS84"]
-""" Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 crs' """
-
-
 _OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = "unknown"
 """ Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 itemType' """
