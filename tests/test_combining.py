@@ -10,9 +10,9 @@ from .test_test import get_types
 def get_definition(type_: Type) -> list[str]:
     """Get the type full definition."""
     actual = []
-    actual += [e for e in type_.definition(None) if e]
+    actual += [e for e in type_.definition((3, 8)) if e]
 
-    for t_ in type_.depends_on():
+    for t_ in type_.depends_on((3, 8)):
         sub_definition = get_definition(t_)
         if sub_definition:
             if actual:

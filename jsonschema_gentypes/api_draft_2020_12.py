@@ -4,8 +4,8 @@ from typing import Any, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
-    CombinedType,
-    NativeType,
+    ListType,
+    TupleType,
     Type,
     jsonschema_draft_04,
     jsonschema_draft_2019_09_applicator,
@@ -131,7 +131,7 @@ class APIv202012(APIv201909):
                 )
                 for nb, item in enumerate(all_items)
             ]
-            type_: Type = CombinedType(NativeType("Tuple"), inner_types)
+            type_: Type = TupleType(inner_types)
             if {schema.get("minItems"), schema.get("maxItems")} - {None, len(prefix_items)}:
                 type_.set_comments(
                     [
@@ -143,20 +143,17 @@ class APIv202012(APIv201909):
             return type_
         elif items is not None:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
-            return CombinedType(
-                NativeType("List"),
-                [
-                    self.get_type(
-                        cast(
-                            Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                            ],
-                            items,
-                        ),
-                        proposed_name + " item",
-                    )
-                ],
+            return ListType(
+                self.get_type(
+                    cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                        ],
+                        items,
+                    ),
+                    proposed_name + " item",
+                )
             )
         else:
             type_ = BuiltinType("None")

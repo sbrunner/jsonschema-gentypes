@@ -5,14 +5,17 @@ from typing import Literal, Union, cast
 
 from jsonschema_gentypes import (
     BuiltinType,
-    CombinedType,
+    DictType,
+    ListType,
     NamedType,
     NativeType,
+    TupleType,
     Type,
     TypeAlias,
     TypedDictType,
     TypeEnum,
     TypeProxy,
+    UnionType,
     configuration,
     get_description,
     jsonschema_draft_04,
@@ -98,10 +101,10 @@ class APIv4(API):
             additional_properties is True
             and self.additional_properties == configuration.ADDITIONALPROPERTIES_ALWAYS
         ):
-            std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), NativeType("Any")])
+            std_dict = DictType(BuiltinType("str"), NativeType("Any"))
         elif isinstance(additional_properties, dict):
             sub_type = self.get_type(additional_properties, f"{proposed_name} additionalProperties")
-            std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
+            std_dict = DictType(BuiltinType("str"), sub_type)
         else:
             pattern_properties = cast(
                 dict[
@@ -117,7 +120,7 @@ class APIv4(API):
                 schema.setdefault("used", set()).add("patternProperties")  # type: ignore[typeddict-item]
                 pattern_prop = list(pattern_properties.values())[0]
                 sub_type = self.get_type(pattern_prop, f"{proposed_name} Type")
-                std_dict = CombinedType(NativeType("Dict"), [BuiltinType("str"), sub_type])
+                std_dict = DictType(BuiltinType("str"), sub_type)
 
         schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
         properties = cast(
@@ -152,7 +155,7 @@ class APIv4(API):
             comments = []
 
             if std_dict is not None:
-                type_ = CombinedType(NativeType("Union"), [std_dict, type_])
+                type_ = UnionType([std_dict, type_])
                 comments += [
                     "",
                     "WARNING: Normally the types should be a mix of each other instead of Union.",
@@ -163,7 +166,7 @@ class APIv4(API):
             return type_
         if std_dict is not None:
             return std_dict
-        return CombinedType(NativeType("Dict"), [BuiltinType("str"), NativeType("Any")])
+        return DictType(BuiltinType("str"), NativeType("Any"))
 
     def array(
         self,
@@ -176,7 +179,7 @@ class APIv4(API):
         items = schema.get("items")
         if items is True:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
-            return CombinedType(NativeType("List"), [NativeType("Any")])
+            return ListType(NativeType("Any"))
         elif items is False:
             result = NativeType("None")
             result.set_comments(["`items: false` is not supported"])
@@ -200,7 +203,7 @@ class APIv4(API):
                 )
                 for nb, item in enumerate(items)
             ]
-            type_: Type = CombinedType(NativeType("Tuple"), inner_types)
+            type_: Type = TupleType(inner_types)
             if {schema.get("minItems"), schema.get("maxItems")} - {None, len(items)}:
                 type_.set_comments(
                     [
@@ -212,24 +215,21 @@ class APIv4(API):
             return type_
         elif items is not None:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
-            return CombinedType(
-                NativeType("List"),
-                [
-                    self.get_type(
-                        cast(
-                            Union[
-                                jsonschema_draft_04.JSONSchemaD4,
-                                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                            ],
-                            items,
-                        ),
-                        proposed_name + " item",
-                    )
-                ],
+            return ListType(
+                self.get_type(
+                    cast(
+                        Union[
+                            jsonschema_draft_04.JSONSchemaD4,
+                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                        ],
+                        items,
+                    ),
+                    proposed_name + " item",
+                )
             )
         else:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
-            return CombinedType(NativeType("List"), [NativeType("Any")])
+            return ListType(NativeType("Any"))
 
     def any_of(
         self,
@@ -331,7 +331,7 @@ class APIv4(API):
                     additional_types.append(sub_type)
                 inner_types.append(sub_type)
 
-        return CombinedType(NativeType("Union"), inner_types), additional_types, inner_types_schema
+        return UnionType(inner_types), additional_types, inner_types_schema
 
     def clean_schema(
         self,
@@ -561,6 +561,7 @@ class APIv4(API):
         proposed_name: str,
     ) -> Type:
         """Handle a `$ref`."""
+        del proposed_name
         # ref is not correctly declared in draft 4.
         schema_casted = cast(
             Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
@@ -624,7 +625,7 @@ class APIv4(API):
     ) -> Type:
         """Generate a ``Union[int, float]`` annotation."""
         del schema, proposed_name
-        return CombinedType(NativeType("Union"), [BuiltinType("int"), BuiltinType("float")])
+        return UnionType([BuiltinType("int"), BuiltinType("float")])
 
     def integer(
         self,
@@ -660,6 +661,7 @@ class APIv4(API):
 
         See: https://json-schema.org/understanding-json-schema/reference/generic.html
         """
+        del proposed_name
         type_: Type = NativeType("Any")
         for test_type, type_name in [
             (str, "str"),

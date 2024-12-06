@@ -122,7 +122,7 @@ class Type:
         """Initialize the type."""
         self._depends_on = []
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         raise NotImplementedError
 
@@ -131,18 +131,19 @@ class Type:
         del python_version
         return []
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
 
         Parameter:
             line_length: the maximum line length
         """
-        del line_length
+        del line_length, python_version
         return []
 
-    def depends_on(self) -> list["Type"]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
+        del python_version
         assert self._depends_on is not None
         return self._depends_on
 
@@ -167,17 +168,17 @@ class TypeProxy(Type):
 
     _type: Optional[Type] = None
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         assert self._type is not None
-        return self._type.name()
+        return self._type.name(python_version)
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
         assert self._type is not None
         return self._type.imports(python_version)
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """
         Return the type declaration.
 
@@ -185,12 +186,12 @@ class TypeProxy(Type):
             line_length: the maximum line length
         """
         assert self._type is not None
-        return self._type.definition()
+        return self._type.definition(python_version)
 
-    def depends_on(self) -> list["Type"]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
         assert self._type is not None
-        return self._type.depends_on()
+        return self._type.depends_on(python_version)
 
     def add_depends_on(self, depends_on: "Type") -> None:
         """Add a sub type."""
@@ -234,7 +235,7 @@ class NamedType(Type):
         """Return the unescaped name."""
         return self._name
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         return f'"{self._name}"'
 
@@ -252,7 +253,7 @@ class LiteralType(Type):
         super().__init__()
         self.const = const
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         return f"Literal[{repr(self.const)}]"
 
@@ -275,8 +276,9 @@ class BuiltinType(Type):
         super().__init__()
         self._name = name
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return self._name
 
 
@@ -305,7 +307,7 @@ class NativeType(Type):
         self.minimal_python_version = minimal_python_version
         self.workaround_package = workaround_package
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         return self._name
 
@@ -340,14 +342,144 @@ class CombinedType(Type):
         self.base = base
         self.sub_types = sub_types
 
-    def name(self) -> str:
+    def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         assert isinstance(self.base, Type)
-        return f"{self.base.name()}[{', '.join([sub_type.name() for sub_type in self.sub_types])}]"
+        return f"{self.base.name(python_version)}[{', '.join([sub_type.name(python_version) for sub_type in self.sub_types])}]"
 
-    def depends_on(self) -> list[Type]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        return [self.base] + self.sub_types + super().depends_on()
+        return [self.base] + self.sub_types + super().depends_on(python_version)
+
+
+class UnionType(CombinedType):
+    """A Union type."""
+
+    def __init__(self, sub_types: list[Type]) -> None:
+        """
+        Init.
+
+        Parameter:
+            sub_types: the sub types
+        """
+        super().__init__(NativeType("Union"), sub_types)
+
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
+        """Return the needed sub types."""
+        if python_version < (3, 10):
+            return super().depends_on(python_version)
+        return self.sub_types + super().depends_on(python_version)
+
+    def name(self, python_version: tuple[int, ...]) -> str:
+        """Return what we need to use the type."""
+        if python_version < (3, 10):
+            return super().name(python_version)
+        return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}]"
+
+
+class OptionalType(CombinedType):
+    """An Optional type."""
+
+    def __init__(self, sub_type: Type) -> None:
+        """
+        Init.
+
+        Parameter:
+            sub_type: the sub type
+        """
+        super().__init__(NativeType("Optional"), [sub_type])
+        self.sub_type = sub_type
+
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
+        """Return the needed sub types."""
+        if python_version < (3, 10):
+            return super().depends_on(python_version)
+        return [self.sub_type, *super().depends_on(python_version)]
+
+    def name(self, python_version: tuple[int, ...]) -> str:
+        """Return what we need to use the type."""
+        if python_version < (3, 10):
+            return super().name(python_version)
+        return f"{self.sub_type.name(python_version)} | None"
+
+
+class DictType(CombinedType):
+    """A Dict type."""
+
+    def __init__(self, key_type: Type, value_type: Type) -> None:
+        """
+        Init.
+
+        Parameter:
+            key_type: the key type
+            value_type: the value type
+        """
+        super().__init__(NativeType("Dict"), [key_type, value_type])
+        self.key_type = key_type
+        self.value_type = value_type
+
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
+        """Return the needed sub types."""
+        if python_version < (3, 9):
+            return super().depends_on(python_version)
+        return [self.key_type, self.value_type]
+
+    def name(self, python_version: tuple[int, ...]) -> str:
+        """Return what we need to use the type."""
+        if python_version < (3, 9):
+            return super().name(python_version)
+        return f"dict[{self.key_type.name(python_version)}, {self.value_type.name(python_version)}]"
+
+
+class ListType(CombinedType):
+    """A List type."""
+
+    def __init__(self, sub_type: Type) -> None:
+        """
+        Init.
+
+        Parameter:
+            sub_type: the sub type
+        """
+        super().__init__(NativeType("List"), [sub_type])
+        self.sub_type = sub_type
+
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
+        """Return the needed sub types."""
+        if python_version < (3, 9):
+            return super().depends_on(python_version)
+        return [self.sub_type]
+
+    def name(self, python_version: tuple[int, ...]) -> str:
+        """Return what we need to use the type."""
+        if python_version < (3, 9):
+            return super().name(python_version)
+        return f"list[{self.sub_type.name(python_version)}]"
+
+
+class TupleType(CombinedType):
+    """A Tuple type."""
+
+    def __init__(self, sub_types: list[Type]) -> None:
+        """
+        Init.
+
+        Parameter:
+            sub_types: the sub types
+        """
+        super().__init__(NativeType("Tuple"), sub_types)
+
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
+        """Return the needed sub types."""
+        if python_version < (3, 9):
+            return super().depends_on(python_version)
+        return self.sub_types
+
+    def name(self, python_version: tuple[int, ...]) -> str:
+        """Return what we need to use the type."""
+        if python_version < (3, 9):
+            return super().name(python_version)
+        return f"tuple[{', '.join([sub_type.name(python_version) for sub_type in self.sub_types])}]"
 
 
 class TypeAlias(NamedType):
@@ -366,17 +498,19 @@ class TypeAlias(NamedType):
         self.sub_type = sub_type
         self._comments = [] if descriptions is None else descriptions
 
-    def depends_on(self) -> list[Type]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on()
+        return [self.sub_type] + super().depends_on(python_version)
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         _type = (
-            ": TypeAlias" if isinstance(self.sub_type, BuiltinType) and self.sub_type.name() == "None" else ""
+            ": TypeAlias"
+            if isinstance(self.sub_type, BuiltinType) and self.sub_type.name(python_version) == "None"
+            else ""
         )
-        result.append(f"{self._name}{_type} = {self.sub_type.name()}")
+        result.append(f"{self._name}{_type} = {self.sub_type.name(python_version)}")
         comments = split_comment(self.comments(), line_length - 2 if line_length else None)
         if len(comments) == 1:
             result += [f'""" {comments[0]} """', ""]
@@ -387,10 +521,9 @@ class TypeAlias(NamedType):
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
-        del python_version
         return (
             [("typing", "TypeAlias")]
-            if isinstance(self.sub_type, BuiltinType) and self.sub_type.name() == "None"
+            if isinstance(self.sub_type, BuiltinType) and self.sub_type.name(python_version) == "None"
             else []
         )
 
@@ -412,17 +545,17 @@ class TypeEnum(NamedType):
         self.values = values
         self.value_names = {value: get_name({"title": f"{name} {value}"}, upper=True) for value in values}
         self.descriptions = descriptions
-        self.sub_type: Type = CombinedType(NativeType("Union"), [LiteralType(value) for value in values])
+        self.sub_type: Type = UnionType([LiteralType(value) for value in values])
 
-    def depends_on(self) -> list["Type"]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on()
+        return [self.sub_type] + super().depends_on(python_version)
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
-        result.append(f"{self._name} = {self.sub_type.name()}")
+        result.append(f"{self._name} = {self.sub_type.name(python_version)}")
         if len(comments) == 1:
             result += [f'""" {comments[0]} """']
         elif comments:
@@ -430,7 +563,7 @@ class TypeEnum(NamedType):
         for value in self.values:
             name = self.value_names[value]
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
-            result.append(f"{name}: {LiteralType(value).name()} = {formatted_value}")
+            result.append(f"{name}: {LiteralType(value).name(python_version)} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
             if name.endswith("."):
                 name = name[:-1]
@@ -476,13 +609,13 @@ class TypedDictType(NamedType):
             for name, prop_type in struct.items()
         }
 
-    def depends_on(self) -> list[Type]:
+    def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Get the types that we requires to be valid."""
         result: list[Type] = [NativeType("TypedDict")]
         result += self.struct.values()
-        return result + super().depends_on()
+        return result + super().depends_on(python_version)
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Get the definition based on a dict."""
         supported_re = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
         # Support to be a class
@@ -507,7 +640,7 @@ class TypedDictType(NamedType):
                 result.append("")
 
             for property_, type_obj in self.struct.items():
-                result.append(f"    {property_}: {type_obj.name()}")
+                result.append(f"    {property_}: {type_obj.name(python_version)}")
                 comments = type_obj.comments()
                 if len(comments) == 1:
                     result.append(f'    """ {comments[0]} """')
@@ -524,7 +657,7 @@ class TypedDictType(NamedType):
             result.append(f"{self._name} = TypedDict('{self._name}', " + "{")
             for property_, type_obj in self.struct.items():
                 result += [f"    # | {comment}" for comment in type_obj.comments()]
-                result.append(f"    '{property_}': {type_obj.name()},")
+                result.append(f"    '{property_}': {type_obj.name(python_version)},")
             result.append("}, total=False)")
         return result
 
@@ -545,7 +678,7 @@ class Constant(NamedType):
         self.constant = constant
         self.descriptions = descriptions
 
-    def definition(self, line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
@@ -563,12 +696,14 @@ class Constant(NamedType):
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
-        del python_version
-
         if isinstance(self.constant, dict) and not self.constant:
-            return [("typing", "Any"), ("typing", "Dict")]
+            if python_version < (3, 9):
+                return [("typing", "Any"), ("typing", "Dict")]
+            return [("typing", "Any")]
         elif isinstance(self.constant, list) and not self.constant:
-            return [("typing", "Any"), ("typing", "List")]
+            if python_version < (3, 9):
+                return [("typing", "Any"), ("typing", "List")]
+            return [("typing", "Any")]
         else:
             return []
 

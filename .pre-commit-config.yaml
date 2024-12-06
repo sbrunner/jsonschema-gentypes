@@ -103,6 +103,7 @@ repos:
           - --tool=ruff
           - --die-on-tool-error
           - --output-format=pylint
+          - --show-profile
         additional_dependencies:
           - prospector-profile-duplicated==1.8.0 # pypi
           - prospector-profile-utils==1.13.0 # pypi

@@ -34,7 +34,7 @@ def _add_type(
     types: dict[str, jsonschema_gentypes.Type],
     gen: configuration.GenerateItem,
     config: configuration.Configuration,
-    minimal_python_version: tuple[int, ...],
+    python_version: tuple[int, ...],
     added_types: Optional[set[jsonschema_gentypes.Type]] = None,
 ) -> None:
     if added_types is None:
@@ -45,29 +45,29 @@ def _add_type(
     added_types.add(type_)
     if (
         isinstance(type_, jsonschema_gentypes.NamedType)
-        and type_.name() in types
-        and type_.definition(config.get("lineLength"))
-        == types[type_.name()].definition(config.get("lineLength"))
+        and type_.name(python_version) in types
+        and type_.definition(python_version, config.get("lineLength"))
+        == types[type_.name(python_version)].definition(python_version, config.get("lineLength"))
     ):
         return
     name_mapping = gen.get("name_mapping", {})
     assert name_mapping is not None
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.unescape_name() in name_mapping:
         type_.set_name(name_mapping[type_.unescape_name()])
-    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name() in types:
-        if types[type_.name()] != type_:
-            print(f"WARNING: the type {type_.name()} is already defined, it will be renamed")
+    if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name(python_version) in types:
+        if types[type_.name(python_version)] != type_:
+            print(f"WARNING: the type {type_.name(python_version)} is already defined, it will be renamed")
             type_.postfix_name(f"Gen{random.randrange(999999)}")  # noqa: S311
-            _add_type(type_, imports, types, gen, config, minimal_python_version, added_types)
+            _add_type(type_, imports, types, gen, config, python_version, added_types)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
-            types[type_.name()] = type_
-        for package, imp in type_.imports(minimal_python_version):
+            types[type_.name(python_version)] = type_
+        for package, imp in type_.imports(python_version):
             if package not in imports:
                 imports[package] = set()
             imports[package].add(imp)
-        for sub_type in type_.depends_on():
-            _add_type(sub_type, imports, types, gen, config, minimal_python_version, added_types)
+        for sub_type in type_.depends_on(python_version):
+            _add_type(sub_type, imports, types, gen, config, python_version, added_types)
 
 
 def main() -> None:
@@ -204,7 +204,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                 jsonschema_gentypes.api_draft_2020_12.APIv202012,
             )
         api_args = gen.get("api_arguments", {})
-        api = api_version(resolver, **api_args)
+        api = api_version(resolver, python_version=python_version, **api_args)
 
         types: dict[str, jsonschema_gentypes.Type] = {}
         imports: dict[str, set[str]] = {}
@@ -295,9 +295,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                             path_name,
                             [method_name, "response"],
                         ),
-                        jsonschema_gentypes.CombinedType(
-                            jsonschema_gentypes.NativeType("Union"), all_responses
-                        ),
+                        jsonschema_gentypes.UnionType(all_responses),
                     )
                     global_type["response"] = type_
                     _add_type(type_, imports, types, gen, config, python_version)
@@ -338,8 +336,8 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         for imp, names in imports.items():
             lines.append(f'from {imp} import {", ".join(sorted(names))}')
 
-        for type_2 in sorted(types.values(), key=lambda type_3: type_3.name()):
-            lines += type_2.definition(config.get("lineLength"))
+        for type_2 in sorted(types.values(), key=lambda type_3: type_3.name(python_version)):
+            lines += type_2.definition(python_version, config.get("lineLength"))
 
         with open(gen["destination"], "w", encoding="utf-8") as destination_file:
             headers = config.get("headers")
