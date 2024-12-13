@@ -349,7 +349,7 @@ class CombinedType(Type):
 
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        return [self.base] + self.sub_types + super().depends_on(python_version)
+        return [self.base, *self.sub_types, *super().depends_on(python_version)]
 
 
 class UnionType(CombinedType):
@@ -376,7 +376,7 @@ class UnionType(CombinedType):
         """Return the needed sub types."""
         if self._required_union(python_version):
             return super().depends_on(python_version)
-        return self.sub_types + super().depends_on(python_version)
+        return [*self.sub_types, *super(CombinedType, self).depends_on(python_version)]
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
@@ -398,15 +398,20 @@ class OptionalType(CombinedType):
         super().__init__(NativeType("Optional"), [sub_type])
         self.sub_type = sub_type
 
+    def _required_optional(self, python_version: tuple[int, ...]) -> bool:
+        if python_version < (3, 10):
+            return True
+        return self.sub_type.name(python_version).startswith('"')
+
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        if python_version < (3, 10):
+        if self._required_optional(python_version):
             return super().depends_on(python_version)
-        return [self.sub_type, *super().depends_on(python_version)]
+        return [self.sub_type, *super(CombinedType, self).depends_on(python_version)]
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
-        if python_version < (3, 10):
+        if self._required_optional(python_version):
             return super().name(python_version)
         return f"{self.sub_type.name(python_version)} | None"
 
@@ -430,7 +435,7 @@ class DictType(CombinedType):
         """Return the needed sub types."""
         if python_version < (3, 9):
             return super().depends_on(python_version)
-        return [self.key_type, self.value_type]
+        return [self.key_type, self.value_type, *super(CombinedType, self).depends_on(python_version)]
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
@@ -456,7 +461,7 @@ class ListType(CombinedType):
         """Return the needed sub types."""
         if python_version < (3, 9):
             return super().depends_on(python_version)
-        return [self.sub_type]
+        return [self.sub_type, *super(CombinedType, self).depends_on(python_version)]
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
@@ -481,7 +486,7 @@ class TupleType(CombinedType):
         """Return the needed sub types."""
         if python_version < (3, 9):
             return super().depends_on(python_version)
-        return self.sub_types
+        return [*self.sub_types, *super(CombinedType, self).depends_on(python_version)]
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
