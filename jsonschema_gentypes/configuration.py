@@ -1,6 +1,6 @@
 """Automatically generated file from a JSON schema."""
 
-from typing import Literal, TypedDict, Union
+from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
@@ -116,6 +116,10 @@ GETNAMEPROPERTIES_TITLE: Literal["Title"] = "Title"
 """The values for the 'Get name properties' enum"""
 GETNAMEPROPERTIES_UPPERFIRST: Literal["UpperFirst"] = "UpperFirst"
 """The values for the 'Get name properties' enum"""
+
+
+PRE_COMMIT_ARGUMENTS_DEFAULT: list[Any] = []
+""" Default value of the field path 'Pre-commit configuration arguments' """
 
 
 PRE_COMMIT_ENABLE_DEFAULT = False
