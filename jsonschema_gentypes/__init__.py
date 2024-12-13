@@ -374,7 +374,7 @@ class UnionType(CombinedType):
         """Return what we need to use the type."""
         if python_version < (3, 10):
             return super().name(python_version)
-        return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}]"
+        return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}"
 
 
 class OptionalType(CombinedType):
@@ -682,9 +682,11 @@ class Constant(NamedType):
         """Return the type declaration."""
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
-            result.append(f"{self._name}: Dict[str, Any] = {repr(self.constant)}")
+            dict_type = "Dict" if python_version < (3, 9) else "doct"
+            result.append(f"{self._name}: {dict_type}[str, Any] = {repr(self.constant)}")
         elif isinstance(self.constant, (dict, list)) and not self.constant:
-            result.append(f"{self._name}: List[Any] = {repr(self.constant)}")
+            list_type = "List" if python_version < (3, 9) else "list"
+            result.append(f"{self._name}: {list_type}[Any] = {repr(self.constant)}")
         else:
             result.append(f"{self._name} = {repr(self.constant)}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
