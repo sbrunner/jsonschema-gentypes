@@ -690,7 +690,7 @@ class Constant(NamedType):
         """Return the type declaration."""
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
-            dict_type = "Dict" if python_version < (3, 9) else "doct"
+            dict_type = "Dict" if python_version < (3, 9) else "dict"
             result.append(f"{self._name}: {dict_type}[str, Any] = {repr(self.constant)}")
         elif isinstance(self.constant, (dict, list)) and not self.constant:
             list_type = "List" if python_version < (3, 9) else "list"
