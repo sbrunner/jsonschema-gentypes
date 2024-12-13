@@ -364,15 +364,23 @@ class UnionType(CombinedType):
         """
         super().__init__(NativeType("Union"), sub_types)
 
+    def _required_union(self, python_version: tuple[int, ...]) -> bool:
+        if python_version < (3, 10):
+            return True
+        for sub_type in self.sub_types:
+            if sub_type.name(python_version).startswith('"'):
+                return True
+        return False
+
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        if python_version < (3, 10):
+        if self._required_union(python_version):
             return super().depends_on(python_version)
         return self.sub_types + super().depends_on(python_version)
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
-        if python_version < (3, 10):
+        if self._required_union(python_version):
             return super().name(python_version)
         return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}"
 
