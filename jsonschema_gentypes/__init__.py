@@ -374,7 +374,7 @@ class UnionType(CombinedType):
         """Return what we need to use the type."""
         if python_version < (3, 10):
             return super().name(python_version)
-        return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}]"
+        return f"{' | '.join([sub_type.name(python_version) for sub_type in self.sub_types])}"
 
 
 class OptionalType(CombinedType):
