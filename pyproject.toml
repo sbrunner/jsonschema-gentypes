@@ -44,11 +44,11 @@ extra = ['pinyin', 'romkan', 'romanize']
 [tool.poetry.group.dev.dependencies]
 prospector = {  version = "1.13.3", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.8.1"
-prospector-profile-utils = "1.14.0"
+prospector-profile-utils = "1.14.1"
 pytest = "8.3.4"
 pytest-cov = "6.0.0"
 types-requests = "2.32.0.20241016"
-types-pyyaml = "6.0.12.20240917"
+types-pyyaml = "6.0.12.20241230"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning", "poetry-plugin-tweak-dependencies-version", "poetry-plugin-drop-python-upper-constraint"]
