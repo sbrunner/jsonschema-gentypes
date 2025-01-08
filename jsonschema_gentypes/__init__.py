@@ -367,10 +367,7 @@ class UnionType(CombinedType):
     def _required_union(self, python_version: tuple[int, ...]) -> bool:
         if python_version < (3, 10):
             return True
-        for sub_type in self.sub_types:
-            if sub_type.name(python_version).startswith('"'):
-                return True
-        return False
+        return any(sub_type.name(python_version).startswith('"') for sub_type in self.sub_types)
 
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
