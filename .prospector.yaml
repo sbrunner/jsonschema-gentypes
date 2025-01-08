@@ -8,3 +8,9 @@ inherits:
 ignore-patterns:
   - jsonschema_gentypes/configuration.py
   - jsonschema_gentypes/jsonschema_draft_.*\.py
+mypy:
+  options:
+    python-version: '3.9'
+ruff:
+  options:
+    target-version: py39
