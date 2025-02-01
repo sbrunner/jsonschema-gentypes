@@ -84,7 +84,7 @@ repos:
     hooks:
       - id: ripsecrets
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.8.6
     hooks:
       - id: ruff-format
         args:
@@ -98,9 +98,9 @@ repos:
           - --die-on-tool-error
           - --output-format=pylint
         additional_dependencies:
-          - prospector-profile-duplicated==1.10.0 # pypi
+          - prospector-profile-duplicated==1.10.4 # pypi
           - prospector-profile-utils==1.14.1 # pypi
-          - ruff==0.8.4 # pypi
+          - ruff==0.8.6 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 1.0.0
     hooks:
