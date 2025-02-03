@@ -59,7 +59,7 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
             "anyOf",
             "allOf",
             [
-                '_Base = Union["_BaseAnyof0", Union["_BaseAnyofAnyof0", ' '"_BaseAnyofAnyof"]]',
+                '_Base = Union["_BaseAnyof0", Union["_BaseAnyofAnyof0", "_BaseAnyofAnyof"]]',
                 '""" Aggregation type: anyOf """',
                 "",
                 "class _BaseAnyof0(TypedDict, total=False):",

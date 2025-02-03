@@ -334,7 +334,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
 
         lines = []
         for imp, names in imports.items():
-            lines.append(f'from {imp} import {", ".join(sorted(names))}')
+            lines.append(f"from {imp} import {', '.join(sorted(names))}")
 
         for type_2 in sorted(types.values(), key=lambda type_3: type_3.name(python_version)):
             lines += type_2.definition(python_version, config.get("lineLength"))
