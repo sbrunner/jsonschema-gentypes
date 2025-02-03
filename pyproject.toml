@@ -39,8 +39,8 @@ requests = "2.32.3"
 pinyin = { version = "0.4.0", optional = true }
 romkan = { version = "0.2.1", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "4.0.1", optional = true }
-referencing = "0.35.1"
+pre-commit = { version = "4.1.0", optional = true }
+referencing = "0.36.2"
 
 [tool.poetry.extras]
 generate = []
@@ -48,9 +48,9 @@ tools = ["pre-commit"]
 extra = ['pinyin', 'romkan', 'romanize']
 
 [tool.poetry.group.dev.dependencies]
-prospector = {  version = "1.13.3", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
+prospector = {  version = "1.14.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.10.4"
-prospector-profile-utils = "1.14.1"
+prospector-profile-utils = "1.17.0"
 pytest = "8.3.4"
 pytest-cov = "6.0.0"
 types-requests = "2.32.0.20241016"

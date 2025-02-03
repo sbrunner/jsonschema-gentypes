@@ -57,7 +57,7 @@ def _add_type(
     if isinstance(type_, jsonschema_gentypes.NamedType) and type_.name(python_version) in types:
         if types[type_.name(python_version)] != type_:
             print(f"WARNING: the type {type_.name(python_version)} is already defined, it will be renamed")
-            type_.postfix_name(f"Gen{random.randrange(999999)}")  # noqa: S311
+            type_.postfix_name(f"Gen{random.randrange(999999)}")  # noqa: S311 # nosec
             _add_type(type_, imports, types, gen, config, python_version, added_types)
     else:
         if isinstance(type_, jsonschema_gentypes.NamedType):
