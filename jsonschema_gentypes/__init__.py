@@ -788,7 +788,7 @@ def get_name(
     if not get_name.__dict__.get("names"):
         get_name.__dict__["names"] = set()
     elif output in get_name.__dict__["names"]:
-        output += str(random.randint(0, 9999))  # noqa: S311
+        output += str(random.randint(0, 9999))  # noqa: S311 # nosec
     get_name.__dict__["names"].add(output)
     return output
 
