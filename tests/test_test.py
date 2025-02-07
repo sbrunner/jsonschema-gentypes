@@ -176,48 +176,6 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_recursive_ref():
-    type_ = get_types_2019_09(
-        {
-            "$schema": "https://json-schema.org/draft/2019-09/schema",
-            "$id": "https://example.com/tree",
-            "$recursiveAnchor": True,
-            "title": "Ref1",
-            "type": "object",
-            "properties": {
-                "data": {
-                    "title": "Ref2",
-                    "type": "object",
-                    "$recursiveAnchor": True,
-                    "properties": {"data_child": {"$recursiveRef": "#"}},
-                },
-                "children": {"type": "array", "items": {"$recursiveRef": "#"}},
-            },
-        }
-    )
-    assert (
-        "\n".join([d.rstrip() for d in type_.definition((3, 8))])
-        == '''
-
-class Ref1(TypedDict, total=False):
-    """ Ref1. """
-
-    data: "Ref2"
-    children: List["Ref1"]'''
-    )
-    depends_on = [e for e in type_.depends_on((3, 8)) if e.definition((3, 8))]
-    assert len(depends_on) == 1
-    assert (
-        "\n".join([d.rstrip() for d in type_.depends_on((3, 8))[1].definition((3, 8))])
-        == '''
-
-class Ref2(TypedDict, total=False):
-    """ Ref2. """
-
-    data_child: "Ref2"'''
-    )
-
-
 def test_array():
     type_ = get_types(
         {
@@ -780,7 +738,7 @@ class _TestBasicTypesElse(TypedDict, total=False):
 
 
 @pytest.mark.parametrize(
-    "value,expected_type", [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")]
+    ("value", "expected_type"), [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")]
 )
 def test_const(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
@@ -848,25 +806,7 @@ TESTBASICTYPES_FALSE: Literal[False] = False
 
 
 @pytest.mark.parametrize(
-    "value,expected_type", [(11, "int"), (1.1, "float"), (True, "bool"), ("test", "str"), (None, "Any")]
-)
-def test_default(value, expected_type) -> None:
-    type_ = get_types({"title": "test basic types", "default": value})
-    assert (
-        "\n".join([d.rstrip() for d in type_.depends_on((3, 8))[0].definition((3, 8))])
-        == f'''
-
-"""
-test basic types.
-
-default: {value}
-TestBasicTypes = {expected_type} """
-'''
-    )
-
-
-@pytest.mark.parametrize(
-    "value,expected_type,import_",
+    ("value", "expected_type", "import_"),
     [
         (11, " = 11", []),
         (1.1, " = 1.1", []),
@@ -962,7 +902,7 @@ foundation and establish self publication rules.
 
 
 @pytest.mark.parametrize(
-    "config,title,expected",
+    ("config", "title", "expected"),
     [
         ({"title": "test1"}, "test2", "Test1"),
         ({"title": "test"}, None, "Test"),
@@ -1041,7 +981,7 @@ class Ref2(TypedDict, total=False):
     )
 
 
-def test_array():
+def test_array_2():
     type_ = get_types_2020_12(
         {
             "type": "object",
@@ -1062,7 +1002,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_true():
+def test_array_true_2():
     type_ = get_types_2020_12(
         {
             "type": "object",
@@ -1083,7 +1023,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_tuple():
+def test_array_tuple_2():
     type_ = get_types_2020_12(
         {
             "type": "object",
