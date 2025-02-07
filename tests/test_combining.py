@@ -30,9 +30,9 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
 
 
 @pytest.mark.parametrize(  # type: ignore[misc]
-    "first, second, third, expected",
+    ("first", "second", "third", "expected"),
     [
-        [
+        (
             "anyOf",
             "anyOf",
             "anyOf",
@@ -53,8 +53,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "class _BaseAnyofAnyofAnyof1(TypedDict, total=False):",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "anyOf",
             "allOf",
@@ -72,8 +72,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "allOf",
             "anyOf",
@@ -89,8 +89,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "allOf",
             "allOf",
@@ -106,8 +106,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "anyOf",
             "anyOf",
@@ -118,8 +118,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "anyOf",
             "allOf",
@@ -130,8 +130,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "allOf",
             "anyOf",
@@ -142,8 +142,8 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "allOf",
             "allOf",
@@ -154,7 +154,7 @@ def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] 
                 "    p3: str",
                 "    p4: str",
             ],
-        ],
+        ),
     ],
 )
 def test_combining(first: str, second: str, third: str, expected: Any) -> None:
@@ -197,9 +197,9 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore[misc]
-    "first, second, third, expected",
+    ("first", "second", "third", "expected"),
     [
-        [
+        (
             "anyOf",
             "anyOf",
             "anyOf",
@@ -243,8 +243,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "anyOf",
             "allOf",
@@ -284,8 +284,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "allOf",
             "anyOf",
@@ -322,8 +322,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "anyOf",
             "allOf",
             "allOf",
@@ -360,8 +360,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "anyOf",
             "anyOf",
@@ -389,8 +389,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "anyOf",
             "allOf",
@@ -418,8 +418,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "allOf",
             "anyOf",
@@ -447,8 +447,8 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
-        [
+        ),
+        (
             "allOf",
             "allOf",
             "allOf",
@@ -476,7 +476,7 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                 '    """ p4. """',
                 "    p4: str",
             ],
-        ],
+        ),
     ],
 )
 def test_combining_title(first: str, second: str, third: str, expected: Any) -> None:
