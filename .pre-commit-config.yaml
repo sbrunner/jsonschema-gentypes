@@ -110,7 +110,7 @@ repos:
           - --profile=utils:tests
           - --profile=utils:autofix
         additional_dependencies:
-          - prospector-profile-utils==1.19.2 # pypi
+          - prospector-profile-utils==1.19.3 # pypi
           - ruff==0.9.5 # pypi
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 1.0.0
