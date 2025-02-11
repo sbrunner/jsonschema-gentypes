@@ -78,7 +78,8 @@ def main() -> None:
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated Python file")
     parser.add_argument(
-        "--python-version", help="The minimal Python version that will support the generate type stubs.",
+        "--python-version",
+        help="The minimal Python version that will support the generate type stubs.",
     )
     parser.add_argument("files", nargs="*", help="The JSON schema files")
     args = parser.parse_args()
@@ -129,7 +130,8 @@ class _AddType:
     def __call__(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         name: str,
         force_name: bool = True,
@@ -326,7 +328,8 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         else:
             schema_all = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 schema,
             )

@@ -65,7 +65,8 @@ class API:
         self.root: Optional[TypeProxy] = None
 
     def get_type_handler(
-        self, schema_type: str,
+        self,
+        schema_type: str,
     ) -> Callable[
         [
             Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020],
@@ -99,7 +100,8 @@ class API:
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
         proposed_name: str,
@@ -109,7 +111,8 @@ class API:
     def get_type_end(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
     ) -> None:
@@ -171,7 +174,9 @@ class API:
                         alias = not isinstance(the_type.base, NamedType)
                     if alias:
                         the_type = TypeAlias(
-                            self.get_name(schema_meta_data, proposed_name), the_type, description,
+                            self.get_name(schema_meta_data, proposed_name),
+                            the_type,
+                            description,
                         )
                 the_type.set_comments(description)
 
@@ -211,7 +216,8 @@ class API:
     def resolve_ref(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Resolve a reference in the schema."""
@@ -222,7 +228,8 @@ class API:
         if "$ref" in schema_core:
             return cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 self.resolver.lookup(schema_core["$ref"]),
             )
@@ -231,7 +238,8 @@ class API:
     def build_type(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -251,7 +259,8 @@ class API:
             schema.setdefault("used", set()).add("if")  # type: ignore[typeddict-item]
             base_schema = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 {},
             )
@@ -261,7 +270,8 @@ class API:
                     del base_schema[key]  # type: ignore
             then_schema = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 {},
             )
@@ -298,7 +308,8 @@ class API:
             then_properties.update(if_properties)  # type: ignore[arg-type]
             else_schema = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 {},
             )
@@ -417,13 +428,15 @@ class API:
 
             schema_copy = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 dict(schema),
             )
             schema_meta_data_copy = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
                 ],
                 schema_copy,
             )
@@ -433,7 +446,9 @@ class API:
             for primitive_type in schema_type:
                 inner_types.append(
                     self._get_type(
-                        schema_copy, cast(str, primitive_type), f"{proposed_name} {primitive_type}",
+                        schema_copy,
+                        cast(str, primitive_type),
+                        f"{proposed_name} {primitive_type}",
                     ),
                 )
             type_ = UnionType(inner_types)
@@ -454,7 +469,8 @@ class API:
     def _get_type(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         schema_type: str,
         proposed_name: str,
@@ -504,10 +520,12 @@ class API:
     def any_of(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schemas: Union[
-            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
+            list[jsonschema_draft_04.JSONSchemaD4],
+            list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
         ],
         proposed_name: str,
         sub_name: str,
@@ -528,7 +546,8 @@ class API:
     def significative_sub_type(
         self,
         sub_schemas: Union[
-            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
+            list[jsonschema_draft_04.JSONSchemaD4],
+            list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
         ],
     ) -> bool:
         """Are the the subtype significative."""
@@ -546,10 +565,12 @@ class API:
     def all_of(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schemas: Union[
-            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
+            list[jsonschema_draft_04.JSONSchemaD4],
+            list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
         ],
         proposed_name: str,
         sub_name: str,
@@ -569,7 +590,8 @@ class API:
     def enum(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -583,7 +605,8 @@ class API:
     def default(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
         ],
         proposed_name: str,
     ) -> Type:

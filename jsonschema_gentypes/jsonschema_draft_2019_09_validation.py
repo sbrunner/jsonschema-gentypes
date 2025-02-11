@@ -104,7 +104,8 @@ _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
 
 
 _ValidationVocabularyMetaSchemaObjectType = Union[
-    "_SimpleTypes", "_ValidationVocabularyMetaSchemaObjectTypeAnyof1",
+    "_SimpleTypes",
+    "_ValidationVocabularyMetaSchemaObjectTypeAnyof1",
 ]
 """ Aggregation type: anyOf """
 

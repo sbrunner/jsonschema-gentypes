@@ -45,7 +45,8 @@ class APIv201909(APIv7):
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
         proposed_name: str,
@@ -71,7 +72,8 @@ class APIv201909(APIv7):
     def get_type_end(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
     ) -> None:
@@ -111,7 +113,8 @@ class APIv201909(APIv7):
     def resolve_ref(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """

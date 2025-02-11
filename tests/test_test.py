@@ -738,7 +738,8 @@ class _TestBasicTypesElse(TypedDict, total=False):
 
 
 @pytest.mark.parametrize(
-    ("value", "expected_type"), [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")],
+    ("value", "expected_type"),
+    [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")],
 )
 def test_const(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
