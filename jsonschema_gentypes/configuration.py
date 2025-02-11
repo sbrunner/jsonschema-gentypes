@@ -2,11 +2,11 @@
 Automatically generated file from a JSON schema.
 """
 
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
-AdditionalProperties = Literal["Always", "Only explicit"]
+AdditionalProperties = Union[Literal["Always"], Literal["Only explicit"]]
 """
 Additional properties.
 
@@ -108,7 +108,7 @@ class GenerateItem(TypedDict, total=False):
     """
 
 
-GetNameProperties = Literal["Title", "UpperFirst"]
+GetNameProperties = Union[Literal["Title"], Literal["UpperFirst"]]
 """
 Get name properties.
 
