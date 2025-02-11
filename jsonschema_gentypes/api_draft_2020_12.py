@@ -18,7 +18,7 @@ from jsonschema_gentypes.api_draft_2019_09 import APIv201909
 class APIv202012(APIv201909):
     """JSON Schema draft 2020 12."""
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
         super().__init__(*args, **kwargs)
         self.dynamic_anchor_type: dict[str, Type] = {}

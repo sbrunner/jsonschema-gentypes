@@ -83,12 +83,6 @@ repos:
     rev: v0.1.8
     hooks:
       - id: ripsecrets
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.4
-    hooks:
-      - id: ruff-format
-        args:
-          - --line-length=110
   - repo: https://github.com/PyCQA/prospector
     rev: v1.14.1
     hooks:
@@ -98,7 +92,7 @@ repos:
           - --die-on-tool-error
           - --output-format=pylint
           - --profile=.prospector.yaml
-          - --profile=utils:autofix
+          #- --profile=utils:autofix
         additional_dependencies:
           - prospector-profile-duplicated==1.10.4 # pypi
           - prospector-profile-utils==1.20.2 # pypi
@@ -112,6 +106,16 @@ repos:
         additional_dependencies:
           - prospector-profile-utils==1.20.2 # pypi
           - ruff==0.9.5 # pypi
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.4
+    hooks:
+      - id: ruff-format
+        args:
+          - --line-length=110
+        exclude: |-
+          (?x)^(
+              tests/openapi3\.py
+          )$
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 1.0.0
     hooks:

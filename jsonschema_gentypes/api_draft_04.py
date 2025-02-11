@@ -121,7 +121,7 @@ class APIv4(API):
             )
             if pattern_properties and len(pattern_properties) == 1:
                 schema.setdefault("used", set()).add("patternProperties")  # type: ignore[typeddict-item]
-                pattern_prop = list(pattern_properties.values())[0]
+                pattern_prop = next(iter(pattern_properties.values()))
                 sub_type = self.get_type(pattern_prop, f"{proposed_name} Type")
                 std_dict = DictType(BuiltinType("str"), sub_type)
 
@@ -259,7 +259,8 @@ class APIv4(API):
     ]:
         """Generate a ``Union`` annotation with the allowed types."""
         if recursion > 10:
-            raise ValueError("Recursion limit reached")
+            message = "Recursion limit reached"
+            raise ValueError(message)
 
         additional_types: list[Type] = []
         inner_types: list[Type] = []
@@ -269,7 +270,7 @@ class APIv4(API):
 
         for index, sub_schema in enumerate(sub_schemas):
             assert not isinstance(sub_schema, bool)
-            sub_schema = self.combined_sub_type(schema, sub_schema)
+            sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
             force_sub_type = "title" in sub_schema
             if "allOf" in sub_schema:
                 type_, named_types, combined_schema = self.all_of(
@@ -302,7 +303,7 @@ class APIv4(API):
                 "oneOf" in sub_schema and self.significative_sub_type(sub_schema["oneOf"])
             ):
                 kind: Literal["anyOf", "oneOf"] = "anyOf" if "anyOf" in sub_schema else "oneOf"
-                sub_schema = self.combined_sub_type(schema, sub_schema)
+                sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
                 type_, named_types, combined_schemas = self.any_of(
                     sub_schema,
                     sub_schema[kind],
@@ -329,7 +330,7 @@ class APIv4(API):
                 inner_types.append(type_)
                 inner_types_schema += combined_schemas
             else:
-                sub_schema = self.combined_sub_type(schema, sub_schema)
+                sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
                 inner_types_schema.append(sub_schema)
                 sub_type = self.get_type(sub_schema, f"{proposed_name} {sub_name}{index}")
                 if force_sub_type:
@@ -463,7 +464,8 @@ class APIv4(API):
     ]:
         """Combine all the definitions."""
         if recursion > 10:
-            raise ValueError("Recursion limit reached")
+            message = "Recursion limit reached"
+            raise ValueError(message)
 
         additional_types: list[Type] = []
 
@@ -478,7 +480,7 @@ class APIv4(API):
 
         for index, new_schema in enumerate(sub_schemas):
             assert not isinstance(new_schema, bool)
-            new_schema = self.resolve_ref(new_schema)
+            new_schema = self.resolve_ref(new_schema)  # noqa: PLW2901
             force_sub_type = "title" in new_schema
             if "allOf" in new_schema and self.significative_sub_type(new_schema["allOf"]):
                 type_, named_types, combined_schema = self.all_of(
@@ -586,17 +588,6 @@ class APIv4(API):
         schema.setdefault("used", set()).add("$ref")  # type: ignore[typeddict-item]
 
         if ref == "#":  # Self ref.
-            # Per @ilevkivskyi:
-            #
-            # > You should never use ForwardRef manually
-            # > Also it is deprecated and will be removed soon
-            # > Support for recursive types is limited to proper classes
-            # > currently
-            #
-            # forward_ref = ForwardRef(UnboundType(self.outer_name))
-            # self.forward_refs.append(forward_ref)
-            # return forward_ref
-
             assert self.root is not None
             return self.root
 

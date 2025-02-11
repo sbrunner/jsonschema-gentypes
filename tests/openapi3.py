@@ -517,7 +517,7 @@ example:
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal[
-    "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/OGC/0/CRS84h",
+    "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/OGC/0/CRS84h"
 ]
 """
 Coordinate reference system of the coordinates in the spatial extent
@@ -563,8 +563,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
     """
 
     resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0",
-        Union[int, float],
+        "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0", Union[int, float]
     ]
     """
     Resolution of regularly gridded data along the dimension in the collection
@@ -576,8 +575,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0",
-    Union[int, float],
+    "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0", Union[int, float]
 ]
 """ Aggregation type: oneOf """
 
@@ -648,8 +646,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=
     """
 
     resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0",
-        Union[int, float],
+        "_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0", Union[int, float]
     ]
     """
     Resolution of regularly gridded data along the temporal dimension in the collection

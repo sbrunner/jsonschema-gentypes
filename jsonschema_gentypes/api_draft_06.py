@@ -35,8 +35,8 @@ class APIv6(APIv4):
         )
         property_names = schema_casted.get("propertyNames")
         if isinstance(property_names, dict) and "type" in property_names:
-            property_names["__type__"] = property_names["type"]  # type: ignore
-            del property_names["type"]  # type: ignore
+            property_names["__type__"] = property_names["type"]  # type: ignore[typeddict-unknown-key,typeddict-item]
+            del property_names["type"]  # type: ignore[typeddict-item]
 
         super().get_type_start(schema, proxy, proposed_name)
 

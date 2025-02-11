@@ -76,7 +76,8 @@ class API:
     ]:
         """Get a handler from this schema draft version."""
         if schema_type.startswith("_"):
-            raise AttributeError("No way friend")
+            message = "No way friend"
+            raise AttributeError(message)
         handler = cast(
             Callable[
                 [
@@ -183,7 +184,7 @@ class API:
         if "default" in schema_meta_data:
             the_type.add_depends_on(
                 Constant(
-                    f"{self.get_name(schema_meta_data, proposed_name, True)}_DEFAULT",
+                    f"{self.get_name(schema_meta_data, proposed_name, upper=True)}_DEFAULT",
                     schema_meta_data["default"],
                     [f"Default value of the field path '{proposed_name}'"],
                 ),
@@ -264,10 +265,10 @@ class API:
                 ],
                 {},
             )
-            base_schema.update(schema)  # type: ignore
+            base_schema.update(schema)  # type: ignore[typeddict-item]
             for key in ("if", "then", "else", "title", "description"):
                 if key in base_schema:
-                    del base_schema[key]  # type: ignore
+                    del base_schema[key]  # type: ignore[misc]
             then_schema = cast(
                 Union[
                     jsonschema_draft_04.JSONSchemaD4,
@@ -275,10 +276,10 @@ class API:
                 ],
                 {},
             )
-            then_schema.update(base_schema)  # type: ignore
+            then_schema.update(base_schema)  # type: ignore[typeddict-item]
             schema.setdefault("used", set()).add("then")  # type: ignore[typeddict-item]
             then_schema.update(
-                self.resolve_ref(  # type: ignore
+                self.resolve_ref(  # type: ignore[typeddict-item]
                     cast(
                         Union[
                             jsonschema_draft_04.JSONSchemaD4,
@@ -421,7 +422,6 @@ class API:
         if isinstance(schema_type, list):
             if len(schema_type) == 0:
                 return BuiltinType("None")
-            inner_types = []
             name = self.get_name(schema_meta_data, proposed_name)
             has_title = "title" in schema_meta_data
             proposed_name = schema_meta_data.get("title", proposed_name)
@@ -443,14 +443,10 @@ class API:
             if "title" in schema_meta_data_copy:
                 del schema_meta_data_copy["title"]
 
-            for primitive_type in schema_type:
-                inner_types.append(
-                    self._get_type(
-                        schema_copy,
-                        cast(str, primitive_type),
-                        f"{proposed_name} {primitive_type}",
-                    ),
-                )
+            inner_types = [
+                self._get_type(schema_copy, cast(str, primitive_type), f"{proposed_name} {primitive_type}")
+                for primitive_type in schema_type
+            ]
             type_ = UnionType(inner_types)
             if has_title:
                 type_ = TypeAlias(name, type_)
@@ -555,7 +551,7 @@ class API:
             return False
         for sub_schema in sub_schemas:
             assert not isinstance(sub_schema, bool)
-            sub_schema = self.resolve_ref(sub_schema)
+            sub_schema = self.resolve_ref(sub_schema)  # noqa: PLW2901
             for prop in ["type", "properties", "items", "additionalProperties", "enum"]:
                 if prop in sub_schema:
                     return True

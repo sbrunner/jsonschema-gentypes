@@ -185,6 +185,7 @@ class TypeProxy(Type):
         Parameter:
             line_length: the maximum line length
         """
+        del line_length
         assert self._type is not None
         return self._type.definition(python_version)
 
@@ -237,6 +238,7 @@ class NamedType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return f'"{self._name}"'
 
 
@@ -255,6 +257,7 @@ class LiteralType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return f"Literal[{self.const!r}]"
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
@@ -309,6 +312,7 @@ class NativeType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return self._name
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
@@ -495,7 +499,7 @@ class TupleType(CombinedType):
 class TypeAlias(NamedType):
     """An alias on a type, essentially to add a description."""
 
-    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None):
+    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None) -> None:
         """
         Init.
 
@@ -510,7 +514,7 @@ class TypeAlias(NamedType):
 
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on(python_version)
+        return [self.sub_type, *super().depends_on(python_version)]
 
     def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
@@ -541,7 +545,12 @@ class TypeAlias(NamedType):
 class TypeEnum(NamedType):
     """The Type that represent an Enum in Python."""
 
-    def __init__(self, name: str, values: list[Union[int, float, bool, str, None]], descriptions: list[str]):
+    def __init__(
+        self,
+        name: str,
+        values: list[Union[int, float, bool, str, None]],
+        descriptions: list[str],
+    ) -> None:
         """
         Init.
 
@@ -559,7 +568,7 @@ class TypeEnum(NamedType):
 
     def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on(python_version)
+        return [self.sub_type, *super().depends_on(python_version)]
 
     def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
@@ -591,7 +600,7 @@ class TypedDictType(NamedType):
         struct: dict[str, Type],
         descriptions: list[str],
         required: set[str],
-    ):
+    ) -> None:
         """
         Init.
 
@@ -674,7 +683,7 @@ class TypedDictType(NamedType):
 class Constant(NamedType):
     """The Pseudo Type is used to add the default constants."""
 
-    def __init__(self, name: str, constant: Any, descriptions: list[str]):
+    def __init__(self, name: str, constant: Any, descriptions: list[str]) -> None:
         """
         Init.
 
@@ -761,7 +770,7 @@ def get_name(
     """
     # Get the base name
     has_title = isinstance(schema, dict) and "title" in schema
-    name = schema["title"] if has_title else proposed_name  # type: ignore
+    name = schema["title"] if has_title else proposed_name  # type: ignore[index]
     assert name is not None
     name = normalize(name)
 

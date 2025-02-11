@@ -16,7 +16,7 @@ from jsonschema_gentypes.api_draft_07 import APIv7
 class APIv201909(APIv7):
     """JSON Schema draft 2019 09."""
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
         super().__init__(*args, **kwargs)
         self.is_recursive_anchor_path: list[bool] = []
