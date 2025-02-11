@@ -35,7 +35,8 @@ class APIv4(API):
     def enum(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -59,7 +60,8 @@ class APIv4(API):
     def boolean(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -70,7 +72,8 @@ class APIv4(API):
     def object(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -118,7 +121,7 @@ class APIv4(API):
             )
             if pattern_properties and len(pattern_properties) == 1:
                 schema.setdefault("used", set()).add("patternProperties")  # type: ignore[typeddict-item]
-                pattern_prop = list(pattern_properties.values())[0]
+                pattern_prop = next(iter(pattern_properties.values()))
                 sub_type = self.get_type(pattern_prop, f"{proposed_name} Type")
                 std_dict = DictType(BuiltinType("str"), sub_type)
 
@@ -127,7 +130,8 @@ class APIv4(API):
             dict[
                 str,
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
             ],
             schema.get("properties"),
@@ -143,7 +147,9 @@ class APIv4(API):
             }
 
             name = self.get_name(
-                schema_meta_data, proposed_name, postfix="Typed" if std_dict is not None else ""
+                schema_meta_data,
+                proposed_name,
+                postfix="Typed" if std_dict is not None else "",
             )
             type_: Type = TypedDictType(
                 name,
@@ -171,7 +177,8 @@ class APIv4(API):
     def array(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019,
         ],
         proposed_name: str,
     ) -> Type:
@@ -180,11 +187,11 @@ class APIv4(API):
         if items is True:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return ListType(NativeType("Any"))
-        elif items is False:
+        if items is False:
             result = NativeType("None")
             result.set_comments(["`items: false` is not supported"])
             return result
-        elif isinstance(items, list):
+        if isinstance(items, list):
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             schema.setdefault("used", set()).add("additionalItems")  # type: ignore[typeddict-item]
             additional_items = schema.get("additionalItems")
@@ -210,10 +217,10 @@ class APIv4(API):
                         "WARNING: 'items': If list, must have minItems == maxItems.",
                         "See: https://json-schema.org/understanding-json-schema/"
                         "reference/array.html#tuple-validation",
-                    ]
+                    ],
                 )
             return type_
-        elif items is not None:
+        if items is not None:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return ListType(
                 self.get_type(
@@ -225,19 +232,20 @@ class APIv4(API):
                         items,
                     ),
                     proposed_name + " item",
-                )
+                ),
             )
-        else:
-            schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
-            return ListType(NativeType("Any"))
+        schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
+        return ListType(NativeType("Any"))
 
     def any_of(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schemas: Union[
-            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
+            list[jsonschema_draft_04.JSONSchemaD4],
+            list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
         ],
         proposed_name: str,
         sub_name: str,
@@ -251,7 +259,8 @@ class APIv4(API):
     ]:
         """Generate a ``Union`` annotation with the allowed types."""
         if recursion > 10:
-            raise ValueError("Recursion limit reached")
+            message = "Recursion limit reached"
+            raise ValueError(message)
 
         additional_types: list[Type] = []
         inner_types: list[Type] = []
@@ -261,7 +270,7 @@ class APIv4(API):
 
         for index, sub_schema in enumerate(sub_schemas):
             assert not isinstance(sub_schema, bool)
-            sub_schema = self.combined_sub_type(schema, sub_schema)
+            sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
             force_sub_type = "title" in sub_schema
             if "allOf" in sub_schema:
                 type_, named_types, combined_schema = self.all_of(
@@ -290,14 +299,11 @@ class APIv4(API):
                     additional_types.append(type_)
                 inner_types.append(type_)
                 inner_types_schema.append(combined_schema)
-            elif (
-                "anyOf" in sub_schema
-                and self.significative_sub_type(sub_schema["anyOf"])
-                or "oneOf" in sub_schema
-                and self.significative_sub_type(sub_schema["oneOf"])
+            elif ("anyOf" in sub_schema and self.significative_sub_type(sub_schema["anyOf"])) or (
+                "oneOf" in sub_schema and self.significative_sub_type(sub_schema["oneOf"])
             ):
                 kind: Literal["anyOf", "oneOf"] = "anyOf" if "anyOf" in sub_schema else "oneOf"
-                sub_schema = self.combined_sub_type(schema, sub_schema)
+                sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
                 type_, named_types, combined_schemas = self.any_of(
                     sub_schema,
                     sub_schema[kind],
@@ -324,7 +330,7 @@ class APIv4(API):
                 inner_types.append(type_)
                 inner_types_schema += combined_schemas
             else:
-                sub_schema = self.combined_sub_type(schema, sub_schema)
+                sub_schema = self.combined_sub_type(schema, sub_schema)  # noqa: PLW2901
                 inner_types_schema.append(sub_schema)
                 sub_type = self.get_type(sub_schema, f"{proposed_name} {sub_name}{index}")
                 if force_sub_type:
@@ -336,7 +342,8 @@ class APIv4(API):
     def clean_schema(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Remove the properties that could not be combined with an other type."""
@@ -349,15 +356,18 @@ class APIv4(API):
     def combined_sub_type(
         self,
         base_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Create a sub schema with the elements from the base schema."""
         combined_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ] = {}
         combined_schema.update(self.clean_schema(base_schema))  # type: ignore[typeddict-item]
         combined_schema.update(sub_schema)  # type: ignore[typeddict-item]
@@ -366,10 +376,12 @@ class APIv4(API):
     def combined_base_type_all_of(
         self,
         base_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """Create a sub schema with the elements from the base schema."""
@@ -391,7 +403,8 @@ class APIv4(API):
         )
 
         combined_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ] = {}
         combined_schema_validation = cast(
             Union[
@@ -415,7 +428,7 @@ class APIv4(API):
                 {
                     *base_schema_validation["required"],
                     *sub_schema_validation["required"],
-                }
+                },
             )
         if "type" in base_schema and "type" in sub_schema_validation:
             base_type = (
@@ -434,10 +447,12 @@ class APIv4(API):
     def all_of(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         sub_schemas: Union[
-            list[jsonschema_draft_04.JSONSchemaD4], list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020]
+            list[jsonschema_draft_04.JSONSchemaD4],
+            list[jsonschema_draft_2020_12_applicator.JSONSchemaD2020],
         ],
         proposed_name: str,
         sub_name: str,
@@ -449,12 +464,14 @@ class APIv4(API):
     ]:
         """Combine all the definitions."""
         if recursion > 10:
-            raise ValueError("Recursion limit reached")
+            message = "Recursion limit reached"
+            raise ValueError(message)
 
         additional_types: list[Type] = []
 
         all_schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ] = {}
         all_schema.update(schema)  # type: ignore[typeddict-item]
         for prop in ["allOf", "anyOf", "oneOf"]:
@@ -463,7 +480,7 @@ class APIv4(API):
 
         for index, new_schema in enumerate(sub_schemas):
             assert not isinstance(new_schema, bool)
-            new_schema = self.resolve_ref(new_schema)
+            new_schema = self.resolve_ref(new_schema)  # noqa: PLW2901
             force_sub_type = "title" in new_schema
             if "allOf" in new_schema and self.significative_sub_type(new_schema["allOf"]):
                 type_, named_types, combined_schema = self.all_of(
@@ -550,9 +567,8 @@ class APIv4(API):
             ref_proposed_name = ref[len("#/") :]
         if "/" in ref_proposed_name:
             ref_proposed_name = ref_proposed_name.replace("/", " ")
-        else:
-            if re.search("[a-z]", ref_proposed_name):
-                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
+        elif re.search("[a-z]", ref_proposed_name):
+            ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
         return ref_proposed_name
 
     def ref(
@@ -572,17 +588,6 @@ class APIv4(API):
         schema.setdefault("used", set()).add("$ref")  # type: ignore[typeddict-item]
 
         if ref == "#":  # Self ref.
-            # Per @ilevkivskyi:
-            #
-            # > You should never use ForwardRef manually
-            # > Also it is deprecated and will be removed soon
-            # > Support for recursive types is limited to proper classes
-            # > currently
-            #
-            # forward_ref = ForwardRef(UnboundType(self.outer_name))
-            # self.forward_refs.append(forward_ref)
-            # return forward_ref
-
             assert self.root is not None
             return self.root
 
@@ -608,7 +613,8 @@ class APIv4(API):
     def string(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -619,7 +625,8 @@ class APIv4(API):
     def number(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -630,7 +637,8 @@ class APIv4(API):
     def integer(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -641,7 +649,8 @@ class APIv4(API):
     def null(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -652,7 +661,8 @@ class APIv4(API):
     def default(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
         ],
         proposed_name: str,
     ) -> Type:

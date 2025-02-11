@@ -172,7 +172,7 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                         {
                             "properties": {
                                 "p2": {"type": "string"},
-                            }
+                            },
                         },
                         {
                             third: [
@@ -186,12 +186,12 @@ def test_combining(first: str, second: str, third: str, expected: Any) -> None:
                                         "p4": {"type": "string"},
                                     },
                                 },
-                            ]
+                            ],
                         },
                     ],
                 },
             ],
-        }
+        },
     )
     assert_expected(type_, expected)
 
@@ -513,11 +513,11 @@ def test_combining_title(first: str, second: str, third: str, expected: Any) -> 
                                         "p4": {"type": "string"},
                                     },
                                 },
-                            ]
+                            ],
                         },
                     ],
                 },
             ],
-        }
+        },
     )
     assert_expected(type_, expected)

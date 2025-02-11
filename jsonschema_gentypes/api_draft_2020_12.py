@@ -18,7 +18,7 @@ from jsonschema_gentypes.api_draft_2019_09 import APIv201909
 class APIv202012(APIv201909):
     """JSON Schema draft 2020 12."""
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
         super().__init__(*args, **kwargs)
         self.dynamic_anchor_type: dict[str, Type] = {}
@@ -30,7 +30,8 @@ class APIv202012(APIv201909):
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
         proposed_name: str,
@@ -76,7 +77,8 @@ class APIv202012(APIv201909):
     def resolve_ref(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """
@@ -96,7 +98,8 @@ class APIv202012(APIv201909):
     def array(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2019_09_applicator.JSONSchemaItemD2019,
         ],
         proposed_name: str,
     ) -> Type:
@@ -138,10 +141,10 @@ class APIv202012(APIv201909):
                         "WARNING: 'prefixItems': If list, must have minItems == maxItems.",
                         "See: https://json-schema.org/understanding-json-schema/"
                         "reference/array.html#tuple-validation",
-                    ]
+                    ],
                 )
             return type_
-        elif items is not None:
+        if items is not None:
             schema.setdefault("used", set()).add("items")  # type: ignore[typeddict-item]
             return ListType(
                 self.get_type(
@@ -153,9 +156,8 @@ class APIv202012(APIv201909):
                         items,
                     ),
                     proposed_name + " item",
-                )
+                ),
             )
-        else:
-            type_ = BuiltinType("None")
-            type_.set_comments(["WARNING: we get an array without any items"])
-            return type_
+        type_ = BuiltinType("None")
+        type_.set_comments(["WARNING: we get an array without any items"])
+        return type_

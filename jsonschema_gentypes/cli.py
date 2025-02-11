@@ -8,6 +8,7 @@ import random
 import re
 import subprocess  # nosec
 import sys
+from pathlib import Path
 from typing import Any, Callable, Optional, Union, cast
 
 import yaml
@@ -73,12 +74,18 @@ def _add_type(
 def main() -> None:
     """Generate the Python type files from the JSON schema files."""
     parser = argparse.ArgumentParser(usage="Generate the Python type files from the JSON schema files")
-    parser.add_argument("--config", default="jsonschema-gentypes.yaml", help="The configuration file")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default="jsonschema-gentypes.yaml",
+        help="The configuration file",
+    )
     parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated Python file")
     parser.add_argument(
-        "--python-version", help="The minimal Python version that will support the generate type stubs."
+        "--python-version",
+        help="The minimal Python version that will support the generate type stubs.",
     )
     parser.add_argument("files", nargs="*", help="The JSON schema files")
     args = parser.parse_args()
@@ -94,13 +101,13 @@ def main() -> None:
                 {
                     "source": args.json_schema,
                     "destination": args.python,
-                }
+                },
             ],
         }
     else:
         schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
         assert schema_data
-        with open(args.config, encoding="utf-8") as data_file:
+        with args.config.open(encoding="utf-8") as data_file:
             data = yaml.load(data_file, Loader=yaml.SafeLoader)
         config = cast(configuration.Configuration, data)
 
@@ -117,7 +124,7 @@ class _AddType:
         gen: configuration.GenerateItem,
         config: configuration.Configuration,
         python_version: tuple[int, ...],
-    ):
+    ) -> None:
         self.api = api
         self.resolver = resolver
         self.imports = imports
@@ -129,7 +136,8 @@ class _AddType:
     def __call__(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         name: str,
         force_name: bool = True,
@@ -143,7 +151,7 @@ class _AddType:
 
 
 class _BuildName:
-    def __init__(self, gen: configuration.GenerateItem):
+    def __init__(self, gen: configuration.GenerateItem) -> None:
         self.gen = gen
 
     def __call__(self, path: str, parts: list[str]) -> str:
@@ -214,10 +222,10 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         if openapi:
             build_name = _BuildName(gen)
 
-            for path_name, path_config in schema.get("paths", {}).items():  # type: ignore
-                path_config = resolver.auto_resolve(path_config)
+            for path_name, path_config in schema.get("paths", {}).items():  # type: ignore[attr-defined]
+                path_config = resolver.auto_resolve(path_config)  # noqa: PLW2901
                 for method_name, method_config in path_config.items():
-                    method_config = resolver.auto_resolve(method_config)
+                    method_config = resolver.auto_resolve(method_config)  # noqa: PLW2901
 
                     global_type: dict[str, jsonschema_gentypes.Type] = {}
                     global_type_required = set()
@@ -226,7 +234,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                     classed_parameters: dict[str, dict[str, jsonschema_gentypes.Type]] = {}
                     classed_parameters_required: dict[str, set[str]] = {}
                     for param_config in method_config.get("parameters", []):
-                        param_config = resolver.auto_resolve(param_config)
+                        param_config = resolver.auto_resolve(param_config)  # noqa: PLW2901
                         classed_parameters.setdefault(param_config["in"], {})[param_config["name"]] = (
                             add_type(
                                 param_config["schema"],
@@ -238,7 +246,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                         )
                         if param_config.get("required", param_config["in"] == "path"):
                             classed_parameters_required.setdefault(param_config["in"], set()).add(
-                                param_config["name"]
+                                param_config["name"],
                             )
 
                     for param_in, param_configs in classed_parameters.items():
@@ -262,11 +270,11 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
 
                     # Add request body
                     if "requestBody" in method_config:
-                        method_config = resolver.auto_resolve(method_config)
+                        method_config = resolver.auto_resolve(method_config)  # noqa: PLW2901
                         for content_type, content_config in (
                             method_config.get("requestBody", {}).get("content", {}).items()
                         ):
-                            content_config = resolver.auto_resolve(content_config)
+                            content_config = resolver.auto_resolve(content_config)  # noqa: PLW2901
                             if content_type == "application/json" and "schema" in content_config:
                                 global_type_required.add("request_body")
                                 global_type["request_body"] = add_type(
@@ -277,9 +285,9 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                     # Add responses
                     all_responses = []
                     for response_code, response_config in method_config.get("responses", {}).items():
-                        response_config = resolver.auto_resolve(response_config)
+                        response_config = resolver.auto_resolve(response_config)  # noqa: PLW2901
                         for content_type, content_config in response_config.get("content", {}).items():
-                            content_config = resolver.auto_resolve(content_config)
+                            content_config = resolver.auto_resolve(content_config)  # noqa: PLW2901
                             if content_type == "application/json" and "schema" in content_config:
                                 all_responses.append(
                                     add_type(
@@ -288,7 +296,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                                             path_name,
                                             [method_name, "response", str(response_code)],
                                         ),
-                                    )
+                                    ),
                                 )
                     type_ = jsonschema_gentypes.TypeAlias(
                         build_name(
@@ -326,7 +334,8 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         else:
             schema_all = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                    jsonschema_draft_04.JSONSchemaD4,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 schema,
             )
@@ -339,7 +348,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         for type_2 in sorted(types.values(), key=lambda type_3: type_3.name(python_version)):
             lines += type_2.definition(python_version, config.get("lineLength"))
 
-        with open(gen["destination"], "w", encoding="utf-8") as destination_file:
+        with Path(gen["destination"]).open("w", encoding="utf-8") as destination_file:
             headers = config.get("headers")
             if headers:
                 destination_file.write(headers)

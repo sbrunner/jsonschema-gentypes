@@ -2,14 +2,12 @@
 Automatically generated file from a JSON schema.
 """
 
+
 from typing import Any, Literal, TypedDict, Union
 
 from typing_extensions import Required
 
-ExtentWithUniformAdditionalDimensionsSchema = Union[
-    dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"],
-    "ExtentWithUniformAdditionalDimensionsSchemaTyped",
-]
+ExtentWithUniformAdditionalDimensionsSchema = Union[dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"], "ExtentWithUniformAdditionalDimensionsSchemaTyped"]
 """
 Extent with Uniform Additional Dimensions Schema.
 
@@ -22,12 +20,14 @@ See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
 """
 
 
+
 class ExtentWithUniformAdditionalDimensionsSchemaTyped(TypedDict, total=False):
     spatial: "_ExtentWithUniformAdditionalDimensionsSchemaSpatial"
     """ The spatial extent of the data in the collection. """
 
     temporal: "_ExtentWithUniformAdditionalDimensionsSchemaTemporal"
     """ The temporal extent of the features in the collection. """
+
 
 
 class OgcapiCollectionsCollectionidGet(TypedDict, total=False):
@@ -61,6 +61,7 @@ class OgcapiCollectionsCollectionidGetPath(TypedDict, total=False):
     """ Required property """
 
 
+
 class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
     """
     Parameter type 'query' of request on path '/collections/{collectionId}', using method 'get'.
@@ -72,11 +73,12 @@ class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
     f: "OgcapiCollectionsCollectionidGetQueryF"
 
 
-OgcapiCollectionsCollectionidGetQueryF = Union[Literal["json"], Literal["html"]]
-_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal["json"] = "json"
+OgcapiCollectionsCollectionidGetQueryF = Union[Literal['json'], Literal['html']]
+_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal['json'] = "json"
 """The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
-_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal["html"] = "html"
+_OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal['html'] = "html"
 """The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
+
 
 
 class OgcapiCollectionsCollectionidGetRequestbody(TypedDict, total=False):
@@ -242,6 +244,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     """ Maximum cell size for usage of the collection """
 
 
+
 class _ComponentsSchemasLink(TypedDict, total=False):
     href: Required[str]
     """
@@ -295,16 +298,14 @@ class _ComponentsSchemasLink(TypedDict, total=False):
     length: int
 
 
-_EXTENT_WITH_UNIFORM_ADDITIONAL_DIMENSIONS_SCHEMA_SPATIAL_CRS_DEFAULT = (
-    "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-)
+_EXTENT_WITH_UNIFORM_ADDITIONAL_DIMENSIONS_SCHEMA_SPATIAL_CRS_DEFAULT = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
 """ Default value of the field path 'Extent with Uniform Additional Dimensions Schema spatial crs' """
 
 
-_EXTENT_WITH_UNIFORM_ADDITIONAL_DIMENSIONS_SCHEMA_TEMPORAL_TRS_DEFAULT = (
-    "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
-)
+
+_EXTENT_WITH_UNIFORM_ADDITIONAL_DIMENSIONS_SCHEMA_TEMPORAL_TRS_DEFAULT = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
 """ Default value of the field path 'Extent with Uniform Additional Dimensions Schema temporal trs' """
+
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties(TypedDict, total=False):
@@ -348,8 +349,9 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties(TypedDict
     """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension. """
 
 
+
 class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(TypedDict, total=False):
-    """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension."""
+    """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension. """
 
     coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem"]
     """
@@ -373,10 +375,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(Typed
     example: 50
     """
 
-    resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridResolutionOneof0",
-        Union[int, float],
-    ]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridResolutionOneof0", Union[int, float]]
     """
     Resolution of regularly gridded data along the dimension in the collection
 
@@ -388,24 +387,23 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(Typed
     """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItemOneof0",
-    Union[int, float],
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItemOneof0", Union[int, float]]
 """ Aggregation type: oneOf """
+
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItemOneof0 = str
 """ nullable: True """
 
 
+
 _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridResolutionOneof0 = str
 """ nullable: True """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItem = list[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem"
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItem = list["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem"]
 """
 Lower and upper bound values of the interval. The values
 are in the coordinate reference system specified in `crs`, `trs` or `vrs`.
@@ -419,19 +417,19 @@ example:
 """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItemOneof0",
-    Union[int, float],
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItemOneof0", Union[int, float]]
 """ Aggregation type: oneOf """
+
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItemOneof0 = str
 """ nullable: True """
 
 
+
 class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False):
-    """The spatial extent of the data in the collection."""
+    """ The spatial extent of the data in the collection. """
 
     bbox: list["_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem"]
     """
@@ -468,6 +466,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False
     minItems: 2
     maxItems: 3
     """
+
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem = list[Union[int, float]]
@@ -516,10 +515,8 @@ example:
 """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Union[
-    Literal["http://www.opengis.net/def/crs/OGC/1.3/CRS84"],
-    Literal["http://www.opengis.net/def/crs/OGC/0/CRS84h"],
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Union[Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84'], Literal['http://www.opengis.net/def/crs/OGC/0/CRS84h']]
 """
 Coordinate reference system of the coordinates in the spatial extent
 (property `bbox`). The default reference system is WGS 84 longitude/latitude.
@@ -530,14 +527,11 @@ additional enum values.
 
 default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
 """
-_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMASPATIALCRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_CRS_SOLIDUS_OGC_SOLIDUS_1_FULL_STOP_3_SOLIDUS_CRS84: Literal[
-    "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-] = "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMASPATIALCRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_CRS_SOLIDUS_OGC_SOLIDUS_1_FULL_STOP_3_SOLIDUS_CRS84: Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84'] = "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
 """The values for the 'Coordinate reference system of the coordinates in the spatial extent' enum"""
-_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMASPATIALCRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_CRS_SOLIDUS_OGC_SOLIDUS_0_SOLIDUS_CRS84H: Literal[
-    "http://www.opengis.net/def/crs/OGC/0/CRS84h"
-] = "http://www.opengis.net/def/crs/OGC/0/CRS84h"
+_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMASPATIALCRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_CRS_SOLIDUS_OGC_SOLIDUS_0_SOLIDUS_CRS84H: Literal['http://www.opengis.net/def/crs/OGC/0/CRS84h'] = "http://www.opengis.net/def/crs/OGC/0/CRS84h"
 """The values for the 'Coordinate reference system of the coordinates in the spatial extent' enum"""
+
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, total=False):
@@ -563,9 +557,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
     example: 50
     """
 
-    resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0", Union[int, float]
-    ]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0", Union[int, float]]
     """
     Resolution of regularly gridded data along the dimension in the collection
 
@@ -575,22 +567,24 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
     """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem = Union[
-    "_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0", Union[int, float]
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0", Union[int, float]]
 """ Aggregation type: oneOf """
+
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0 = str
 """ nullable: True """
 
 
+
 _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0 = str
 """ nullable: True """
 
 
+
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=False):
-    """The temporal extent of the features in the collection."""
+    """ The temporal extent of the features in the collection. """
 
     interval: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem"]
     """
@@ -622,8 +616,9 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=Fals
     """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension. """
 
 
+
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=False):
-    """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension."""
+    """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension. """
 
     coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridCoordinatesItem"]
     """
@@ -646,9 +641,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=
     example: 50
     """
 
-    resolution: Union[
-        "_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0", Union[int, float]
-    ]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0", Union[int, float]]
     """
     Resolution of regularly gridded data along the temporal dimension in the collection
 
@@ -658,17 +651,18 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=
     """
 
 
+
 _ExtentWithUniformAdditionalDimensionsSchemaTemporalGridCoordinatesItem = str
 """ nullable: True """
+
 
 
 _ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0 = str
 """ nullable: True """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem = list[
-    "_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItemItem"
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem = list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItemItem"]
 """
 Begin and end times of the time interval. The timestamps are in the
 temporal coordinate reference system specified in `trs`. By default
@@ -684,6 +678,7 @@ example:
 """
 
 
+
 _ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItemItem = str
 """
 format: date-time
@@ -691,9 +686,8 @@ nullable: True
 """
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaTemporalTrs = Union[
-    Literal["http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"]
-]
+
+_ExtentWithUniformAdditionalDimensionsSchemaTemporalTrs = Union[Literal['http://www.opengis.net/def/uom/ISO-8601/0/Gregorian']]
 """
 Coordinate reference system of the coordinates in the temporal extent
 (property `interval`). The default reference system is the Gregorian calendar.
@@ -703,15 +697,15 @@ additional enum values.
 
 default: http://www.opengis.net/def/uom/ISO-8601/0/Gregorian
 """
-_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMATEMPORALTRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_UOM_SOLIDUS_ISO_8601_SOLIDUS_0_SOLIDUS_GREGORIAN: Literal[
-    "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
-] = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+_EXTENTWITHUNIFORMADDITIONALDIMENSIONSSCHEMATEMPORALTRS_HTTP_COLON__SOLIDUS__SOLIDUS_WWW_FULL_STOP_OPENGIS_FULL_STOP_NET_SOLIDUS_DEF_SOLIDUS_UOM_SOLIDUS_ISO_8601_SOLIDUS_0_SOLIDUS_GREGORIAN: Literal['http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'] = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
 """The values for the 'Coordinate reference system of the coordinates in the temporal extent' enum"""
 
 
-_OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_CRS_DEFAULT = ["http://www.opengis.net/def/crs/OGC/1.3/CRS84"]
+
+_OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_CRS_DEFAULT = ['http://www.opengis.net/def/crs/OGC/1.3/CRS84']
 """ Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 crs' """
 
 
-_OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = "unknown"
+
+_OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = 'unknown'
 """ Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 itemType' """

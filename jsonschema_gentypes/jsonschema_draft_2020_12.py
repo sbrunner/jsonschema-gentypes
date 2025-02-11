@@ -183,15 +183,7 @@ _SchemaArray = list["ContentVocabularyMetaSchema"]
 """ minItems: 1 """
 
 
-_SimpleTypes = Union[
-    Literal["array"],
-    Literal["boolean"],
-    Literal["integer"],
-    Literal["null"],
-    Literal["number"],
-    Literal["object"],
-    Literal["string"],
-]
+_SimpleTypes = Literal["array", "boolean", "integer", "null", "number", "object", "string"]
 _SIMPLETYPES_ARRAY: Literal["array"] = "array"
 """The values for the '_SimpleTypes' enum"""
 _SIMPLETYPES_BOOLEAN: Literal["boolean"] = "boolean"

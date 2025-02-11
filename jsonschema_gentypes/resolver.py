@@ -6,6 +6,7 @@ Encapsulate the referencing logic to be able to use it in the code generation.
 
 import json
 import re
+from pathlib import Path
 from typing import Any, Optional, Union, cast
 
 import referencing._core
@@ -48,7 +49,7 @@ def _openapi_schema(
 def _open_uri(
     uri: str,
 ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
-    if uri.startswith("http://") or uri.startswith("https://"):
+    if uri.startswith(("http://", "https://")):
         response = requests.get(uri, timeout=30)
         return _openapi_schema(
             cast(
@@ -57,24 +58,23 @@ def _open_uri(
                     jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 response.json(),
-            )
+            ),
         )
-    else:
-        with open(uri, encoding="utf-8") as open_file:
-            file_content = open_file.read()
-            try:
-                schema = yaml.load(file_content, Loader=yaml.SafeLoader)
-            except Exception:  # pylint: disable=broad-except
-                schema = json.loads(file_content)
-            return _openapi_schema(
-                cast(
-                    Union[
-                        jsonschema_draft_06.JSONSchemaItemD6,
-                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                    ],
-                    schema,
-                )
-            )
+    with Path(uri).open(encoding="utf-8") as open_file:
+        file_content = open_file.read()
+        try:
+            schema = yaml.load(file_content, Loader=yaml.SafeLoader)
+        except Exception:  # pylint: disable=broad-except # noqa: BLE001
+            schema = json.loads(file_content)
+        return _openapi_schema(
+            cast(
+                Union[
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                ],
+                schema,
+            ),
+        )
 
 
 def _open_uri_resolver(uri: str) -> referencing.Resource[Any]:
@@ -90,7 +90,7 @@ _VOCAB_URL_RE = re.compile(rf"{re.escape(_URL_PREFIX)}([0-9-]+)/vocab/(.+)$")
 _META_RE = re.compile(r"^meta/([a-zA-Z0-9]+)#(.*)$")
 
 
-class UnRedolvedException(Exception):
+class UnRedolvedError(Exception):
     """Exception for unresolved references."""
 
 
@@ -106,7 +106,8 @@ class RefResolver:
         base_url: str,
         schema: Optional[
             Union[
-                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                jsonschema_draft_06.JSONSchemaItemD6,
+                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
             ]
         ] = None,
     ) -> None:
@@ -129,7 +130,7 @@ class RefResolver:
         if "$schema" in self.schema:
             _RESOURCE_CACHE[base_url] = referencing.Resource.from_contents(self.schema)
 
-        self.registry = referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore
+        self.registry = referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore[call-arg]
         self.resolver: referencing._core.Resolver[
             Union[
                 jsonschema_draft_06.JSONSchemaItemD6,
@@ -152,8 +153,8 @@ class RefResolver:
             if value is True:
                 vocab_match = _VOCAB_URL_RE.match(vocab)
                 if vocab_match:
-                    version, vocab = vocab_match.groups()
-                    self.add_vocabulary(vocab, f"{_URL_PREFIX}{version}/meta/{vocab}")
+                    version, sub_vocab = vocab_match.groups()
+                    self.add_vocabulary(sub_vocab, f"{_URL_PREFIX}{version}/meta/{sub_vocab}")
 
     def add_vocabulary(self, vocab: str, url: str) -> None:
         """Add a vocabulary to the resolver."""
@@ -161,7 +162,8 @@ class RefResolver:
         self.vocabulary_resolver[vocab] = self.registry.resolver(url)
 
     def lookup(
-        self, uri: str
+        self,
+        uri: str,
     ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """
         Lookup for the reference.
@@ -183,17 +185,19 @@ class RefResolver:
             referencing.exceptions.PointerToNowhere,
         ) as curent_exeption:
             exception = curent_exeption
-            for _, resolver in self.vocabulary_resolver.items():
+            for resolver in self.vocabulary_resolver.values():
                 try:
                     return resolver.lookup(uri).contents
-                except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):
+                except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):  # noqa: PERF203
                     pass
-        raise UnRedolvedException(f"Ref '{uri}' not found") from exception
+        message = f"Ref '{uri}' not found"
+        raise UnRedolvedError(message) from exception
 
     def auto_resolve(
         self,
         config: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """

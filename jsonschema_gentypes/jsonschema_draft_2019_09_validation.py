@@ -70,15 +70,7 @@ _STRING_ARRAY_DEFAULT: list[Any] = []
 """ Default value of the field path 'string array' """
 
 
-_SimpleTypes = Union[
-    Literal["array"],
-    Literal["boolean"],
-    Literal["integer"],
-    Literal["null"],
-    Literal["number"],
-    Literal["object"],
-    Literal["string"],
-]
+_SimpleTypes = Literal["array", "boolean", "integer", "null", "number", "object", "string"]
 _SIMPLETYPES_ARRAY: Literal["array"] = "array"
 """The values for the '_SimpleTypes' enum"""
 _SIMPLETYPES_BOOLEAN: Literal["boolean"] = "boolean"
@@ -112,7 +104,8 @@ _VALIDATION_VOCABULARY_META_SCHEMA_OBJECT_UNIQUEITEMS_DEFAULT = False
 
 
 _ValidationVocabularyMetaSchemaObjectType = Union[
-    "_SimpleTypes", "_ValidationVocabularyMetaSchemaObjectTypeAnyof1"
+    "_SimpleTypes",
+    "_ValidationVocabularyMetaSchemaObjectTypeAnyof1",
 ]
 """ Aggregation type: anyOf """
 

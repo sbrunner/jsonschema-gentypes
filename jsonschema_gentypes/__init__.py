@@ -185,6 +185,7 @@ class TypeProxy(Type):
         Parameter:
             line_length: the maximum line length
         """
+        del line_length
         assert self._type is not None
         return self._type.definition(python_version)
 
@@ -237,13 +238,14 @@ class NamedType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return f'"{self._name}"'
 
 
 class LiteralType(Type):
     """A literal type like: `Literal["text"]`."""
 
-    def __init__(self, const: Union[int, float, bool, str, None, dict[str, Any], list[Any]]) -> None:
+    def __init__(self, const: Union[float, bool, str, None, dict[str, Any], list[Any]]) -> None:
         """
         Init.
 
@@ -255,7 +257,8 @@ class LiteralType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
-        return f"Literal[{repr(self.const)}]"
+        del python_version
+        return f"Literal[{self.const!r}]"
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
@@ -309,6 +312,7 @@ class NativeType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
+        del python_version
         return self._name
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
@@ -495,7 +499,7 @@ class TupleType(CombinedType):
 class TypeAlias(NamedType):
     """An alias on a type, essentially to add a description."""
 
-    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None):
+    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None) -> None:
         """
         Init.
 
@@ -510,7 +514,7 @@ class TypeAlias(NamedType):
 
     def depends_on(self, python_version: tuple[int, ...]) -> list[Type]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on(python_version)
+        return [self.sub_type, *super().depends_on(python_version)]
 
     def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
@@ -541,7 +545,12 @@ class TypeAlias(NamedType):
 class TypeEnum(NamedType):
     """The Type that represent an Enum in Python."""
 
-    def __init__(self, name: str, values: list[Union[int, float, bool, str, None]], descriptions: list[str]):
+    def __init__(
+        self,
+        name: str,
+        values: list[Union[int, float, bool, str, None]],
+        descriptions: list[str],
+    ) -> None:
         """
         Init.
 
@@ -559,7 +568,7 @@ class TypeEnum(NamedType):
 
     def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
-        return [self.sub_type] + super().depends_on(python_version)
+        return [self.sub_type, *super().depends_on(python_version)]
 
     def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
         """Return the type declaration."""
@@ -575,8 +584,7 @@ class TypeEnum(NamedType):
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
             result.append(f"{name}: {LiteralType(value).name(python_version)} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
-            if name.endswith("."):
-                name = name[:-1]
+            name = name.removesuffix(".")
             result.append(f'"""The values for the \'{name}\' enum"""')
 
         result.append("")
@@ -592,7 +600,7 @@ class TypedDictType(NamedType):
         struct: dict[str, Type],
         descriptions: list[str],
         required: set[str],
-    ):
+    ) -> None:
         """
         Init.
 
@@ -675,7 +683,7 @@ class TypedDictType(NamedType):
 class Constant(NamedType):
     """The Pseudo Type is used to add the default constants."""
 
-    def __init__(self, name: str, constant: Any, descriptions: list[str]):
+    def __init__(self, name: str, constant: Any, descriptions: list[str]) -> None:
         """
         Init.
 
@@ -693,12 +701,12 @@ class Constant(NamedType):
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
             dict_type = "Dict" if python_version < (3, 9) else "dict"
-            result.append(f"{self._name}: {dict_type}[str, Any] = {repr(self.constant)}")
+            result.append(f"{self._name}: {dict_type}[str, Any] = {self.constant!r}")
         elif isinstance(self.constant, (dict, list)) and not self.constant:
             list_type = "List" if python_version < (3, 9) else "list"
-            result.append(f"{self._name}: {list_type}[Any] = {repr(self.constant)}")
+            result.append(f"{self._name}: {list_type}[Any] = {self.constant!r}")
         else:
-            result.append(f"{self._name} = {repr(self.constant)}")
+            result.append(f"{self._name} = {self.constant!r}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         if len(comments) == 1:
             result += [f'""" {comments[0]} """', ""]
@@ -712,12 +720,11 @@ class Constant(NamedType):
             if python_version < (3, 9):
                 return [("typing", "Any"), ("typing", "Dict")]
             return [("typing", "Any")]
-        elif isinstance(self.constant, list) and not self.constant:
+        if isinstance(self.constant, list) and not self.constant:
             if python_version < (3, 9):
                 return [("typing", "Any"), ("typing", "List")]
             return [("typing", "Any")]
-        else:
-            return []
+        return []
 
 
 def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:
@@ -763,7 +770,7 @@ def get_name(
     """
     # Get the base name
     has_title = isinstance(schema, dict) and "title" in schema
-    name = schema["title"] if has_title else proposed_name  # type: ignore
+    name = schema["title"] if has_title else proposed_name  # type: ignore[index]
     assert name is not None
     name = normalize(name)
 

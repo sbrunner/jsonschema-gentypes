@@ -16,7 +16,7 @@ from jsonschema_gentypes.api_draft_07 import APIv7
 class APIv201909(APIv7):
     """JSON Schema draft 2019 09."""
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize."""
         super().__init__(*args, **kwargs)
         self.is_recursive_anchor_path: list[bool] = []
@@ -38,15 +38,15 @@ class APIv201909(APIv7):
             ref_proposed_name = ref[len("#/") :]
         if "/" in ref_proposed_name:
             ref_proposed_name = ref_proposed_name.replace("/", " ")
-        else:
-            if re.search("[a-z]", ref_proposed_name):
-                ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
+        elif re.search("[a-z]", ref_proposed_name):
+            ref_proposed_name = re.sub("([a-z0-9])([A-Z])", r"\1 \2", ref_proposed_name).lower()
         return ref_proposed_name
 
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
         proposed_name: str,
@@ -72,7 +72,8 @@ class APIv201909(APIv7):
     def get_type_end(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
     ) -> None:
@@ -112,7 +113,8 @@ class APIv201909(APIv7):
     def resolve_ref(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4,
+            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """

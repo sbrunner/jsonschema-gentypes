@@ -9,7 +9,7 @@ def test_empty_array() -> None:
                 "source": "tests/get_name_properties.json",
                 "destination": "tests/get_name_properties.py",
                 "api_arguments": {"get_name_properties": "UpperFirst"},
-            }
+            },
         ],
     )
     process_config(

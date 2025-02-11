@@ -48,7 +48,7 @@ def test_basic_types():
                 "false": False,
             },
             "required": ["string_required", "number_required", "integer_required"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -112,7 +112,7 @@ def test_dict_style():
             "properties": {
                 "123": {"type": "string"},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -137,7 +137,7 @@ def test_ref():
             "properties": {
                 "string": {"$ref": "#/definitions/string"},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -161,7 +161,7 @@ def test_self_ref():
             "properties": {
                 "string": {"$ref": "#"},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -184,7 +184,7 @@ def test_array():
             "properties": {
                 "array": {"type": "array", "items": {"type": "string"}},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -205,7 +205,7 @@ def test_array_true():
             "properties": {
                 "array": {"type": "array", "items": True},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -231,7 +231,7 @@ def test_array_tuple():
                     "items": [{"type": "string"}, {"type": "number"}],
                 },
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -258,7 +258,7 @@ def test_additional_properties_mixed():
                 "string": {"type": "string"},
             },
             "additionalProperties": {"type": "string"},
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -291,7 +291,7 @@ def test_additional_properties():
             "type": "object",
             "title": "test basic types",
             "additionalProperties": {"type": "string"},
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -309,7 +309,7 @@ def test_additional_properties_true():
             "type": "object",
             "title": "test basic types",
             "additionalProperties": True,
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -327,7 +327,7 @@ def test_pattern_properties_multiple():
             "type": "object",
             "title": "Pattern properties with tow patterns",
             "patternProperties": {"^[a-z]+$": {"type": "string"}, "^[0-9]+$": {"type": "number"}},
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -355,7 +355,7 @@ def test_pattern_properties_string():
             "patternProperties": {
                 "^[a-z]+$": {"type": "string"},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -380,7 +380,7 @@ def test_pattern_properties_object():
                     },
                 },
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -406,7 +406,7 @@ def test_boolean_const():
             "type": "object",
             "title": "test basic types",
             "properties": {"boolean": {"type": "boolean", "const": True}},
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -425,10 +425,10 @@ def test_dict_enum():
             "type": "object",
             "title": "test basic types",
             "properties": {
-                "enum": {"title": "properties", "type": "string", "enum": ["red", "amber", "green"]}
+                "enum": {"title": "properties", "type": "string", "enum": ["red", "amber", "green"]},
             },
             "required": ["enum"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -485,7 +485,7 @@ def test_any_of():
                 },
             ],
             "required": ["string"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -536,7 +536,7 @@ def test_all_of() -> None:
                 },
             ],
             "required": ["string"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -555,7 +555,7 @@ def test_all_of_2() -> None:
         {
             "title": "test basic types",
             "allOf": [{"type": "string"}, {"type": "number"}],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -572,7 +572,7 @@ def test_all_of_3() -> None:
         {
             "title": "test basic types",
             "allOf": [{"type": "string"}, {"maxLength": 5}],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -601,7 +601,7 @@ def test_all_of_4() -> None:
             "properties": {
                 "test": {"allOf": [{"$ref": "#/definitions/nonNegativeInteger"}, {"default": 0}]},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -650,7 +650,7 @@ def test_one_of() -> None:
                 },
             ],
             "required": ["string"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -687,7 +687,7 @@ def test_type_list() -> None:
         {
             "title": "test basic types",
             "type": ["string", "boolean"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -707,7 +707,7 @@ def test_it_the_else() -> None:  # 395
             "if": {"properties": {"type": {"const": "type"}}},
             "then": {"properties": {"text1": {"type": "string"}}},
             "else": {"properties": {"text2": {"type": "string"}}},
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -738,7 +738,8 @@ class _TestBasicTypesElse(TypedDict, total=False):
 
 
 @pytest.mark.parametrize(
-    ("value", "expected_type"), [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")]
+    ("value", "expected_type"),
+    [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")],
 )
 def test_const(value, expected_type) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
@@ -844,7 +845,7 @@ def test_typeddict_mixrequired():
                 "text2": {"type": "string"},
             },
             "required": ["text1"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -883,7 +884,7 @@ def test_linesplit() -> None:
             "title": "test basic types",
             "description": "The JSON Schema project intends to shepherd all three draft series to either: RFC status, the equivalent within another standards body, and/or join a foundation and establish self publication rules.",
             "const": 111,
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8), line_length=80)])
@@ -952,7 +953,7 @@ def test_recursive_ref():
                 },
                 "children": {"type": "array", "items": {"$dynamicRef": "#r1"}},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -989,7 +990,7 @@ def test_array_2():
             "properties": {
                 "array": {"type": "array", "items": {"type": "string"}},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -1010,7 +1011,7 @@ def test_array_true_2():
             "properties": {
                 "array": {"type": "array", "items": True},
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -1036,7 +1037,7 @@ def test_array_tuple_2():
                     "prefixItems": [{"type": "string"}, {"type": "number"}],
                 },
             },
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -1060,7 +1061,7 @@ def test_no_type():
             "title": "my type",
             "properties": {"foo": {"type": "string"}},
             "required": ["foo"],
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -1090,7 +1091,7 @@ def test_empty_array():
         {
             "title": "my type",
             "type": "array",
-        }
+        },
     )
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
