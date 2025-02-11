@@ -19,7 +19,7 @@ class APIv6(APIv4):
     def get_type_start(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proxy: Type,
         proposed_name: str,
@@ -27,7 +27,7 @@ class APIv6(APIv4):
         """Get the type for a schema."""
         schema_casted = cast(
             Union[
-                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
             ],
             schema,
         )
@@ -41,7 +41,7 @@ class APIv6(APIv4):
     def build_type(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         proposed_name: str,
     ) -> Type:
@@ -60,7 +60,7 @@ class APIv6(APIv4):
                         jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                     ],
                     schema,
-                )
+                ),
             )
 
         return super().build_type(schema, proposed_name)
@@ -68,7 +68,7 @@ class APIv6(APIv4):
     def const(
         self,
         schema: Union[
-            jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Type:
         """
@@ -83,7 +83,7 @@ class APIv6(APIv4):
         """
         schema_casted = cast(
             Union[
-                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020
+                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
             ],
             schema,
         )

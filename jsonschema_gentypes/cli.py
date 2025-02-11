@@ -78,7 +78,7 @@ def main() -> None:
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated Python file")
     parser.add_argument(
-        "--python-version", help="The minimal Python version that will support the generate type stubs."
+        "--python-version", help="The minimal Python version that will support the generate type stubs.",
     )
     parser.add_argument("files", nargs="*", help="The JSON schema files")
     args = parser.parse_args()
@@ -94,7 +94,7 @@ def main() -> None:
                 {
                     "source": args.json_schema,
                     "destination": args.python,
-                }
+                },
             ],
         }
     else:
@@ -129,7 +129,7 @@ class _AddType:
     def __call__(
         self,
         schema: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
         name: str,
         force_name: bool = True,
@@ -238,7 +238,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                         )
                         if param_config.get("required", param_config["in"] == "path"):
                             classed_parameters_required.setdefault(param_config["in"], set()).add(
-                                param_config["name"]
+                                param_config["name"],
                             )
 
                     for param_in, param_configs in classed_parameters.items():
@@ -288,7 +288,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                                             path_name,
                                             [method_name, "response", str(response_code)],
                                         ),
-                                    )
+                                    ),
                                 )
                     type_ = jsonschema_gentypes.TypeAlias(
                         build_name(
@@ -326,7 +326,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         else:
             schema_all = cast(
                 Union[
-                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                    jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 schema,
             )

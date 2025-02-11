@@ -243,7 +243,7 @@ class NamedType(Type):
 class LiteralType(Type):
     """A literal type like: `Literal["text"]`."""
 
-    def __init__(self, const: Union[int, float, bool, str, None, dict[str, Any], list[Any]]) -> None:
+    def __init__(self, const: Union[float, bool, str, None, dict[str, Any], list[Any]]) -> None:
         """
         Init.
 
@@ -255,7 +255,7 @@ class LiteralType(Type):
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
-        return f"Literal[{repr(self.const)}]"
+        return f"Literal[{self.const!r}]"
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
@@ -575,8 +575,7 @@ class TypeEnum(NamedType):
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
             result.append(f"{name}: {LiteralType(value).name(python_version)} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
-            if name.endswith("."):
-                name = name[:-1]
+            name = name.removesuffix(".")
             result.append(f'"""The values for the \'{name}\' enum"""')
 
         result.append("")
@@ -693,12 +692,12 @@ class Constant(NamedType):
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
             dict_type = "Dict" if python_version < (3, 9) else "dict"
-            result.append(f"{self._name}: {dict_type}[str, Any] = {repr(self.constant)}")
+            result.append(f"{self._name}: {dict_type}[str, Any] = {self.constant!r}")
         elif isinstance(self.constant, (dict, list)) and not self.constant:
             list_type = "List" if python_version < (3, 9) else "list"
-            result.append(f"{self._name}: {list_type}[Any] = {repr(self.constant)}")
+            result.append(f"{self._name}: {list_type}[Any] = {self.constant!r}")
         else:
-            result.append(f"{self._name} = {repr(self.constant)}")
+            result.append(f"{self._name} = {self.constant!r}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         if len(comments) == 1:
             result += [f'""" {comments[0]} """', ""]
@@ -712,12 +711,11 @@ class Constant(NamedType):
             if python_version < (3, 9):
                 return [("typing", "Any"), ("typing", "Dict")]
             return [("typing", "Any")]
-        elif isinstance(self.constant, list) and not self.constant:
+        if isinstance(self.constant, list) and not self.constant:
             if python_version < (3, 9):
                 return [("typing", "Any"), ("typing", "List")]
             return [("typing", "Any")]
-        else:
-            return []
+        return []
 
 
 def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:

@@ -57,24 +57,23 @@ def _open_uri(
                     jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
                 ],
                 response.json(),
-            )
+            ),
         )
-    else:
-        with open(uri, encoding="utf-8") as open_file:
-            file_content = open_file.read()
-            try:
-                schema = yaml.load(file_content, Loader=yaml.SafeLoader)
-            except Exception:  # pylint: disable=broad-except
-                schema = json.loads(file_content)
-            return _openapi_schema(
-                cast(
-                    Union[
-                        jsonschema_draft_06.JSONSchemaItemD6,
-                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                    ],
-                    schema,
-                )
-            )
+    with open(uri, encoding="utf-8") as open_file:
+        file_content = open_file.read()
+        try:
+            schema = yaml.load(file_content, Loader=yaml.SafeLoader)
+        except Exception:  # pylint: disable=broad-except
+            schema = json.loads(file_content)
+        return _openapi_schema(
+            cast(
+                Union[
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                ],
+                schema,
+            ),
+        )
 
 
 def _open_uri_resolver(uri: str) -> referencing.Resource[Any]:
@@ -106,7 +105,7 @@ class RefResolver:
         base_url: str,
         schema: Optional[
             Union[
-                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+                jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
             ]
         ] = None,
     ) -> None:
@@ -161,7 +160,7 @@ class RefResolver:
         self.vocabulary_resolver[vocab] = self.registry.resolver(url)
 
     def lookup(
-        self, uri: str
+        self, uri: str,
     ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """
         Lookup for the reference.
@@ -193,7 +192,7 @@ class RefResolver:
     def auto_resolve(
         self,
         config: Union[
-            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+            jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         ],
     ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
         """
