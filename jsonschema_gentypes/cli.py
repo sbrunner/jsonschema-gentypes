@@ -194,6 +194,10 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
             for vocab, uri in gen["vocabularies"].items():
                 resolver.add_vocabulary(vocab, uri)
 
+        if "local_resources" in gen:
+            for path in gen["local_resources"]:
+                resolver.add_local_resource(path)
+
         openapi = "openapi" in schema
         if "$schema" not in schema and openapi:
             api_version: Callable[..., Any] = jsonschema_gentypes.api_draft_2020_12.APIv202012

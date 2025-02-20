@@ -196,7 +196,7 @@ class TypeProxy(Type):
 
     def add_depends_on(self, depends_on: "Type") -> None:
         """Add a sub type."""
-        raise NotImplementedError
+        super().add_depends_on(depends_on)
 
     def comments(self) -> list[str]:
         """Additional comments shared by the type."""

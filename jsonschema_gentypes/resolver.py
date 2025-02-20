@@ -161,6 +161,11 @@ class RefResolver:
         self.vocabulary_url[vocab] = url
         self.vocabulary_resolver[vocab] = self.registry.resolver(url)
 
+    def add_local_resource(self, content_path: Union[str, Path]) -> None:
+        """Add some locally available resource to the registry."""
+        content = json.load(Path(content_path).open("r", encoding="utf-8"))
+        self.registry = self.registry.with_contents([(content["$id"], content)])
+
     def lookup(
         self,
         uri: str,
@@ -178,6 +183,8 @@ class RefResolver:
                 return self.resolver.lookup(f"{self.vocabulary_url[vocab]}#{path}").contents
 
         exception = None
+        if uri in self.registry:
+            return self.registry[uri].contents
         try:
             return self.resolver.lookup(uri).contents
         except (

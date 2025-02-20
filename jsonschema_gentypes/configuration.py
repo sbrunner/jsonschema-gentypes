@@ -107,6 +107,9 @@ class GenerateItem(TypedDict, total=False):
     Used to add some vocabularies
     """
 
+    local_resources: list[str]
+    """ Locally available resources. """
+
 
 GetNameProperties = Union[Literal["Title"], Literal["UpperFirst"]]
 """
