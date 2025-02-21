@@ -194,10 +194,6 @@ class TypeProxy(Type):
         assert self._type is not None
         return self._type.depends_on(python_version)
 
-    def add_depends_on(self, depends_on: "Type") -> None:
-        """Add a sub type."""
-        super().add_depends_on(depends_on)
-
     def comments(self) -> list[str]:
         """Additional comments shared by the type."""
         return self._type.comments() if self._type is not None else []
