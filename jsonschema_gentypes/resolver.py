@@ -163,7 +163,8 @@ class RefResolver:
 
     def add_local_resource(self, content_path: Union[str, Path]) -> None:
         """Add some locally available resource to the registry."""
-        content = json.load(Path(content_path).open("r", encoding="utf-8"))
+        with Path(content_path).open("r", encoding="utf-8") as f:
+            content = json.load(f)
         self.registry = self.registry.with_contents([(content["$id"], content)])
 
     def lookup(
@@ -184,7 +185,13 @@ class RefResolver:
 
         exception = None
         if uri in self.registry:
-            return self.registry[uri].contents
+            return cast(
+                Union[
+                    jsonschema_draft_06.JSONSchemaItemD6,
+                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+                ],
+                self.registry[uri].contents,
+            )
         try:
             return self.resolver.lookup(uri).contents
         except (
