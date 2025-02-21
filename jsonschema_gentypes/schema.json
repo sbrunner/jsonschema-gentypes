@@ -80,6 +80,11 @@
             "description": "Used to add some vocabularies",
             "type": "object",
             "additionalProperties": { "type": "string" }
+          },
+          "local_resources": {
+            "title": "Locally available resources",
+            "type": "array",
+            "items": { "type": "string" }
           }
         },
         "required": ["source", "destination"]
