@@ -95,7 +95,7 @@ repos:
           #- --profile=utils:autofix
         additional_dependencies:
           - prospector-profile-duplicated==1.10.4 # pypi
-          - prospector-profile-utils==1.21.1 # pypi
+          - prospector-profile-utils==1.21.2 # pypi
           - ruff==0.9.4 # pypi
       - id: prospector
         args:
@@ -104,7 +104,7 @@ repos:
           - --profile=utils:tests
           - --profile=utils:autofix
         additional_dependencies:
-          - prospector-profile-utils==1.21.1 # pypi
+          - prospector-profile-utils==1.21.2 # pypi
           - ruff==0.9.5 # pypi
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.4

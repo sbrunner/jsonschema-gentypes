@@ -822,17 +822,17 @@ files = [
 
 [[package]]
 name = "prospector-profile-utils"
-version = "1.21.1"
+version = "1.21.2"
 description = "Some utility Prospector profiles."
 optional = false
 python-versions = "*"
 files = [
-    {file = "prospector_profile_utils-1.21.1-py2.py3-none-any.whl", hash = "sha256:7e72b912c3c34cd1b8b6f9459a73385e6b8c69b1a123a22115a8a8189d069557"},
-    {file = "prospector_profile_utils-1.21.1.tar.gz", hash = "sha256:7ab96ad67af9a2b24cddac7c4f2b8aea5dd939a04b8d410cdf35266aacea620b"},
+    {file = "prospector_profile_utils-1.21.2-py2.py3-none-any.whl", hash = "sha256:2d855271aa6783b8c680f4d8a51723c4599d1f0ebea1e3ca4c9b7248611015f4"},
+    {file = "prospector_profile_utils-1.21.2.tar.gz", hash = "sha256:08fbab70aeada7b934db20a94d97b8845e356313628c42bccaa0e358bbed21ab"},
 ]
 
 [package.dependencies]
-prospector = {version = ">=1.13.0", extras = ["bandit", "mypy", "ruff"]}
+prospector = {version = ">=1.13.0", extras = ["with-bandit", "with-mypy", "with-ruff"]}
 
 [[package]]
 name = "pycodestyle"
@@ -1600,4 +1600,4 @@ tools = ["pre-commit"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "78e9f6e1f044edeac4dff39922e5a8c22f5154cac1febdd1c6583a2a15c5f465"
+content-hash = "cd89f7f58d00ccf175cd1eae917cbb6d7cadb6e73bcd9f27fbed09f2ba575ceb"
