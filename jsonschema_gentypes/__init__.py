@@ -26,13 +26,13 @@ def __pinyin(char: str) -> str:
     )
 
 
-def __romkan(char: str) -> str:
+def __unidecode(char: str) -> str:
     try:
-        import romkan  # pylint: disable=import-outside-toplevel
+        import unidecode  # pylint: disable=import-outside-toplevel
     except ModuleNotFoundError:
         return char
 
-    return cast(str, romkan.to_roma(char))
+    return unidecode.unidecode(char)
 
 
 def __greek(char: str) -> str:
@@ -83,13 +83,13 @@ def __convert_char(char: str) -> str:
     if char in AUTHORIZED_CHAR or len(char) > 1:
         return char
 
-    # Japanese characters
-    char = __romkan(char)
+    # Chinese characters
+    char = __pinyin(char)
     if char in AUTHORIZED_CHAR or len(char) > 1:
         return char
 
-    # Chinese characters
-    char = __pinyin(char)
+    # Other characters
+    char = __unidecode(char)
     if char in AUTHORIZED_CHAR or len(char) > 1:
         return char
 
