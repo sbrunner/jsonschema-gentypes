@@ -923,7 +923,7 @@ foundation and establish self publication rules.
         (None, "義勇軍進行曲", "_YiYongJunJinXingQu"),
         (None, "すべての人間", "_SuhetenoRenJian"),
         (None, "Ελευθέριος Βενιζέλος", "_EleytheriosVenizelos"),
-        (None, "المملكة", "_"),
+        (None, "المملكة", "_Lmmlk"),
     ],
 )
 def test_name(config, title, expected):
