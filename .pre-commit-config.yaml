@@ -57,8 +57,8 @@ repos:
       - id: codespell
         exclude: |-
           (?x)^(
-              (.*/)?poetry\.lock
-              |tests/openapi3\.json
+            (.*/)?poetry\.lock
+            |tests/openapi3\.json
           )$
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
@@ -123,7 +123,7 @@ repos:
           - --line-length=110
         exclude: |-
           (?x)^(
-              tests/openapi3\.py
+            tests/openapi3\.py
           )$
   - repo: https://github.com/sbrunner/jsonschema-validator
     rev: 1.0.0
