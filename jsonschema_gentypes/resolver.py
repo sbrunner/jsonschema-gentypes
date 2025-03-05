@@ -202,7 +202,7 @@ class RefResolver:
             for resolver in self.vocabulary_resolver.values():
                 try:
                     return resolver.lookup(uri).contents
-                except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):  # noqa: PERF203
+                except (referencing.exceptions.NoSuchResource, referencing.exceptions.PointerToNowhere):
                     pass
         message = f"Ref '{uri}' not found"
         raise UnRedolvedError(message) from exception
