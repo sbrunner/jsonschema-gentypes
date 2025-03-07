@@ -56,8 +56,8 @@ extra = ['pinyin', 'Unidecode', 'romanize']
 
 [tool.poetry.group.dev.dependencies]
 prospector = {  version = "1.15.2", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
-prospector-profile-duplicated = "1.10.4"
-prospector-profile-utils = "1.21.9"
+prospector-profile-duplicated = "1.10.5"
+prospector-profile-utils = "1.22.3"
 pytest = "8.3.4"
 pytest-cov = "6.0.0"
 types-requests = "2.32.0.20250301"

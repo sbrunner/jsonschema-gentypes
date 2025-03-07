@@ -364,8 +364,8 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         if pre_commit.get("enabled", False):
             env = {**os.environ}
             env["SKIP"] = ",".join(pre_commit.get("hooks_skip", []))
-            subprocess.run(  # nosec
-                [
+            subprocess.run(  # noqa: S603
+                [  # noqa: S607
                     "pre-commit",
                     "run",
                     *pre_commit.get("arguments", []),
@@ -381,4 +381,4 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
         for callback in callbacks:
             cmd = list(callback)
             cmd.append(gen["destination"])
-            subprocess.run(cmd, check=True)  # nosec
+            subprocess.run(cmd, check=True)  # noqa: S603
