@@ -55,7 +55,7 @@ tools = ["pre-commit"]
 extra = ['pinyin', 'Unidecode', 'romanize']
 
 [tool.poetry.group.dev.dependencies]
-prospector = {  version = "1.15.3", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
+prospector = {  version = "1.16.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils = "1.22.3"
 pytest = "8.3.4"
