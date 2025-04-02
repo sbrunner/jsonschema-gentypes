@@ -44,7 +44,7 @@ class APIv202012(APIv201909):
             proxy: The proxy type for late resolving.
             proposed_name: The proposed name of the type.
         """
-        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+        schema_core = cast("jsonschema_draft_2020_12_core.JSONSchemaItemD2020", schema)
 
         if "$dynamicAnchor" in schema_core:
             self.dynamic_anchor_type[schema_core["$dynamicAnchor"]] = proxy
@@ -65,7 +65,7 @@ class APIv202012(APIv201909):
             schema: The schema to get the type for.
             proposed_name: The proposed name of the type.
         """
-        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+        schema_core = cast("jsonschema_draft_2020_12_core.JSONSchemaItemD2020", schema)
 
         if "$dynamicRef" in schema_core:
             dynamic_ref = schema_core["$dynamicRef"]
@@ -87,7 +87,7 @@ class APIv202012(APIv201909):
         Parameter:
             schema: The schema to resolve the reference.
         """
-        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+        schema_core = cast("jsonschema_draft_2020_12_core.JSONSchemaItemD2020", schema)
 
         if "$dynamicRef" in schema_core:
             dynamic_ref = schema_core["$dynamicRef"]
@@ -110,7 +110,7 @@ class APIv202012(APIv201909):
             schema: The schema to generate the type from.
             proposed_name: The proposed name of the type.
         """
-        schema_casted = cast(jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020, schema)
+        schema_casted = cast("jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020", schema)
 
         prefix_items = schema_casted.get("prefixItems")
         items = schema_casted.get("items")
@@ -124,10 +124,7 @@ class APIv202012(APIv201909):
             inner_types = [
                 self.get_type(
                     cast(
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ],
+                        "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                         item,
                     ),
                     f"{proposed_name} {nb}",
@@ -149,10 +146,7 @@ class APIv202012(APIv201909):
             return ListType(
                 self.get_type(
                     cast(
-                        Union[
-                            jsonschema_draft_04.JSONSchemaD4,
-                            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                        ],
+                        "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                         items,
                     ),
                     proposed_name + " item",

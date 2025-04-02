@@ -109,7 +109,7 @@ def main() -> None:
         assert schema_data
         with args.config.open(encoding="utf-8") as data_file:
             data = yaml.load(data_file, Loader=yaml.SafeLoader)
-        config = cast(configuration.Configuration, data)
+        config = cast("configuration.Configuration", data)
 
     process_config(config, args.files)
 
@@ -337,10 +337,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                     )
         else:
             schema_all = cast(
-                Union[
-                    jsonschema_draft_04.JSONSchemaD4,
-                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                ],
+                "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                 schema,
             )
             add_type(schema_all, gen.get("root_name", "Root"), force_name="root_name" in gen)

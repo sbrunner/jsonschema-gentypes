@@ -1,6 +1,6 @@
 """The API version draft 06."""
 
-from typing import Any, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
 from jsonschema_gentypes import (
     LiteralType,
@@ -8,9 +8,13 @@ from jsonschema_gentypes import (
     jsonschema_draft_04,
     jsonschema_draft_06,
     jsonschema_draft_2020_12_applicator,
-    jsonschema_draft_2020_12_validation,
 )
 from jsonschema_gentypes.api_draft_04 import APIv4
+
+if TYPE_CHECKING:
+    from jsonschema_gentypes import (
+        jsonschema_draft_2020_12_validation,
+    )
 
 
 class APIv6(APIv4):
@@ -27,10 +31,7 @@ class APIv6(APIv4):
     ) -> None:
         """Get the type for a schema."""
         schema_casted = cast(
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-            ],
+            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
             schema,
         )
         property_names = schema_casted.get("propertyNames")
@@ -58,10 +59,7 @@ class APIv6(APIv4):
         if "const" in schema:
             return self.const(
                 cast(
-                    Union[
-                        jsonschema_draft_06.JSONSchemaItemD6,
-                        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                    ],
+                    "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                     schema,
                 ),
             )
@@ -86,10 +84,7 @@ class APIv6(APIv4):
             schema: The schema to get the type for.
         """
         schema_casted = cast(
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_2020_12_validation.JSONSchemaItemD2020,
-            ],
+            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020]",
             schema,
         )
 

@@ -7,7 +7,7 @@ Encapsulate the referencing logic to be able to use it in the code generation.
 import json
 import re
 from pathlib import Path
-from typing import Any, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Union, cast
 
 import referencing._core
 import referencing.exceptions
@@ -17,10 +17,14 @@ import yaml
 from jsonschema_gentypes import (
     jsonschema_draft_04,
     jsonschema_draft_06,
-    jsonschema_draft_2019_09_core,
     jsonschema_draft_2020_12_applicator,
-    jsonschema_draft_2020_12_core,
 )
+
+if TYPE_CHECKING:
+    from jsonschema_gentypes import (
+        jsonschema_draft_2019_09_core,
+        jsonschema_draft_2020_12_core,
+    )
 
 Json = Union[str, int, float, bool, None, list["Json"], dict[str, "Json"]]
 JsonDict = dict[str, "Json"]
@@ -36,10 +40,7 @@ def _openapi_schema(
 ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
     if "$schema" not in config and "openapi" in config:
         config_core = cast(
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_2020_12_core.JSONSchemaItemD2020,
-            ],
+            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
             config,
         )
         config_core["$schema"] = "https://json-schema.org/draft/2020-12/schema"
@@ -53,10 +54,7 @@ def _open_uri(
         response = requests.get(uri, timeout=30)
         return _openapi_schema(
             cast(
-                Union[
-                    jsonschema_draft_06.JSONSchemaItemD6,
-                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                ],
+                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                 response.json(),
             ),
         )
@@ -68,10 +66,7 @@ def _open_uri(
             schema = json.loads(file_content)
         return _openapi_schema(
             cast(
-                Union[
-                    jsonschema_draft_06.JSONSchemaItemD6,
-                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                ],
+                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                 schema,
             ),
         )
@@ -121,10 +116,7 @@ class RefResolver:
         schema = _openapi_schema(schema) if schema is not None else None
         self.schema = _open_uri(base_url) if schema is None else schema
         schema_vocabulary = cast(
-            Union[
-                jsonschema_draft_2019_09_core.JSONSchemaItemD2019,
-                jsonschema_draft_2020_12_core.JSONSchemaItemD2020,
-            ],
+            "Union[jsonschema_draft_2019_09_core.JSONSchemaItemD2019, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
             self.schema,
         )
         if "$schema" in self.schema:
@@ -186,10 +178,7 @@ class RefResolver:
         exception = None
         if uri in self.registry:
             return cast(
-                Union[
-                    jsonschema_draft_06.JSONSchemaItemD6,
-                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                ],
+                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
                 self.registry[uri].contents,
             )
         try:
@@ -221,13 +210,10 @@ class RefResolver:
             config: The config to resolve.
         """
         config_with_ref = cast(
-            Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
+            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
             config,
         )
         return cast(
-            Union[
-                jsonschema_draft_04.JSONSchemaD4,
-                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-            ],
+            "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
             self.lookup(config_with_ref["$ref"]) if "$ref" in config_with_ref else config,
         )
