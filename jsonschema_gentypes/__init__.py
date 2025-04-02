@@ -41,7 +41,7 @@ def __greek(char: str) -> str:
     except ModuleNotFoundError:
         return char
 
-    return cast(str, romanize.romanize(char))
+    return cast("str", romanize.romanize(char))
 
 
 def __char_range(char1: str, char2: str) -> list[str]:
@@ -818,7 +818,7 @@ def get_description(
             result.append("")
         result += schema["description"].split("\n")
     first = True
-    used = cast(set[str], schema.get("used", set()))
+    used = cast("set[str]", schema.get("used", set()))
     used = {
         *used,
         "$schema",

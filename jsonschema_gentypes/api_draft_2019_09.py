@@ -1,16 +1,20 @@
 """The API version draft 2019 09."""
 
 import re
-from typing import Any, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
 from jsonschema_gentypes import (
     Type,
     jsonschema_draft_04,
-    jsonschema_draft_2019_09_core,
     jsonschema_draft_2020_12_applicator,
     jsonschema_draft_2020_12_core,
 )
 from jsonschema_gentypes.api_draft_07 import APIv7
+
+if TYPE_CHECKING:
+    from jsonschema_gentypes import (
+        jsonschema_draft_2019_09_core,
+    )
 
 
 class APIv201909(APIv7):
@@ -59,7 +63,7 @@ class APIv201909(APIv7):
             proxy: The proxy used for late resolving.
             proposed_name: The proposed name of the type.
         """
-        schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
+        schema_core = cast("jsonschema_draft_2019_09_core.JSONSchemaItemD2019", schema)
 
         self.is_recursive_anchor_path.append(schema_core.get("$recursiveAnchor", False))
         if self.is_recursive_anchor_path[-1]:
@@ -102,7 +106,7 @@ class APIv201909(APIv7):
         Parameter:
             schema: The schema to get the type for.
         """
-        schema_core = cast(jsonschema_draft_2019_09_core.JSONSchemaItemD2019, schema)
+        schema_core = cast("jsonschema_draft_2019_09_core.JSONSchemaItemD2019", schema)
 
         if schema_core.get("$recursiveRef") == "#":
             schema.setdefault("used", set()).add("$recursiveRef")  # type: ignore[typeddict-item]
@@ -123,7 +127,7 @@ class APIv201909(APIv7):
         Parameter:
             schema: The schema to resolve.
         """
-        schema_core = cast(jsonschema_draft_2020_12_core.JSONSchemaItemD2020, schema)
+        schema_core = cast("jsonschema_draft_2020_12_core.JSONSchemaItemD2020", schema)
 
         if schema_core.get("$recursiveRef") == "#":
             return self.recursive_anchor_path_schema[-1]
