@@ -23,13 +23,13 @@ repos:
           )$
         verbose: true
         additional_dependencies:
-          - pre-commit==4.1.0 # pypi
+          - pre-commit==4.2.0 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.5.2 # npm
+          - prettier@3.5.3 # npm
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -49,7 +49,7 @@ repos:
       - id: copyright
       - id: poetry2-lock
         additional_dependencies:
-          - poetry==2.1.1 # pypi
+          - poetry==2.1.2 # pypi
       - id: canonicalize
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -69,7 +69,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.2
+    rev: 0.32.1
     hooks:
       - id: check-github-workflows
       - id: check-jsonschema
@@ -96,7 +96,7 @@ repos:
         additional_dependencies:
           - prospector-profile-duplicated==1.10.5 # pypi
           - prospector-profile-utils==1.22.3 # pypi
-          - ruff==0.9.9 # pypi
+          - ruff==0.11.2 # pypi
         exclude: |-
           (?x)(
             ^tests?/?
@@ -114,9 +114,9 @@ repos:
           - --profile=utils:pre-commit
         additional_dependencies:
           - prospector-profile-utils==1.22.3 # pypi
-          - ruff==0.9.9 # pypi
+          - ruff==0.11.2 # pypi
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.11.2
     hooks:
       - id: ruff-format
         args:
@@ -140,7 +140,7 @@ repos:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 39.182.3
+    rev: 39.227.2
     hooks:
       - id: renovate-config-validator
   - repo: https://github.com/sbrunner/python-versions-hook
