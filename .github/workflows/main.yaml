@@ -27,12 +27,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Should be reported in outputs and in last check
         python-version:
           - '3.9'
           - '3.10'
           - '3.11'
           # On 3.12 we get something like https://github.com/pypa/setuptools/issues/4102 on install
           # - '3.12'
+
+    outputs:
+      success-3-9: ${{ steps.success.outputs.success-3-9 }}
+      success-3-10: ${{ steps.success.outputs.success-3-10 }}
+      success-3-11: ${{ steps.success.outputs.success-3-11 }}
 
     steps:
       - name: Set up Python ${{ matrix.python-version }}
@@ -43,26 +49,17 @@ jobs:
       - uses: actions/checkout@v4
       - run: make pytest
 
-  success:
-    name: Success
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    needs: test
-
-    steps:
-      - run: touch SUCCESS
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Success
-          path: SUCCESS
-          retention-days: 1
+      - id: success
+        run: |
+          version=${{ matrix.python-version }}
+          echo "success-${version//\./-}=true" >> $GITHUB_OUTPUT
 
   main:
     name: Continuous integration
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     if: always() && !startsWith(github.event.head_commit.message, '[skip ci] ')
-    needs: success
+    needs: test
 
     steps:
       - uses: actions/checkout@v4
@@ -84,8 +81,6 @@ jobs:
           key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
           restore-keys: "pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}\npre-commit-"
       - run: pre-commit run --all-files --color=always
-        env:
-          SKIP: poetry-lock,isort,black
       - run: git diff --exit-code --patch > /tmp/pre-commit.patch; git diff --color; git reset --hard || true
         if: failure()
 
@@ -119,6 +114,7 @@ jobs:
           retention-days: 1
         if: failure()
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: Success
+      # Check success
+      - run: '[[ "${{ needs.test.outputs.success-3-9 }}" == "true" ]]'
+      - run: '[[ "${{ needs.test.outputs.success-3-10 }}" == "true" ]]'
+      - run: '[[ "${{ needs.test.outputs.success-3-11 }}" == "true" ]]'

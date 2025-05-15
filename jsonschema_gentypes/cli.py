@@ -10,13 +10,9 @@ import re
 import subprocess  # nosec
 import sys
 from pathlib import Path
-from collections.abc import Iterable
 from typing import Any, Callable, Optional, Union, cast
 
 import yaml
-from jsonschema import ValidationError
-from jsonschema.protocols import Validator
-from jsonschema.validators import validator_for
 
 import jsonschema_gentypes.api
 import jsonschema_gentypes.api_draft_04
@@ -85,7 +81,12 @@ def main() -> None:
         default="jsonschema-gentypes.yaml",
         help="The configuration file",
     )
-    parser.add_argument("--skip-config-errors", action="store_true", help="Skip the configuration error")
+    parser.add_argument(
+        "--skip-config-validation",
+        action="store_false",
+        dest="config_validation",
+        help="Skip the configuration error",
+    )
     parser.add_argument("--json-schema", help="The JSON schema")
     parser.add_argument("--python", help="The generated Python file")
     parser.add_argument(
@@ -110,43 +111,42 @@ def main() -> None:
             ],
         }
     else:
-        with args.config.open(encoding="utf-8") as data_file:
-            data = yaml.load(data_file, Loader=yaml.SafeLoader)
-        if args.skip_config_errors:
-            print("Skipping configuration validation")
-        else:
-            validate_config(data)
+        data: Any = None
+        if args.config_validation:
+            data = validate_config(args.config)
+        if data is None:
+            with args.config.open(encoding="utf-8") as data_file:
+                data = yaml.load(data_file, Loader=yaml.SafeLoader)
         config = cast("configuration.Configuration", data)
 
     process_config(config, args.files)
 
 
-def validate_config(config: Any) -> None:
+def validate_config(config_path: Path) -> Optional[Any]:
+    """Validate the configuration file."""
+
+    try:
+        import jsonschema_validator  # pylint: disable=import-outside-toplevel
+        import ruamel.yaml  # pylint: disable=import-outside-toplevel
+    except ImportError:
+        print("Please install the dependencies to validate the configuration file")
+        print("pip install jsonschema-gentypes[validation]")
+        return None
+
     schema_data = pkgutil.get_data("jsonschema_gentypes", "schema.json")
     assert schema_data
     schema = json.loads(schema_data)
-    validator_class = validator_for(config)
-    validator: Validator = validator_class(schema)
-    errors = list(validator.iter_errors(config))
+
+    with config_path.open(encoding="utf-8") as data_file:
+        ru_yaml = ruamel.yaml.YAML()
+        data = ru_yaml.load(data_file)
+
+    errors, _ = jsonschema_validator.validate(str(config_path), data, schema)
     if errors:
-        msg = "Validation Errors when validating configuration"
-        for error in validator.iter_errors(config):
-            path = create_json_path(error.relative_path)
-            if path:
-                msg = msg + f"\n  * {error.message} @ {path}"
-            else:
-                msg = msg + f"\n  * {error.message}"
-        raise ValidationError(msg)
+        print("\n".join(errors))
+        sys.exit(1)
 
-
-def create_json_path(elements: Iterable[Union[str, int]]) -> str:
-    path = ""
-    for element in elements:
-        if isinstance(element, int):
-            path = path + f"[{element}]"
-        else:
-            path = path + f".{element}" if path else element
-    return path
+    return data
 
 
 class _AddType:

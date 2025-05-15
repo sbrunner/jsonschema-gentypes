@@ -20,11 +20,13 @@ Unidecode = { version = "1.4.0", optional = true }
 romanize = { version = "1.0.2", optional = true }
 pre-commit = { version = "4.2.0", optional = true }
 referencing = "0.36.2"
+jsonschema-validator-new = { version = "0.3.2", optional = true }
 
 [tool.poetry.extras]
 generate = []
 tools = ["pre-commit"]
 extra = ['pinyin', 'Unidecode', 'romanize']
+validation = ['jsonschema-validator-new']
 
 [tool.poetry.group.dev.dependencies]
 prospector = {  version = "1.16.1", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
