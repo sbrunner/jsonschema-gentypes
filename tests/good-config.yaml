@@ -1,0 +1,3 @@
+{
+  'generate': [{ 'source': 'tests/get_name_properties.json', 'destination': 'tests/get_name_properties.py' }],
+}

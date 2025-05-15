@@ -10,7 +10,7 @@ help: ## Display this help message
 
 .poetry.timestamps: pyproject.toml poetry.lock
 	poetry --version || pip install --user --ignore-installed --requirement=requirements.txt
-	poetry install --extras=tools --extras=generate --extras=extra
+	poetry install --all-extras --all-groups
 	touch $@
 
 .PHONY: prospector
