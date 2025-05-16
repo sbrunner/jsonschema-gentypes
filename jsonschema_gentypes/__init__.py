@@ -788,19 +788,21 @@ def get_name(
         output = prefix + "".join([char for char in name if not char.isspace()])
     if postfix:
         output += postfix
-        
+
     # Make sure that the name is unique, if used before add a sequential number to it
     if not get_name.__dict__.get("names"):
         get_name.__dict__["names"] = set()
     names = get_name.__dict__["names"]
+
     def create_name(name: str):
         nonlocal names
-        if not name in names:
-                return name
+        if name not in names:
+            return name
         for i in range(100):
-            if not name + str(i) in names:
+            if name + str(i) not in names:
                 return name + str(i)
         return name + "0" + str(random.randint(0, 9999))  # noqa: S311 # nosec
+
     output = create_name(output)
     names.add(output)
     return output
