@@ -793,13 +793,13 @@ def get_name(
     if not get_name.__dict__.get("names"):
         get_name.__dict__["names"] = set()
     names = get_name.__dict__["names"]
-    def get_name(name: str):
+    def create_name(name: str):
         nonlocal names
         for i in range(100):
             if not name + str(i) in names:
                 return name + str(i)
         return name + "0" + str(random.randint(0, 9999))  # noqa: S311 # nosec
-    output = get_name(output)
+    output = create_name(output)
     names.add(output)
     return output
 
