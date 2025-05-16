@@ -794,7 +794,7 @@ def get_name(
         get_name.__dict__["names"] = set()
     names = get_name.__dict__["names"]
 
-    def create_name(name: str):
+    def create_name(name: str) -> str:
         nonlocal names
         if name not in names:
             return name
