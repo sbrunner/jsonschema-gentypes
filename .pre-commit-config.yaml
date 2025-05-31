@@ -49,7 +49,7 @@ repos:
       - id: copyright
       - id: poetry2-lock
         additional_dependencies:
-          - poetry==2.1.2 # pypi
+          - poetry==2.1.3 # pypi
       - id: canonicalize
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -96,8 +96,8 @@ repos:
         additional_dependencies:
           - prospector-profile-duplicated==1.10.5 # pypi
           - prospector-profile-utils==1.22.3 # pypi
-          - ruff==0.11.8 # pypi
-          - pylint[spelling]==3.3.6 # pypi
+          - ruff==0.11.12 # pypi
+          - pylint[spelling]==3.3.7 # pypi
         exclude: |-
           (?x)(
             ^tests?/?
@@ -115,9 +115,9 @@ repos:
           - --profile=utils:pre-commit
         additional_dependencies:
           - prospector-profile-utils==1.22.3 # pypi
-          - ruff==0.11.8 # pypi
+          - ruff==0.11.12 # pypi
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.8
+    rev: v0.11.12
     hooks:
       - id: ruff-format
         args:
@@ -141,10 +141,10 @@ repos:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 40.0.6
+    rev: 40.36.8
     hooks:
       - id: renovate-config-validator
   - repo: https://github.com/sbrunner/python-versions-hook
-    rev: 1.0.0
+    rev: 1.1.1
     hooks:
       - id: python-versions
