@@ -284,30 +284,30 @@ class API:
             )
             if_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
             if_properties = if_schema.get("properties", {})
-            assert if_properties
-            then_properties.update(if_properties)  # type: ignore[arg-type]
-            else_schema = cast(
-                "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
-                {},
-            )
-            else_schema.update(base_schema)  # type: ignore[typeddict-item]
-            schema.setdefault("used", set()).add("else")  # type: ignore[typeddict-item]
-            original_else_schema = self.resolve_ref(
-                cast(
+            if if_properties:
+                then_properties.update(if_properties)  # type: ignore[arg-type]
+                else_schema = cast(
                     "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
-                    schema.get("else", {}),
-                ),
-            )
-            else_schema.update(original_else_schema)  # type: ignore[typeddict-item]
-            original_else_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
+                    {},
+                )
+                else_schema.update(base_schema)  # type: ignore[typeddict-item]
+                schema.setdefault("used", set()).add("else")  # type: ignore[typeddict-item]
+                original_else_schema = self.resolve_ref(
+                    cast(
+                        "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                        schema.get("else", {}),
+                    ),
+                )
+                else_schema.update(original_else_schema)  # type: ignore[typeddict-item]
+                original_else_schema.setdefault("used", set()).add("properties")  # type: ignore[typeddict-item]
 
-            return CombinedType(
-                NativeType("Union"),
-                [
-                    self.get_type(then_schema, proposed_name + " then"),
-                    self.get_type(else_schema, proposed_name + " else"),
-                ],
-            )
+                return CombinedType(
+                    NativeType("Union"),
+                    [
+                        self.get_type(then_schema, proposed_name + " then"),
+                        self.get_type(else_schema, proposed_name + " else"),
+                    ],
+                )
 
         if "$ref" in schema or "$recursiveRef" in schema or "$dynamicRef" in schema:
             return self.ref(schema_core, proposed_name)

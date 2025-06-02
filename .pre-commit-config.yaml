@@ -20,6 +20,7 @@ repos:
             jsonschema-gentypes\.yaml
             |jsonschema_gentypes/schema\.json
             |tests/.*\.json
+            |jsonschema_gentypes/openapi-2025-02-13.json
           )$
         verbose: true
         additional_dependencies:

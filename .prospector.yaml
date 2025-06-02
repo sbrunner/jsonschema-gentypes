@@ -8,6 +8,7 @@ ignore-patterns:
   - jsonschema_gentypes/configuration.py
   - jsonschema_gentypes/jsonschema_draft_.*\.py
   - tests/openapi3\.py
+  - jsonschema_gentypes/openapi.py
 
 mypy:
   options:

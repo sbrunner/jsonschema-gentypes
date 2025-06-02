@@ -70,6 +70,8 @@ class APIv202012(APIv201909):
         if "$dynamicRef" in schema_core:
             dynamic_ref = schema_core["$dynamicRef"]
             schema.setdefault("used", set()).add("$dynamicRef")  # type: ignore[typeddict-item]
+            print(f"Dynamic reference found: {dynamic_ref}")
+            print(self.dynamic_anchor_type.keys())
             return self.dynamic_anchor_type[dynamic_ref[1:]]  # Remove the starting '#' character
 
         return super().ref(schema, proposed_name)
