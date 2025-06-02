@@ -10,7 +10,7 @@ import re
 import subprocess  # nosec
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, Union, cast
+from typing import Any, Callable, Optional, TypeVar, Union, cast
 
 import yaml
 
@@ -20,6 +20,7 @@ import jsonschema_gentypes.api_draft_06
 import jsonschema_gentypes.api_draft_07
 import jsonschema_gentypes.api_draft_2019_09
 import jsonschema_gentypes.api_draft_2020_12
+import jsonschema_gentypes.openapi
 import jsonschema_gentypes.resolver
 from jsonschema_gentypes import (
     configuration,
@@ -70,6 +71,16 @@ def _add_type(
             imports[package].add(imp)
         for sub_type in type_.depends_on(python_version):
             _add_type(sub_type, imports, types, gen, config, python_version, added_types)
+
+
+T = TypeVar("T")
+
+
+def _openapi_auto_resolve(resolver: jsonschema_gentypes.resolver.RefResolver, item: T) -> T:
+    return cast(
+        "T",
+        resolver.auto_resolve(item),  # type: ignore[arg-type]
+    )
 
 
 def main() -> None:
@@ -260,11 +271,15 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
 
         if openapi:
             build_name = _BuildName(gen)
+            openid_schema = cast("jsonschema_gentypes.openapi.OpenAPI", schema)
 
-            for path_name, path_config in schema.get("paths", {}).items():  # type: ignore[attr-defined]
-                path_config = resolver.auto_resolve(path_config)  # noqa: PLW2901
-                for method_name, method_config in path_config.items():
-                    method_config = resolver.auto_resolve(method_config)  # noqa: PLW2901
+            for path_name, path_config in openid_schema.get("paths", {}).items():
+                path_config = _openapi_auto_resolve(resolver, path_config)  # noqa: PLW2901
+                for method_name in ("get", "put", "post", "delete", "options", "head", "patch", "trace"):
+                    if method_name not in path_config:
+                        continue
+                    method_config = path_config[method_name]
+                    method_config = _openapi_auto_resolve(resolver, method_config)
 
                     global_type: dict[str, jsonschema_gentypes.Type] = {}
                     global_type_required = set()
@@ -273,10 +288,10 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                     classed_parameters: dict[str, dict[str, jsonschema_gentypes.Type]] = {}
                     classed_parameters_required: dict[str, set[str]] = {}
                     for param_config in method_config.get("parameters", []):
-                        param_config = resolver.auto_resolve(param_config)  # noqa: PLW2901
+                        param_config = _openapi_auto_resolve(resolver, param_config)  # noqa: PLW2901
                         classed_parameters.setdefault(param_config["in"], {})[param_config["name"]] = (
                             add_type(
-                                param_config["schema"],
+                                param_config["schema"],  # type: ignore[typeddict-item]
                                 build_name(
                                     path_name,
                                     [method_name, param_config["in"], param_config["name"]],
@@ -309,28 +324,27 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
 
                     # Add request body
                     if "requestBody" in method_config:
-                        method_config = resolver.auto_resolve(method_config)  # noqa: PLW2901
                         for content_type, content_config in (
                             method_config.get("requestBody", {}).get("content", {}).items()
                         ):
-                            content_config = resolver.auto_resolve(content_config)  # noqa: PLW2901
+                            content_config = _openapi_auto_resolve(resolver, content_config)  # noqa: PLW2901
                             if content_type == "application/json" and "schema" in content_config:
                                 global_type_required.add("request_body")
                                 global_type["request_body"] = add_type(
-                                    content_config["schema"],
+                                    content_config["schema"],  # type: ignore[typeddict-item]
                                     build_name(path_name, [method_name, "requestBody"]),
                                 )
 
                     # Add responses
                     all_responses = []
                     for response_code, response_config in method_config.get("responses", {}).items():
-                        response_config = resolver.auto_resolve(response_config)  # noqa: PLW2901
-                        for content_type, content_config in response_config.get("content", {}).items():
-                            content_config = resolver.auto_resolve(content_config)  # noqa: PLW2901
+                        response_config = _openapi_auto_resolve(resolver, response_config)  # noqa: PLW2901
+                        for content_type, content_config in response_config.get("content", {}).items():  # type: ignore[attr-defined]
+                            content_config = _openapi_auto_resolve(resolver, content_config)  # noqa: PLW2901
                             if content_type == "application/json" and "schema" in content_config:
                                 all_responses.append(
                                     add_type(
-                                        content_config["schema"],
+                                        content_config["schema"],  # type: ignore[typeddict-item]
                                         build_name(
                                             path_name,
                                             [method_name, "response", str(response_code)],

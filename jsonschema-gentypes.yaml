@@ -82,6 +82,12 @@ generate:
   - source: https://json-schema.org/draft/2020-12/meta/content
     destination: jsonschema_gentypes/jsonschema_draft_2020_12_content.py
 
+  # https://spec.openapis.org/#non-normative-json-schemas
+  # specification-extensions, meta, *-or-reference removed, add some titles
+  - source: jsonschema_gentypes/openapi-2025-02-13.json
+    destination: jsonschema_gentypes/openapi.py
+    root_name: OpenAPI
+
   - source: tests/openapi3.json
     destination: tests/openapi3.py
     root_name: OgcApi
