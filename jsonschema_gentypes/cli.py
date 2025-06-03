@@ -344,7 +344,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                             if content_type == "application/json" and "schema" in content_config:
                                 all_responses.append(
                                     add_type(
-                                        content_config["schema"],  # type: ignore[typeddict-item]
+                                        content_config["schema"],
                                         build_name(
                                             path_name,
                                             [method_name, "response", str(response_code)],
