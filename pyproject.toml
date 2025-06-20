@@ -31,7 +31,7 @@ validation = ['jsonschema-validator-new']
 [tool.poetry.group.dev.dependencies]
 prospector = {  version = "1.17.1", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.10.5"
-prospector-profile-utils = "1.22.3"
+prospector-profile-utils = "1.23.0"
 pytest = "8.4.0"
 pytest-cov = "6.1.1"
 types-requests = "2.32.0.20250602"
