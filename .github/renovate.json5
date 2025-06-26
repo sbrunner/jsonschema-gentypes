@@ -8,8 +8,8 @@
     'github>camptocamp/gs-renovate-config-preset:json-schema.json5#1.1.2',
     'github>camptocamp/gs-renovate-config-preset:shellcheck.json5#1.1.2',
     'github>camptocamp/gs-renovate-config-preset:preset.json5#1.1.2',
-    'github>camptocamp/gs-renovate-config-preset:security.json5#1.1.2',
     'github>camptocamp/gs-renovate-config-preset:own.json5#1.1.2',
+    'github>camptocamp/gs-renovate-config-preset:security.json5#1.1.2',
   ],
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
 }
