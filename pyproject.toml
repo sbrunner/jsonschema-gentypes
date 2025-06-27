@@ -83,7 +83,7 @@ authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
 requires-python = ">=3.9"
-dependencies = ["jsonschema", "typing-extensions", "requests (==2.32.4)", "PyYAML", "referencing", "urllib3==2.5.0"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.5.0"]
 
 [project.urls]
 repository = "https://github.com/camptocamp/jsonschema-gentypes"
