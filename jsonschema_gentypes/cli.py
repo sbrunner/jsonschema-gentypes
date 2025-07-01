@@ -137,8 +137,8 @@ def validate_config(config_path: Path) -> Optional[Any]:
     """Validate the configuration file."""
 
     try:
-        import jsonschema_validator  # pylint: disable=import-outside-toplevel
-        import ruamel.yaml  # pylint: disable=import-outside-toplevel
+        import jsonschema_validator  # noqa: PLC0415 # pylint: disable=import-outside-toplevel
+        import ruamel.yaml  # noqa: PLC0415 # pylint: disable=import-outside-toplevel
     except ImportError:
         print("Please install the dependencies to validate the configuration file")
         print("pip install jsonschema-gentypes[validation]")
