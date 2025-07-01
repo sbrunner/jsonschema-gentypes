@@ -14,7 +14,7 @@ from jsonschema_gentypes import jsonschema_draft_04, jsonschema_draft_2019_09_me
 
 def __pinyin(char: str) -> str:
     try:
-        import pinyin  # pylint: disable=import-outside-toplevel
+        import pinyin  # noqa: PLC0415 # pylint: disable=import-outside-toplevel
     except ModuleNotFoundError:
         return char
 
@@ -28,7 +28,7 @@ def __pinyin(char: str) -> str:
 
 def __unidecode(char: str) -> str:
     try:
-        import unidecode  # pylint: disable=import-outside-toplevel
+        import unidecode  # noqa: PLC0415 # pylint: disable=import-outside-toplevel
     except ModuleNotFoundError:
         return char
 
@@ -37,7 +37,7 @@ def __unidecode(char: str) -> str:
 
 def __greek(char: str) -> str:
     try:
-        import romanize  # pylint: disable=import-outside-toplevel
+        import romanize  # noqa: PLC0415 # pylint: disable=import-outside-toplevel
     except ModuleNotFoundError:
         return char
 
