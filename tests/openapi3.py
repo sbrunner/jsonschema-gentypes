@@ -73,7 +73,7 @@ class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
     f: "OgcapiCollectionsCollectionidGetQueryF"
 
 
-OgcapiCollectionsCollectionidGetQueryF = Union[Literal['json'], Literal['html']]
+OgcapiCollectionsCollectionidGetQueryF = Literal['json', 'html']
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal['json'] = "json"
 """The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal['html'] = "html"
@@ -222,7 +222,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
       - http://www.opengis.net/def/crs/EPSG/0/4326
     """
 
-    dataType: Union[str, Union[int, float], dict[str, Any], None, bool, None]
+    dataType: Union[str, int, float, dict[str, Any], None, bool]
     geometryDimension: int
     """
     The geometry dimension of the features shown in this layer (0: points, 1: curves, 2: surfaces, 3: solids), unspecified: mixed or unknown
@@ -351,7 +351,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties(TypedDict
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(TypedDict, total=False):
-    """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension. """
+    """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the dimension."""
 
     coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem"]
     """
@@ -429,7 +429,7 @@ _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False):
-    """ The spatial extent of the data in the collection. """
+    """The spatial extent of the data in the collection."""
 
     bbox: list["_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem"]
     """
@@ -516,7 +516,7 @@ example:
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Union[Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84'], Literal['http://www.opengis.net/def/crs/OGC/0/CRS84h']]
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84', 'http://www.opengis.net/def/crs/OGC/0/CRS84h']
 """
 Coordinate reference system of the coordinates in the spatial extent
 (property `bbox`). The default reference system is WGS 84 longitude/latitude.
@@ -584,7 +584,7 @@ _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0 = st
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=False):
-    """ The temporal extent of the features in the collection. """
+    """The temporal extent of the features in the collection."""
 
     interval: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalIntervalItem"]
     """
@@ -618,7 +618,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporal(TypedDict, total=Fals
 
 
 class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=False):
-    """ Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension. """
+    """Provides information about the limited availability of data within the collection organized as a grid (regular or irregular) along the temporal dimension."""
 
     coordinates: list["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridCoordinatesItem"]
     """
