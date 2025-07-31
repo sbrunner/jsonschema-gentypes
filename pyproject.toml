@@ -32,7 +32,7 @@ validation = ['jsonschema-validator-new']
 prospector = {  version = "1.17.2", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils = "1.25.0"
-ruff = "0.12.1"
+ruff = "0.12.7"
 pytest = "8.4.1"
 pytest-cov = "6.2.1"
 types-requests = "2.32.4.20250611"
