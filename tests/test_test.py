@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 import pytest
 
 import jsonschema_gentypes.api_draft_07
@@ -7,28 +9,28 @@ import jsonschema_gentypes.resolver
 from jsonschema_gentypes.api import Type
 
 
-def get_types(schema) -> Type:
+def get_types(schema: dict[str, Any]) -> Type:
     jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_07.APIv7(resolver, (3, 8))
     return api.get_type(schema, "Base")
 
 
-def get_types_2019_09(schema) -> Type:
+def get_types_2019_09(schema: dict[str, Any]) -> Type:
     jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2019_09.APIv201909(resolver, (3, 8))
     return api.get_type(schema, "Base")
 
 
-def get_types_2020_12(schema) -> Type:
+def get_types_2020_12(schema: dict[str, Any]) -> Type:
     jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     resolver = jsonschema_gentypes.resolver.RefResolver("https://example.com/fake", schema)
     api = jsonschema_gentypes.api_draft_2020_12.APIv202012(resolver, (3, 8))
     return api.get_type(schema, "Base")
 
 
-def test_basic_types():
+def test_basic_types() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -105,7 +107,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_dict_style():
+def test_dict_style() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -124,7 +126,7 @@ _Base = TypedDict('_Base', {
     )
 
 
-def test_ref():
+def test_ref() -> None:
     type_ = get_types(
         {
             "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -150,7 +152,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_self_ref():
+def test_self_ref() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -176,7 +178,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array():
+def test_array() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -197,7 +199,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_true():
+def test_array_true() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -218,7 +220,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_tuple():
+def test_array_tuple() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -249,7 +251,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_additional_properties_mixed():
+def test_additional_properties_mixed() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -285,7 +287,7 @@ class TestBasicTypesTyped(TypedDict, total=False):
     )
 
 
-def test_additional_properties():
+def test_additional_properties() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -303,7 +305,7 @@ TestBasicTypes = Dict[str, str]
     )
 
 
-def test_additional_properties_true():
+def test_additional_properties_true() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -321,7 +323,7 @@ TestBasicTypes = Dict[str, Any]
     )
 
 
-def test_pattern_properties_multiple():
+def test_pattern_properties_multiple() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -347,7 +349,7 @@ patternProperties:
     )
 
 
-def test_pattern_properties_string():
+def test_pattern_properties_string() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -367,7 +369,7 @@ PatternPropertiesWithOnePatternAsString = Dict[str, str]
     )
 
 
-def test_pattern_properties_object():
+def test_pattern_properties_object() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -400,7 +402,7 @@ class _PatternPropertiesWithOnePatternAsObjectType(TypedDict, total=False):
     )
 
 
-def test_boolean_const():
+def test_boolean_const() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -419,7 +421,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_dict_enum():
+def test_dict_enum() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -466,7 +468,7 @@ PROPERTIES_GREEN: Literal['green'] = "green"
     )
 
 
-def test_any_of():
+def test_any_of() -> None:
     type_ = get_types(
         {
             "title": "test basic types",
@@ -741,7 +743,7 @@ class _TestBasicTypesElse(TypedDict, total=False):
     ("value", "expected_type"),
     [(11, "11"), (1.1, "1.1"), (True, "True"), ("test", "'test'"), (None, "None")],
 )
-def test_const(value, expected_type) -> None:
+def test_const(value: Any, expected_type: str) -> None:
     type_ = get_types({"title": "test basic types", "const": value})
     assert (
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
@@ -820,7 +822,7 @@ TESTBASICTYPES_FALSE: Literal[False] = False
         ({}, ": Dict[str, Any] = {}", [("typing", "Any"), ("typing", "Dict")]),
     ],
 )
-def test_default(value, expected_type, import_) -> None:
+def test_default(value: Any, expected_type: str, import_: list[tuple[str, str]]) -> None:
     type_ = get_types({"title": "test basic types", "type": "string", "default": value}).depends_on((3, 8))[
         -1
     ]
@@ -835,7 +837,7 @@ TEST_BASIC_TYPES_DEFAULT{expected_type}
     assert type_.imports((3, 8)) == import_
 
 
-def test_typeddict_mixrequired():
+def test_typeddict_mixrequired() -> None:
     type_ = get_types(
         {
             "type": "object",
@@ -926,17 +928,17 @@ foundation and establish self publication rules.
         (None, "المملكة", "_Lmmlk"),
     ],
 )
-def test_name(config, title, expected):
+def test_name(config: Optional[dict], title: str, expected: str) -> None:
     jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name(config, title) == expected
 
 
-def test_name_upper():
+def test_name_upper() -> None:
     jsonschema_gentypes.get_name.__dict__.setdefault("names", set()).clear()
     assert jsonschema_gentypes.get_name({"title": "test"}, upper=True) == "TEST"
 
 
-def test_recursive_ref():
+def test_recursive_ref() -> None:
     type_ = get_types_2020_12(
         {
             "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -982,7 +984,7 @@ class Ref2(TypedDict, total=False):
     )
 
 
-def test_array_2():
+def test_array_2() -> None:
     type_ = get_types_2020_12(
         {
             "type": "object",
@@ -1003,7 +1005,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_true_2():
+def test_array_true_2() -> None:
     type_ = get_types_2020_12(
         {
             "type": "object",
@@ -1024,7 +1026,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_array_tuple_2():
+def test_array_tuple_2() -> None:
     type_ = get_types_2020_12(
         {
             "type": "object",
@@ -1055,7 +1057,7 @@ class TestBasicTypes(TypedDict, total=False):
     )
 
 
-def test_no_type():
+def test_no_type() -> None:
     type_ = get_types(
         {
             "title": "my type",
@@ -1086,7 +1088,7 @@ class _MyTypeObject(TypedDict, total=False):
     )
 
 
-def test_empty_array():
+def test_empty_array() -> None:
     type_ = get_types(
         {
             "title": "my type",
