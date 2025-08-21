@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from jsonschema_gentypes.cli import process_config
 from jsonschema_gentypes.configuration import Configuration
 
@@ -17,6 +19,6 @@ def test_empty_array() -> None:
         ["tests/get_name_properties.json"],
     )
 
-    with open("tests/get_name_properties.py") as f:
+    with Path("tests/get_name_properties.py").open() as f:
         content = f.read()
         assert "class SubresourceUris" in content
