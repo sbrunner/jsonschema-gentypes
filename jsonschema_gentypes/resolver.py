@@ -7,7 +7,7 @@ Encapsulate the referencing logic to be able to use it in the code generation.
 import json
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import referencing._core
 import referencing.exceptions
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
         jsonschema_draft_2020_12_core,
     )
 
-Json = Union[str, int, float, bool, None, list["Json"], dict[str, "Json"]]
+Json = str | int | float | bool | None | list["Json"] | dict[str, "Json"]
 JsonDict = dict[str, "Json"]
 
 _RESOURCE_CACHE: dict[str, referencing.Resource[Any]] = {}

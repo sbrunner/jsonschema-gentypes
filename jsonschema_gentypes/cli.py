@@ -9,9 +9,8 @@ import random
 import re
 import subprocess  # nosec
 import sys
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import yaml
 
@@ -28,6 +27,9 @@ from jsonschema_gentypes import (
     jsonschema_draft_04,
     jsonschema_draft_2020_12_applicator,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 LOG = logging.getLogger(__name__)
 

@@ -5,7 +5,7 @@ import random
 import re
 import textwrap
 import unicodedata
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import yaml
 
