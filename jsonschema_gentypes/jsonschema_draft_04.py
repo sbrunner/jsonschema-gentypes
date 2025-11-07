@@ -19,14 +19,14 @@ JSONSchemaD4 = TypedDict(
         "$schema": str,
         "title": str,
         "description": str,
-        "default": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
+        "default": str | int | float | dict[str, Any] | list[Any] | bool | None,
         # minimum: 0
         # exclusiveMinimum: True
-        "multipleOf": Union[int, float],
-        "maximum": Union[int, float],
+        "multipleOf": int | float,
+        "maximum": int | float,
         # default: False
         "exclusiveMaximum": bool,
-        "minimum": Union[int, float],
+        "minimum": int | float,
         # default: False
         "exclusiveMinimum": bool,
         # minimum: 0

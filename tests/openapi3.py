@@ -222,7 +222,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
       - http://www.opengis.net/def/crs/EPSG/0/4326
     """
 
-    dataType: Union[str, int, float, dict[str, Any], None, bool]
+    dataType: str | int | float | dict[str, Any] | None | bool
     geometryDimension: int
     """
     The geometry dimension of the features shown in this layer (0: points, 1: curves, 2: surfaces, 3: solids), unspecified: mixed or unknown
@@ -231,16 +231,16 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
     maximum: 3
     """
 
-    minScaleDenominator: Union[int, float]
+    minScaleDenominator: int | float
     """ Minimum scale denominator for usage of the collection """
 
-    maxScaleDenominator: Union[int, float]
+    maxScaleDenominator: int | float
     """ Maximum scale denominator for usage of the collection """
 
-    minCellSize: Union[int, float]
+    minCellSize: int | float
     """ Minimum cell size for usage of the collection """
 
-    maxCellSize: Union[int, float]
+    maxCellSize: int | float
     """ Maximum cell size for usage of the collection """
 
 
@@ -375,7 +375,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(Typed
     example: 50
     """
 
-    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridResolutionOneof0", Union[int, float]]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridResolutionOneof0", int | float]
     """
     Resolution of regularly gridded data along the dimension in the collection
 
@@ -388,7 +388,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGrid(Typed
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItemOneof0", Union[int, float]]
+_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesGridCoordinatesItemOneof0", int | float]
 """ Aggregation type: oneOf """
 
 
@@ -418,7 +418,7 @@ example:
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItemOneof0", Union[int, float]]
+_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaAdditionalpropertiesIntervalItemItemOneof0", int | float]
 """ Aggregation type: oneOf """
 
 
@@ -469,7 +469,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatial(TypedDict, total=False
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem = list[Union[int, float]]
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialBboxItem = list[int | float]
 """
 Each bounding box is provided as four or six numbers, depending on
 whether the coordinate reference system includes a vertical axis
@@ -557,7 +557,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
     example: 50
     """
 
-    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0", Union[int, float]]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemResolutionOneof0", int | float]
     """
     Resolution of regularly gridded data along the dimension in the collection
 
@@ -568,7 +568,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItem(TypedDict, tot
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0", Union[int, float]]
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItem = Union["_ExtentWithUniformAdditionalDimensionsSchemaSpatialGridItemCoordinatesItemOneof0", int | float]
 """ Aggregation type: oneOf """
 
 
@@ -641,7 +641,7 @@ class _ExtentWithUniformAdditionalDimensionsSchemaTemporalGrid(TypedDict, total=
     example: 50
     """
 
-    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0", Union[int, float]]
+    resolution: Union["_ExtentWithUniformAdditionalDimensionsSchemaTemporalGridResolutionOneof0", int | float]
     """
     Resolution of regularly gridded data along the temporal dimension in the collection
 
@@ -687,7 +687,7 @@ nullable: True
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaTemporalTrs = Union[Literal['http://www.opengis.net/def/uom/ISO-8601/0/Gregorian']]
+_ExtentWithUniformAdditionalDimensionsSchemaTemporalTrs = Literal['http://www.opengis.net/def/uom/ISO-8601/0/Gregorian']
 """
 Coordinate reference system of the coordinates in the temporal extent
 (property `interval`). The default reference system is the Gregorian calendar.

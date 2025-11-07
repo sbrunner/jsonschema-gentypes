@@ -12,13 +12,13 @@ class JSONSchemaItemD2020(TypedDict, total=False):
 
     const: Any
     enum: list[Any]
-    multipleOf: Union[int, float]
+    multipleOf: int | float
     """ exclusiveMinimum: 0 """
 
-    maximum: Union[int, float]
-    exclusiveMaximum: Union[int, float]
-    minimum: Union[int, float]
-    exclusiveMinimum: Union[int, float]
+    maximum: int | float
+    exclusiveMaximum: int | float
+    minimum: int | float
+    exclusiveMinimum: int | float
     maxLength: "_NonNegativeInteger"
     """ minimum: 0 """
 

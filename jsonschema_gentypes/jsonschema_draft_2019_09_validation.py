@@ -7,13 +7,13 @@ JSONSchemaD2019 = Union["JSONSchemaItemD2019", bool]
 
 
 class JSONSchemaItemD2019(TypedDict, total=False):
-    multipleOf: Union[int, float]
+    multipleOf: int | float
     """ exclusiveMinimum: 0 """
 
-    maximum: Union[int, float]
-    exclusiveMaximum: Union[int, float]
-    minimum: Union[int, float]
-    exclusiveMinimum: Union[int, float]
+    maximum: int | float
+    exclusiveMaximum: int | float
+    minimum: int | float
+    exclusiveMinimum: int | float
     maxLength: "_NonNegativeInteger"
     """ minimum: 0 """
 

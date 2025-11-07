@@ -115,8 +115,8 @@ def normalize(input_str: str) -> str:
 class Type:
     """The base Type object."""
 
-    _comments: Optional[list[str]] = None
-    _depends_on: Optional[list["Type"]] = None
+    _comments: list[str] | None = None
+    _depends_on: list["Type"] | None = None
 
     def __init__(self) -> None:
         """Initialize the type."""
@@ -131,7 +131,7 @@ class Type:
         del python_version
         return []
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """
         Return the type declaration.
 
@@ -166,7 +166,7 @@ class Type:
 class TypeProxy(Type):
     """A proxy on a type that can be set later."""
 
-    _type: Optional[Type] = None
+    _type: Type | None = None
 
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
@@ -178,7 +178,7 @@ class TypeProxy(Type):
         assert self._type is not None
         return self._type.imports(python_version)
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """
         Return the type declaration.
 
@@ -241,7 +241,7 @@ class NamedType(Type):
 class LiteralType(Type):
     """A literal type like: `Literal["text"]`."""
 
-    def __init__(self, const: Union[float, bool, str, None, dict[str, Any], list[Any]]) -> None:
+    def __init__(self, const: float | bool | str | None | dict[str, Any] | list[Any]) -> None:
         """
         Init.
 
@@ -288,8 +288,8 @@ class NativeType(Type):
         self,
         name: str,
         package: str = "typing",
-        minimal_python_version: Optional[tuple[int, ...]] = None,
-        workaround_package: Optional[str] = None,
+        minimal_python_version: tuple[int, ...] | None = None,
+        workaround_package: str | None = None,
     ) -> None:
         """
         Init.
@@ -495,7 +495,7 @@ class TupleType(CombinedType):
 class TypeAlias(NamedType):
     """An alias on a type, essentially to add a description."""
 
-    def __init__(self, name: str, sub_type: Type, descriptions: Optional[list[str]] = None) -> None:
+    def __init__(self, name: str, sub_type: Type, descriptions: list[str] | None = None) -> None:
         """
         Init.
 
@@ -512,7 +512,7 @@ class TypeAlias(NamedType):
         """Return the needed sub types."""
         return [self.sub_type, *super().depends_on(python_version)]
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         _type = (
@@ -544,7 +544,7 @@ class TypeEnum(NamedType):
     def __init__(
         self,
         name: str,
-        values: list[Union[int, float, bool, str, None]],
+        values: list[int | float | bool | str | None],
         descriptions: list[str],
     ) -> None:
         """
@@ -566,7 +566,7 @@ class TypeEnum(NamedType):
         """Return the needed sub types."""
         return [self.sub_type, *super().depends_on(python_version)]
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
@@ -629,7 +629,7 @@ class TypedDictType(NamedType):
         result += self.struct.values()
         return result + super().depends_on(python_version)
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """Get the definition based on a dict."""
         supported_re = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
         # Support to be a class
@@ -692,7 +692,7 @@ class Constant(NamedType):
         self.constant = constant
         self.descriptions = descriptions
 
-    def definition(self, python_version: tuple[int, ...], line_length: Optional[int] = None) -> list[str]:
+    def definition(self, python_version: tuple[int, ...], line_length: int | None = None) -> list[str]:
         """Return the type declaration."""
         result = ["", ""]
         if isinstance(self.constant, dict) and not self.constant:
@@ -723,7 +723,7 @@ class Constant(NamedType):
         return []
 
 
-def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:
+def split_comment(text: list[str], line_length: int | None) -> list[str]:
     """
     Split the text at line length.
 
@@ -745,16 +745,11 @@ def split_comment(text: list[str], line_length: Optional[int]) -> list[str]:
 
 
 def get_name(
-    schema: Optional[
-        Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
-        ]
-    ],
-    proposed_name: Optional[str] = None,
+    schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019 | None,
+    proposed_name: str | None = None,
     upper: bool = False,
-    get_name_properties: Optional[str] = None,
-    postfix: Optional[str] = None,
+    get_name_properties: str | None = None,
+    postfix: str | None = None,
 ) -> str:
     """
     Get the name for an element.
@@ -809,10 +804,7 @@ def get_name(
 
 
 def get_description(
-    schema: Union[
-        jsonschema_draft_04.JSONSchemaD4,
-        jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
-    ],
+    schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2019_09_meta_data.JSONSchemaItemD2019,
 ) -> list[str]:
     """
     Get the standard description for an element.
