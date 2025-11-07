@@ -29,14 +29,12 @@ jobs:
       matrix:
         # Should be reported in outputs and in last check
         python-version:
-          - '3.9'
           - '3.10'
           - '3.11'
           # On 3.12 we get something like https://github.com/pypa/setuptools/issues/4102 on install
           # - '3.12'
 
     outputs:
-      success-3-9: ${{ steps.success.outputs.success-3-9 }}
       success-3-10: ${{ steps.success.outputs.success-3-10 }}
       success-3-11: ${{ steps.success.outputs.success-3-11 }}
 
@@ -115,6 +113,5 @@ jobs:
         if: failure()
 
       # Check success
-      - run: '[[ "${{ needs.test.outputs.success-3-9 }}" == "true" ]]'
       - run: '[[ "${{ needs.test.outputs.success-3-10 }}" == "true" ]]'
       - run: '[[ "${{ needs.test.outputs.success-3-11 }}" == "true" ]]'

@@ -7,7 +7,7 @@ Encapsulate the referencing logic to be able to use it in the code generation.
 import json
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import referencing._core
 import referencing.exceptions
@@ -26,21 +26,18 @@ if TYPE_CHECKING:
         jsonschema_draft_2020_12_core,
     )
 
-Json = Union[str, int, float, bool, None, list["Json"], dict[str, "Json"]]
+Json = str | int | float | bool | None | list["Json"] | dict[str, "Json"]
 JsonDict = dict[str, "Json"]
 
 _RESOURCE_CACHE: dict[str, referencing.Resource[Any]] = {}
 
 
 def _openapi_schema(
-    config: Union[
-        jsonschema_draft_06.JSONSchemaItemD6,
-        jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-    ],
-) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+    config: jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+) -> jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020:
     if "$schema" not in config and "openapi" in config:
         config_core = cast(
-            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
+            "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_core.JSONSchemaItemD2020",
             config,
         )
         config_core["$schema"] = "https://json-schema.org/draft/2020-12/schema"
@@ -49,12 +46,12 @@ def _openapi_schema(
 
 def _open_uri(
     uri: str,
-) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+) -> jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020:
     if uri.startswith(("http://", "https://")):
         response = requests.get(uri, timeout=30)
         return _openapi_schema(
             cast(
-                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
                 response.json(),
             ),
         )
@@ -66,7 +63,7 @@ def _open_uri(
             schema = json.loads(file_content)
         return _openapi_schema(
             cast(
-                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
                 schema,
             ),
         )
@@ -99,12 +96,9 @@ class RefResolver:
     def __init__(
         self,
         base_url: str,
-        schema: Optional[
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-            ]
-        ] = None,
+        schema: jsonschema_draft_06.JSONSchemaItemD6
+        | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
+        | None = None,
     ) -> None:
         """
         Initialize the resolver.
@@ -116,7 +110,7 @@ class RefResolver:
         schema = _openapi_schema(schema) if schema is not None else None
         self.schema = _open_uri(base_url) if schema is None else schema
         schema_vocabulary = cast(
-            "Union[jsonschema_draft_2019_09_core.JSONSchemaItemD2019, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
+            "jsonschema_draft_2019_09_core.JSONSchemaItemD2019 | jsonschema_draft_2020_12_core.JSONSchemaItemD2020",
             self.schema,
         )
         if "$schema" in self.schema:
@@ -124,20 +118,14 @@ class RefResolver:
 
         self.registry = referencing.Registry(retrieve=_open_uri_resolver)  # type: ignore[call-arg]
         self.resolver: referencing._core.Resolver[
-            Union[
-                jsonschema_draft_06.JSONSchemaItemD6,
-                jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-            ]
+            jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ] = self.registry.resolver(base_url)
 
         self.vocabulary_url: dict[str, str] = {}
         self.vocabulary_resolver: dict[
             str,
             referencing._core.Resolver[
-                Union[
-                    jsonschema_draft_06.JSONSchemaItemD6,
-                    jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-                ]
+                jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
             ],
         ] = {}
 
@@ -153,7 +141,7 @@ class RefResolver:
         self.vocabulary_url[vocab] = url
         self.vocabulary_resolver[vocab] = self.registry.resolver(url)
 
-    def add_local_resource(self, content_path: Union[str, Path]) -> None:
+    def add_local_resource(self, content_path: str | Path) -> None:
         """Add some locally available resource to the registry."""
         with Path(content_path).open("r", encoding="utf-8") as f:
             content = json.load(f)
@@ -162,7 +150,7 @@ class RefResolver:
     def lookup(
         self,
         uri: str,
-    ) -> Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+    ) -> jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020:
         """
         Lookup for the reference.
 
@@ -178,7 +166,7 @@ class RefResolver:
         exception = None
         if uri in self.registry:
             return cast(
-                "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
                 self.registry[uri].contents,
             )
         try:
@@ -198,11 +186,8 @@ class RefResolver:
 
     def auto_resolve(
         self,
-        config: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
-    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        config: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+    ) -> jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020:
         """
         Resolve if the config has a $ref key.
 
@@ -210,10 +195,10 @@ class RefResolver:
             config: The config to resolve.
         """
         config_with_ref = cast(
-            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_core.JSONSchemaItemD2020]",
+            "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_core.JSONSchemaItemD2020",
             config,
         )
         return cast(
-            "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+            "jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
             self.lookup(config_with_ref["$ref"]) if "$ref" in config_with_ref else config,
         )

@@ -28,14 +28,14 @@ JSONSchemaItemD6 = TypedDict(
         "$ref": str,
         "title": str,
         "description": str,
-        "default": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
-        "examples": list[Union[str, Union[int, float], dict[str, Any], list[Any], bool, None]],
+        "default": str | int | float | dict[str, Any] | list[Any] | bool | None,
+        "examples": list[str | int | float | dict[str, Any] | list[Any] | bool | None],
         # exclusiveMinimum: 0
-        "multipleOf": Union[int, float],
-        "maximum": Union[int, float],
-        "exclusiveMaximum": Union[int, float],
-        "minimum": Union[int, float],
-        "exclusiveMinimum": Union[int, float],
+        "multipleOf": int | float,
+        "maximum": int | float,
+        "exclusiveMaximum": int | float,
+        "minimum": int | float,
+        "exclusiveMinimum": int | float,
         # minimum: 0
         "maxLength": "_NonNegativeInteger",
         # minimum: 0
@@ -96,7 +96,7 @@ JSONSchemaItemD6 = TypedDict(
         # default:
         #   {}
         "propertyNames": "JSONSchemaD6",
-        "const": Union[str, Union[int, float], dict[str, Any], list[Any], bool, None],
+        "const": str | int | float | dict[str, Any] | list[Any] | bool | None,
         # minItems: 1
         # uniqueItems: True
         "enum": list[Any],

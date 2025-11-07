@@ -106,11 +106,11 @@ _ContentVocabularyMetaSchemaObject = TypedDict(
         "const": Any,
         "enum": list[Any],
         # exclusiveMinimum: 0
-        "multipleOf": Union[int, float],
-        "maximum": Union[int, float],
-        "exclusiveMaximum": Union[int, float],
-        "minimum": Union[int, float],
-        "exclusiveMinimum": Union[int, float],
+        "multipleOf": int | float,
+        "maximum": int | float,
+        "exclusiveMaximum": int | float,
+        "minimum": int | float,
+        "exclusiveMinimum": int | float,
         # minimum: 0
         "maxLength": "_NonNegativeInteger",
         # minimum: 0

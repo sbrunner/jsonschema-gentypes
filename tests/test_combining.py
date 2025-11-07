@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 import pytest
 
@@ -21,7 +21,7 @@ def get_definition(type_: Type) -> list[str]:
     return actual
 
 
-def assert_expected(type_: Type, expected: list[str], path: Optional[list[int]] = None) -> None:
+def assert_expected(type_: Type, expected: list[str], path: list[int] | None = None) -> None:
     """Assert that the full definition is correct."""
     if path is None:
         path = []

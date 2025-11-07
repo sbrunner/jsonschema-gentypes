@@ -1,6 +1,6 @@
 """The API version draft 06."""
 
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from jsonschema_gentypes import (
     LiteralType,
@@ -22,16 +22,13 @@ class APIv6(APIv4):
 
     def get_type_start(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         proxy: Type,
         proposed_name: str,
     ) -> None:
         """Get the type for a schema."""
         schema_casted = cast(
-            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+            "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
             schema,
         )
         property_names = schema_casted.get("propertyNames")
@@ -43,10 +40,7 @@ class APIv6(APIv4):
 
     def build_type(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         proposed_name: str,
     ) -> Type:
         """
@@ -59,7 +53,7 @@ class APIv6(APIv4):
         if "const" in schema:
             return self.const(
                 cast(
-                    "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                    "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
                     schema,
                 ),
             )
@@ -68,10 +62,8 @@ class APIv6(APIv4):
 
     def const(
         self,
-        schema: Union[
-            jsonschema_draft_06.JSONSchemaItemD6,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_06.JSONSchemaItemD6
+        | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
     ) -> Type:
         """
         Treat the const  keyword.
@@ -84,10 +76,10 @@ class APIv6(APIv4):
             schema: The schema to get the type for.
         """
         schema_casted = cast(
-            "Union[jsonschema_draft_06.JSONSchemaItemD6, jsonschema_draft_2020_12_validation.JSONSchemaItemD2020]",
+            "jsonschema_draft_06.JSONSchemaItemD6 | jsonschema_draft_2020_12_validation.JSONSchemaItemD2020",
             schema,
         )
 
         schema.setdefault("used", set()).add("const")  # type: ignore[typeddict-item]
-        const_: Union[int, float, str, bool, None, dict[str, Any], list[Any]] = schema_casted["const"]
+        const_: int | float | str | bool | None | dict[str, Any] | list[Any] = schema_casted["const"]
         return LiteralType(const_)

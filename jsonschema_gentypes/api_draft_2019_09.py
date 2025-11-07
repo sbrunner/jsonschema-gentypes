@@ -1,7 +1,7 @@
 """The API version draft 2019 09."""
 
 import re
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from jsonschema_gentypes import (
     Type,
@@ -26,7 +26,7 @@ class APIv201909(APIv7):
         self.is_recursive_anchor_path: list[bool] = []
         self.recursive_anchor_path_type: list[Type] = []
         self.recursive_anchor_path_schema: list[
-            Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]
+            jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020
         ] = []
 
     def ref_to_proposed_name(self, ref: str) -> str:
@@ -48,10 +48,7 @@ class APIv201909(APIv7):
 
     def get_type_start(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         proxy: Type,
         proposed_name: str,
     ) -> None:
@@ -75,10 +72,7 @@ class APIv201909(APIv7):
 
     def get_type_end(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         proxy: Type,
     ) -> None:
         """
@@ -97,7 +91,7 @@ class APIv201909(APIv7):
 
     def ref(
         self,
-        schema: Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_core.JSONSchemaItemD2020],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_core.JSONSchemaItemD2020,
         proposed_name: str,
     ) -> Type:
         """
@@ -116,11 +110,8 @@ class APIv201909(APIv7):
 
     def resolve_ref(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
-    ) -> Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]:
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
+    ) -> jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020:
         """
         Handle the `$recursiveRef`.
 

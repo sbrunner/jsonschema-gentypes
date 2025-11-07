@@ -10,7 +10,7 @@ import re
 import subprocess  # nosec
 import sys
 from pathlib import Path
-from typing import Any, Callable, Optional, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import yaml
 
@@ -28,6 +28,9 @@ from jsonschema_gentypes import (
     jsonschema_draft_2020_12_applicator,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 LOG = logging.getLogger(__name__)
 
 
@@ -38,7 +41,7 @@ def _add_type(
     gen: configuration.GenerateItem,
     config: configuration.Configuration,
     python_version: tuple[int, ...],
-    added_types: Optional[set[jsonschema_gentypes.Type]] = None,
+    added_types: set[jsonschema_gentypes.Type] | None = None,
 ) -> None:
     if added_types is None:
         added_types = set()
@@ -133,7 +136,7 @@ def main() -> None:
     process_config(config, args.files)
 
 
-def validate_config(config_path: Path) -> Optional[Any]:
+def validate_config(config_path: Path) -> Any | None:
     """Validate the configuration file."""
 
     try:
@@ -181,10 +184,7 @@ class _AddType:
 
     def __call__(
         self,
-        schema: Union[
-            jsonschema_draft_04.JSONSchemaD4,
-            jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
-        ],
+        schema: jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020,
         name: str,
         force_name: bool = True,
     ) -> jsonschema_gentypes.Type:
@@ -386,7 +386,7 @@ def process_config(config: configuration.Configuration, files: list[str]) -> Non
                     )
         else:
             schema_all = cast(
-                "Union[jsonschema_draft_04.JSONSchemaD4, jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020]",
+                "jsonschema_draft_04.JSONSchemaD4 | jsonschema_draft_2020_12_applicator.JSONSchemaItemD2020",
                 schema,
             )
             add_type(schema_all, gen.get("root_name", "Root"), force_name="root_name" in gen)
