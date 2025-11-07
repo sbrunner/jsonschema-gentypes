@@ -12,8 +12,8 @@ ignore-patterns:
 
 mypy:
   options:
-    python-version: '3.9'
+    python-version: '3.10'
 
 ruff:
   options:
-    target-version: py39
+    target-version: py310

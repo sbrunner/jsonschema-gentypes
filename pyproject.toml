@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 110
 
 [tool.ruff.lint]
@@ -20,8 +20,7 @@ convention = "numpy"
 version = "0.0.0"
 
 [tool.poetry.dependencies]
-# Minimal version should also be set in the jsonschema-gentypes.yaml file
-python = ">=3.9,<4"
+python = ">=3.10,<4"
 jsonschema = "4.25.1"
 typing-extensions = "4.15.0"
 requests = "2.32.5"
@@ -83,7 +82,6 @@ classifiers = [
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
@@ -94,8 +92,8 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-requires-python = ">=3.9"
 dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.5.0"]
+requires-python = ">=3.10"
 
 [project.urls]
 repository = "https://github.com/camptocamp/jsonschema-gentypes"
