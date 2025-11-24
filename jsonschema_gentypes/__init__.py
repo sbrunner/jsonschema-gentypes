@@ -523,9 +523,9 @@ class TypeAlias(NamedType):
         result.append(f"{self._name}{_type} = {self.sub_type.name(python_version)}")
         comments = split_comment(self.comments(), line_length - 2 if line_length else None)
         if len(comments) == 1:
-            result += [f'""" {comments[0]} """', ""]
+            result += [f'r""" {comments[0]} """', ""]
         elif comments:
-            result += ['"""', *comments, '"""', ""]
+            result += ['r"""', *comments, '"""', ""]
 
         return result
 
@@ -572,16 +572,16 @@ class TypeEnum(NamedType):
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         result.append(f"{self._name} = {self.sub_type.name(python_version)}")
         if len(comments) == 1:
-            result += [f'""" {comments[0]} """']
+            result += [f'r""" {comments[0]} """']
         elif comments:
-            result += ['"""', *comments, '"""']
+            result += ['r"""', *comments, '"""']
         for value in self.values:
             name = self.value_names[value]
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
             result.append(f"{name}: {LiteralType(value).name(python_version)} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
             name = name.removesuffix(".")
-            result.append(f'"""The values for the \'{name}\' enum"""')
+            result.append(f'r"""The values for the \'{name}\' enum"""')
 
         result.append("")
         return result
@@ -645,10 +645,10 @@ class TypedDictType(NamedType):
             result.append(f"class {self._name}(TypedDict, total=False):")
             comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
             if len(comments) == 1:
-                result.append(f'    """ {comments[0]} """')
+                result.append(f'    r""" {comments[0]} """')
                 result.append("")
             elif comments:
-                result.append('    """')
+                result.append('    r"""')
                 result += [f"    {d}" if d else "" for d in comments]
                 result.append('    """')
                 result.append("")
@@ -657,10 +657,10 @@ class TypedDictType(NamedType):
                 result.append(f"    {property_}: {type_obj.name(python_version)}")
                 comments = type_obj.comments()
                 if len(comments) == 1:
-                    result.append(f'    """ {comments[0]} """')
+                    result.append(f'    r""" {comments[0]} """')
                     result.append("")
                 elif comments:
-                    result.append('    """')
+                    result.append('    r"""')
                     result += [f"    {comment}" if comment else "" for comment in comments]
                     result.append('    """')
                     result.append("")
@@ -705,9 +705,9 @@ class Constant(NamedType):
             result.append(f"{self._name} = {self.constant!r}")
         comments = split_comment(self.descriptions, line_length - 2 if line_length else None)
         if len(comments) == 1:
-            result += [f'""" {comments[0]} """', ""]
+            result += [f'r""" {comments[0]} """', ""]
         elif comments:
-            result += ['"""', *comments, '"""', ""]
+            result += ['r"""', *comments, '"""', ""]
         return result
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:

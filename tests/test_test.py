@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 
 import jsonschema_gentypes.api_draft_07
@@ -55,20 +57,20 @@ def test_basic_types():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """
+    r"""
     test basic types.
 
     A description
     """
 
     string: str
-    """ A string. """
+    r""" A string. """
 
     number: Union[int, float]
-    """ A number """
+    r""" A number """
 
     integer: int
-    """
+    r"""
     An integer.
 
     An integer
@@ -76,21 +78,21 @@ class TestBasicTypes(TypedDict, total=False):
 
     boolean: bool
     string_required: Required[str]
-    """
+    r"""
     A string.
 
     Required property
     """
 
     number_required: Required[Union[int, float]]
-    """
+    r"""
     A number
 
     Required property
     """
 
     integer_required: Required[int]
-    """
+    r"""
     An integer.
 
     An integer
@@ -144,7 +146,7 @@ def test_ref():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     string: str'''
     )
@@ -168,10 +170,10 @@ def test_self_ref():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     string: "TestBasicTypes"
-    """ test basic types. """
+    r""" test basic types. """
 '''
     )
 
@@ -191,7 +193,7 @@ def test_array():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: List[str]'''
     )
@@ -212,7 +214,7 @@ def test_array_true():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: List[Any]'''
     )
@@ -238,10 +240,10 @@ def test_array_tuple():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: Tuple[str, Union[int, float]]
-    """
+    r"""
     minItems: 2
     maxItems: 2
     """
@@ -265,7 +267,7 @@ def test_additional_properties_mixed():
         == '''
 
 TestBasicTypes = Union[Dict[str, str], "TestBasicTypesTyped"]
-"""
+r"""
 test basic types.
 
 
@@ -298,7 +300,7 @@ def test_additional_properties():
         == '''
 
 TestBasicTypes = Dict[str, str]
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -316,7 +318,7 @@ def test_additional_properties_true():
         == '''
 
 TestBasicTypes = Dict[str, Any]
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -334,13 +336,44 @@ def test_pattern_properties_multiple():
         == '''
 
 PatternPropertiesWithTowPatterns = Dict[str, Any]
-"""
+r"""
 Pattern properties with tow patterns.
 
 patternProperties:
   ^[0-9]+$:
     type: number
   ^[a-z]+$:
+    type: string
+"""
+'''
+    )
+
+
+def test_pattern_properties_multiple_with_backslash():
+    r"""This test is designed to check that \ appearing in a regex does not cause warnings"""
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+
+        type_ = get_types(
+            {
+                "type": "object",
+                "title": "Pattern properties with backslashes",
+                "patternProperties": {r"^[a-z\]+$": {"type": "string"}, "^[0-9]+$": {"type": "number"}},
+            },
+        )
+
+    assert (
+        "\n".join([d.rstrip() for d in type_.definition((3, 8))])
+        == r'''
+
+PatternPropertiesWithBackslashes = Dict[str, Any]
+r"""
+Pattern properties with backslashes.
+
+patternProperties:
+  ^[0-9]+$:
+    type: number
+  ^[a-z\]+$:
     type: string
 """
 '''
@@ -362,7 +395,7 @@ def test_pattern_properties_string():
         == '''
 
 PatternPropertiesWithOnePatternAsString = Dict[str, str]
-""" Pattern properties with one pattern as string. """
+r""" Pattern properties with one pattern as string. """
 '''
     )
 
@@ -387,7 +420,7 @@ def test_pattern_properties_object():
         == '''
 
 PatternPropertiesWithOnePatternAsObject = Dict[str, "_PatternPropertiesWithOnePatternAsObjectType"]
-""" Pattern properties with one pattern as object. """
+r""" Pattern properties with one pattern as object. """
 '''
     )
 
@@ -413,7 +446,7 @@ def test_boolean_const():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     boolean: Literal[True]'''
     )
@@ -435,10 +468,10 @@ def test_dict_enum():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     enum: Required["Properties"]
-    """
+    r"""
     properties.
 
     Required property
@@ -455,13 +488,13 @@ class TestBasicTypes(TypedDict, total=False):
         == '''
 
 Properties = Union[Literal['red'], Literal['amber'], Literal['green']]
-""" properties. """
+r""" properties. """
 PROPERTIES_RED: Literal['red'] = "red"
-"""The values for the 'properties' enum"""
+r"""The values for the 'properties' enum"""
 PROPERTIES_AMBER: Literal['amber'] = "amber"
-"""The values for the 'properties' enum"""
+r"""The values for the 'properties' enum"""
 PROPERTIES_GREEN: Literal['green'] = "green"
-"""The values for the 'properties' enum"""
+r"""The values for the 'properties' enum"""
 '''
     )
 
@@ -492,7 +525,7 @@ def test_any_of():
         == '''
 
 TestBasicTypes = Union["_TestBasicTypesAnyof0", "_TestBasicTypesAnyof1"]
-"""
+r"""
 test basic types.
 
 Aggregation type: anyOf
@@ -543,7 +576,7 @@ def test_all_of() -> None:
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     string1: str
     string2: str'''
@@ -562,7 +595,7 @@ def test_all_of_2() -> None:
         == '''
 
 TestBasicTypes: TypeAlias = None
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -579,7 +612,7 @@ def test_all_of_3() -> None:
         == '''
 
 TestBasicTypes = str
-"""
+r"""
 test basic types.
 
 maxLength: 5
@@ -608,10 +641,10 @@ def test_all_of_4() -> None:
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     test: "_TestBasicTypesTest"
-    """
+    r"""
     minimum: 0
     default: 0
     """
@@ -623,7 +656,7 @@ class TestBasicTypes(TypedDict, total=False):
         == '''
 
 _TestBasicTypesTest = int
-"""
+r"""
 minimum: 0
 default: 0
 """
@@ -657,7 +690,7 @@ def test_one_of() -> None:
         == '''
 
 TestBasicTypes = Union["_TestBasicTypesOneof0", "_TestBasicTypesOneof1"]
-"""
+r"""
 test basic types.
 
 Aggregation type: oneOf
@@ -694,7 +727,7 @@ def test_type_list() -> None:
         == '''
 
 TestBasicTypes = Union[str, bool]
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -714,7 +747,7 @@ def test_it_the_else() -> None:  # 395
         == '''
 
 TestBasicTypes = Union["_TestBasicTypesThen", "_TestBasicTypesElse"]
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -748,7 +781,7 @@ def test_const(value, expected_type) -> None:
         == f'''
 
 TestBasicTypes = Literal[{expected_type}]
-""" test basic types. """
+r""" test basic types. """
 '''
     )
 
@@ -761,13 +794,13 @@ def test_enum() -> None:
         == '''
 
 TestBasicTypes = Union[Literal['red'], Literal['amber'], Literal['green']]
-""" test basic types. """
+r""" test basic types. """
 TESTBASICTYPES_RED: Literal['red'] = "red"
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 TESTBASICTYPES_AMBER: Literal['amber'] = "amber"
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 TESTBASICTYPES_GREEN: Literal['green'] = "green"
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 '''
     )
 
@@ -779,13 +812,13 @@ def test_enum_int() -> None:
         == '''
 
 TestBasicTypes = Union[Literal[1], Literal[2], Literal[3]]
-""" test basic types. """
+r""" test basic types. """
 TESTBASICTYPES_1: Literal[1] = 1
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 TESTBASICTYPES_2: Literal[2] = 2
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 TESTBASICTYPES_3: Literal[3] = 3
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 '''
     )
 
@@ -797,11 +830,11 @@ def test_enum_bool() -> None:
         == '''
 
 TestBasicTypes = Union[Literal[True], Literal[False]]
-""" test basic types. """
+r""" test basic types. """
 TESTBASICTYPES_TRUE: Literal[True] = True
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 TESTBASICTYPES_FALSE: Literal[False] = False
-"""The values for the 'test basic types' enum"""
+r"""The values for the 'test basic types' enum"""
 '''
     )
 
@@ -829,7 +862,7 @@ def test_default(value, expected_type, import_) -> None:
         == f'''
 
 TEST_BASIC_TYPES_DEFAULT{expected_type}
-""" Default value of the field path 'Base' """
+r""" Default value of the field path 'Base' """
 '''
     )
     assert type_.imports((3, 8)) == import_
@@ -852,10 +885,10 @@ def test_typeddict_mixrequired():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     text1: Required[str]
-    """ Required property """
+    r""" Required property """
 
     text2: str'''
     )
@@ -868,7 +901,7 @@ def test_multiline() -> None:
         == '''
 
 TestBasicTypes = Literal[111]
-"""
+r"""
 test basic types.
 
 first
@@ -891,7 +924,7 @@ def test_linesplit() -> None:
         == '''
 
 TestBasicTypes = Literal[111]
-"""
+r"""
 test basic types.
 
 The JSON Schema project intends to shepherd all three draft series to either:
@@ -960,10 +993,10 @@ def test_recursive_ref():
         == '''
 
 class Ref1(TypedDict, total=False):
-    """ Ref1. """
+    r""" Ref1. """
 
     data: "Ref2"
-    """ Ref2. """
+    r""" Ref2. """
 
     children: List["Ref1"]'''
     )
@@ -974,10 +1007,10 @@ class Ref1(TypedDict, total=False):
         == '''
 
 class Ref2(TypedDict, total=False):
-    """ Ref2. """
+    r""" Ref2. """
 
     data_child: "Ref2"
-    """ Ref2. """
+    r""" Ref2. """
 '''
     )
 
@@ -997,7 +1030,7 @@ def test_array_2():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: List[str]'''
     )
@@ -1018,7 +1051,7 @@ def test_array_true_2():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: List[Any]'''
     )
@@ -1044,10 +1077,10 @@ def test_array_tuple_2():
         == '''
 
 class TestBasicTypes(TypedDict, total=False):
-    """ test basic types. """
+    r""" test basic types. """
 
     array: Tuple[str, Union[int, float]]
-    """
+    r"""
     minItems: 2
     maxItems: 2
     """
@@ -1068,7 +1101,7 @@ def test_no_type():
         == '''
 
 MyType = Union[str, Union[int, float], "_MyTypeObject", List[Any], bool, None]
-""" my type. """
+r""" my type. """
 '''
     )
 
@@ -1081,7 +1114,7 @@ MyType = Union[str, Union[int, float], "_MyTypeObject", List[Any], bool, None]
 
 class _MyTypeObject(TypedDict, total=False):
     foo: Required[str]
-    """ Required property """
+    r""" Required property """
 '''
     )
 
@@ -1098,6 +1131,6 @@ def test_empty_array():
         == '''
 
 MyType = List[Any]
-""" my type. """
+r""" my type. """
 '''
     )
