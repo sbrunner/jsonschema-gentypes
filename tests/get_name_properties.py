@@ -2,10 +2,10 @@ from typing import Required, TypedDict
 
 
 class ResponseType(TypedDict, total=False):
-    """ResponseType."""
+    r"""ResponseType."""
 
     subresource_uris: Required["SubresourceUris"]
-    """
+    r"""
     SubresourceUris.
 
     Required property
@@ -13,7 +13,7 @@ class ResponseType(TypedDict, total=False):
 
 
 class SubresourceUris(TypedDict, total=False):
-    """SubresourceUris."""
+    r"""SubresourceUris."""
 
     feedback: Required[str]
-    """ Required property """
+    r""" Required property """

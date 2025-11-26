@@ -8,7 +8,7 @@ from typing_extensions import Required
 
 
 class OpenAPI(TypedDict, total=False):
-    """
+    r"""
     The description of OpenAPI v3.1.x Documents without Schema Object validation
 
     anyOf:
@@ -29,7 +29,7 @@ class OpenAPI(TypedDict, total=False):
     """
 
     info: Required["_Info"]
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#info-object
     unevaluatedProperties: False
 
@@ -37,26 +37,26 @@ class OpenAPI(TypedDict, total=False):
     """
 
     jsonSchemaDialect: str
-    """
+    r"""
     format: uri-reference
     default: https://spec.openapis.org/oas/3.1/dialect/2024-11-10
     """
 
     servers: list["_Server"]
-    """
+    r"""
     default:
       - url: /
     """
 
     paths: "_Paths"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#paths-object
     unevaluatedProperties: False
     """
 
     webhooks: dict[str, "_PathItem"]
     components: "_Components"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#components-object
     unevaluatedProperties: False
     """
@@ -64,18 +64,18 @@ class OpenAPI(TypedDict, total=False):
     security: list["_SecurityRequirement"]
     tags: list["_Tag"]
     externalDocs: "_ExternalDocumentation"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
     unevaluatedProperties: False
     """
 
 
 _Callbacks = dict[str, "_PathItem"]
-""" $comment: https://spec.openapis.org/oas/v3.1#callback-object """
+r""" $comment: https://spec.openapis.org/oas/v3.1#callback-object """
 
 
 class _Components(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#components-object
     unevaluatedProperties: False
     """
@@ -92,21 +92,21 @@ class _Components(TypedDict, total=False):
 
 
 class _Contact(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#contact-object
     unevaluatedProperties: False
     """
 
     name: str
     url: str
-    """ format: uri-reference """
+    r""" format: uri-reference """
 
     email: str
-    """ format: email """
+    r""" format: email """
 
 
 _Content = dict[str, "_MediaType"]
-"""
+r"""
 $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
 propertyNames:
   format: media-range
@@ -114,15 +114,15 @@ propertyNames:
 
 
 _ENCODING_ALLOWRESERVED_DEFAULT = False
-""" Default value of the field path 'encoding allowReserved' """
+r""" Default value of the field path 'encoding allowReserved' """
 
 
 _ENCODING_STYLE_DEFAULT = "form"
-""" Default value of the field path 'encoding style' """
+r""" Default value of the field path 'encoding style' """
 
 
 class _Encoding(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#encoding-object
     allOf:
       - $ref: '#/$defs/styles-for-form'
@@ -130,31 +130,31 @@ class _Encoding(TypedDict, total=False):
     """
 
     contentType: str
-    """ format: media-range """
+    r""" format: media-range """
 
     headers: dict[str, "_Header"]
     style: "_EncodingStyle"
-    """ default: form """
+    r""" default: form """
 
     explode: bool
     allowReserved: bool
-    """ default: False """
+    r""" default: False """
 
 
 _EncodingStyle = Literal["form", "spaceDelimited", "pipeDelimited", "deepObject"]
-""" default: form """
+r""" default: form """
 _ENCODINGSTYLE_FORM: Literal["form"] = "form"
-"""The values for the 'default: form' enum"""
+r"""The values for the 'default: form' enum"""
 _ENCODINGSTYLE_SPACEDELIMITED: Literal["spaceDelimited"] = "spaceDelimited"
-"""The values for the 'default: form' enum"""
+r"""The values for the 'default: form' enum"""
 _ENCODINGSTYLE_PIPEDELIMITED: Literal["pipeDelimited"] = "pipeDelimited"
-"""The values for the 'default: form' enum"""
+r"""The values for the 'default: form' enum"""
 _ENCODINGSTYLE_DEEPOBJECT: Literal["deepObject"] = "deepObject"
-"""The values for the 'default: form' enum"""
+r"""The values for the 'default: form' enum"""
 
 
 class _Example(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#example-object
     not:
       required:
@@ -167,18 +167,18 @@ class _Example(TypedDict, total=False):
     description: str
     value: Any
     externalValue: str
-    """ format: uri-reference """
+    r""" format: uri-reference """
 
 
 class _ExternalDocumentation(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
     unevaluatedProperties: False
     """
 
     description: str
     url: Required[str]
-    """
+    r"""
     format: uri-reference
 
     Required property
@@ -186,15 +186,15 @@ class _ExternalDocumentation(TypedDict, total=False):
 
 
 _HEADER_DEPRECATED_DEFAULT = False
-""" Default value of the field path 'header deprecated' """
+r""" Default value of the field path 'header deprecated' """
 
 
 _HEADER_REQUIRED_DEFAULT = False
-""" Default value of the field path 'header required' """
+r""" Default value of the field path 'header required' """
 
 
 class _Header(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#header-object
     oneOf:
       - required:
@@ -216,13 +216,13 @@ class _Header(TypedDict, total=False):
 
     description: str
     required: bool
-    """ default: False """
+    r""" default: False """
 
     deprecated: bool
-    """ default: False """
+    r""" default: False """
 
     content: "_Content"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
     propertyNames:
       format: media-range
@@ -230,27 +230,27 @@ class _Header(TypedDict, total=False):
 
 
 class _Info(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#info-object
     unevaluatedProperties: False
     """
 
     title: Required[str]
-    """ Required property """
+    r""" Required property """
 
     summary: str
     description: str
     termsOfService: str
-    """ format: uri-reference """
+    r""" format: uri-reference """
 
     contact: "_Contact"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#contact-object
     unevaluatedProperties: False
     """
 
     license: "_License"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#license-object
     dependentSchemas:
       identifier:
@@ -261,11 +261,11 @@ class _Info(TypedDict, total=False):
     """
 
     version: Required[str]
-    """ Required property """
+    r""" Required property """
 
 
 class _License(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#license-object
     dependentSchemas:
       identifier:
@@ -276,15 +276,15 @@ class _License(TypedDict, total=False):
     """
 
     name: Required[str]
-    """ Required property """
+    r""" Required property """
 
     identifier: str
     url: str
-    """ format: uri-reference """
+    r""" format: uri-reference """
 
 
 class _Link(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#link-object
     oneOf:
       - required:
@@ -295,21 +295,21 @@ class _Link(TypedDict, total=False):
     """
 
     operationRef: str
-    """ format: uri-reference """
+    r""" format: uri-reference """
 
     operationId: str
     parameters: dict[str, str]
     requestBody: Any
     description: str
     body: "_Server"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#server-object
     unevaluatedProperties: False
     """
 
 
 class _MediaType(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#media-type-object
     unevaluatedProperties: False
     """
@@ -320,19 +320,19 @@ class _MediaType(TypedDict, total=False):
 
 
 _OPENAPI_JSONSCHEMADIALECT_DEFAULT = "https://spec.openapis.org/oas/3.1/dialect/2024-11-10"
-""" Default value of the field path 'OpenAPI jsonSchemaDialect' """
+r""" Default value of the field path 'OpenAPI jsonSchemaDialect' """
 
 
 _OPENAPI_SERVERS_DEFAULT = [{"url": "/"}]
-""" Default value of the field path 'OpenAPI servers' """
+r""" Default value of the field path 'OpenAPI servers' """
 
 
 _OPERATION_DEPRECATED_DEFAULT = False
-""" Default value of the field path 'operation deprecated' """
+r""" Default value of the field path 'operation deprecated' """
 
 
 class _Operation(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#operation-object
     unevaluatedProperties: False
     """
@@ -341,7 +341,7 @@ class _Operation(TypedDict, total=False):
     summary: str
     description: str
     externalDocs: "_ExternalDocumentation"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
     unevaluatedProperties: False
     """
@@ -349,13 +349,13 @@ class _Operation(TypedDict, total=False):
     operationId: str
     parameters: list["_Parameter"]
     requestBody: "_RequestBody"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#request-body-object
     unevaluatedProperties: False
     """
 
     responses: "_Responses"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#responses-object
     minProperties: 1
     unevaluatedProperties: False
@@ -367,18 +367,18 @@ class _Operation(TypedDict, total=False):
 
     callbacks: dict[str, "_Callbacks"]
     deprecated: bool
-    """ default: False """
+    r""" default: False """
 
     security: list["_SecurityRequirement"]
     servers: list["_Server"]
 
 
 _PARAMETER_DEPRECATED_DEFAULT = False
-""" Default value of the field path 'parameter deprecated' """
+r""" Default value of the field path 'parameter deprecated' """
 
 
 _PARAMETER_REQUIRED_DEFAULT = False
-""" Default value of the field path 'parameter required' """
+r""" Default value of the field path 'parameter required' """
 
 
 # | $comment: https://spec.openapis.org/oas/v3.1#parameter-object
@@ -488,13 +488,13 @@ _Parameter = TypedDict(
 
 _ParameterIn = Literal["query", "header", "path", "cookie"]
 _PARAMETERIN_QUERY: Literal["query"] = "query"
-"""The values for the '_ParameterIn' enum"""
+r"""The values for the '_ParameterIn' enum"""
 _PARAMETERIN_HEADER: Literal["header"] = "header"
-"""The values for the '_ParameterIn' enum"""
+r"""The values for the '_ParameterIn' enum"""
 _PARAMETERIN_PATH: Literal["path"] = "path"
-"""The values for the '_ParameterIn' enum"""
+r"""The values for the '_ParameterIn' enum"""
 _PARAMETERIN_COOKIE: Literal["cookie"] = "cookie"
-"""The values for the '_ParameterIn' enum"""
+r"""The values for the '_ParameterIn' enum"""
 
 
 # | $comment: https://spec.openapis.org/oas/v3.1#path-item-object
@@ -538,25 +538,25 @@ _PathItem = TypedDict(
 
 
 _Paths = dict[str, "_PathItem"]
-"""
+r"""
 $comment: https://spec.openapis.org/oas/v3.1#paths-object
 unevaluatedProperties: False
 """
 
 
 _REQUEST_BODY_REQUIRED_DEFAULT = False
-""" Default value of the field path 'request-body required' """
+r""" Default value of the field path 'request-body required' """
 
 
 class _RequestBody(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#request-body-object
     unevaluatedProperties: False
     """
 
     description: str
     content: Required["_Content"]
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
     propertyNames:
       format: media-range
@@ -565,21 +565,21 @@ class _RequestBody(TypedDict, total=False):
     """
 
     required: bool
-    """ default: False """
+    r""" default: False """
 
 
 class _Response(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#response-object
     unevaluatedProperties: False
     """
 
     description: Required[str]
-    """ Required property """
+    r""" Required property """
 
     headers: dict[str, "_Header"]
     content: "_Content"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
     propertyNames:
       format: media-range
@@ -589,7 +589,7 @@ class _Response(TypedDict, total=False):
 
 
 _Responses = Union[dict[str, "_Response"], "_ResponsesTyped"]
-"""
+r"""
 $comment: https://spec.openapis.org/oas/v3.1#responses-object
 minProperties: 1
 unevaluatedProperties: False
@@ -602,18 +602,18 @@ See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
 
 class _ResponsesTyped(TypedDict, total=False):
     default: "_Response"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#response-object
     unevaluatedProperties: False
     """
 
 
 _SecurityRequirement = dict[str, list[str]]
-""" $comment: https://spec.openapis.org/oas/v3.1#security-requirement-object """
+r""" $comment: https://spec.openapis.org/oas/v3.1#security-requirement-object """
 
 
 class _SecurityScheme(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#security-scheme-object
     allOf:
       - $ref: '#/$defs/security-scheme/$defs/type-apikey'
@@ -625,64 +625,64 @@ class _SecurityScheme(TypedDict, total=False):
     """
 
     type: Required["_SecuritySchemeType"]
-    """ Required property """
+    r""" Required property """
 
     description: str
 
 
 _SecuritySchemeType = Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"]
 _SECURITYSCHEMETYPE_APIKEY: Literal["apiKey"] = "apiKey"
-"""The values for the '_SecuritySchemeType' enum"""
+r"""The values for the '_SecuritySchemeType' enum"""
 _SECURITYSCHEMETYPE_HTTP: Literal["http"] = "http"
-"""The values for the '_SecuritySchemeType' enum"""
+r"""The values for the '_SecuritySchemeType' enum"""
 _SECURITYSCHEMETYPE_MUTUALTLS: Literal["mutualTLS"] = "mutualTLS"
-"""The values for the '_SecuritySchemeType' enum"""
+r"""The values for the '_SecuritySchemeType' enum"""
 _SECURITYSCHEMETYPE_OAUTH2: Literal["oauth2"] = "oauth2"
-"""The values for the '_SecuritySchemeType' enum"""
+r"""The values for the '_SecuritySchemeType' enum"""
 _SECURITYSCHEMETYPE_OPENIDCONNECT: Literal["openIdConnect"] = "openIdConnect"
-"""The values for the '_SecuritySchemeType' enum"""
+r"""The values for the '_SecuritySchemeType' enum"""
 
 
 class _Server(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#server-object
     unevaluatedProperties: False
     """
 
     url: Required[str]
-    """ Required property """
+    r""" Required property """
 
     description: str
     variables: dict[str, "_ServerVariable"]
 
 
 class _ServerVariable(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#server-variable-object
     unevaluatedProperties: False
     """
 
     enum: list[str]
-    """ minItems: 1 """
+    r""" minItems: 1 """
 
     default: Required[str]
-    """ Required property """
+    r""" Required property """
 
     description: str
 
 
 class _Tag(TypedDict, total=False):
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#tag-object
     unevaluatedProperties: False
     """
 
     name: Required[str]
-    """ Required property """
+    r""" Required property """
 
     description: str
     externalDocs: "_ExternalDocumentation"
-    """
+    r"""
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
     unevaluatedProperties: False
     """

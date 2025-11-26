@@ -6,40 +6,40 @@ from typing import TypedDict
 
 
 class T1(TypedDict, total=False):
-    """t1."""
+    r"""t1."""
 
     t1: bool
 
 
 class T2(TypedDict, total=False):
-    """t2."""
+    r"""t2."""
 
     t2: bool
 
 
 class T3(TypedDict, total=False):
-    """t3."""
+    r"""t3."""
 
     t3: bool
 
 
 class T4(TypedDict, total=False):
-    """t4."""
+    r"""t4."""
 
     t4: bool
 
 
 class T5(TypedDict, total=False):
-    """t5."""
+    r"""t5."""
 
     t5: bool
 
 
 class TestCombiningAllofAndAnyof(TypedDict, total=False):
-    """Test combining allOf and anyOf."""
+    r"""Test combining allOf and anyOf."""
 
     withTitle: "Withtitle"
-    """
+    r"""
     withTitle.
     Subtype: "T1", "T2", "T3", "T4", "T5"
     """
@@ -48,7 +48,7 @@ class TestCombiningAllofAndAnyof(TypedDict, total=False):
 
 
 class Withtitle(TypedDict, total=False):
-    """withTitle."""
+    r"""withTitle."""
 
     t1: bool
     t2: bool
