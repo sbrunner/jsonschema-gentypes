@@ -28,7 +28,7 @@ requests = "2.32.5"
 pinyin = { version = "0.4.0", optional = true }
 Unidecode = { version = "1.4.0", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "4.3.0", optional = true }
+pre-commit = { version = "4.5.0", optional = true }
 referencing = "0.37.0"
 jsonschema-validator-new = { version = "0.3.2", optional = true }
 
