@@ -92,7 +92,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.5.0"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.0"]
 requires-python = ">=3.10"
 
 [project.urls]
