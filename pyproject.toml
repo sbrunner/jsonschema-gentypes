@@ -28,7 +28,7 @@ requests = "2.32.5"
 pinyin = { version = "0.4.0", optional = true }
 Unidecode = { version = "1.4.0", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "4.5.0", optional = true }
+pre-commit = { version = "4.5.1", optional = true }
 referencing = "0.37.0"
 jsonschema-validator-new = { version = "0.3.2", optional = true }
 
@@ -43,7 +43,7 @@ prospector = {  version = "1.17.3", extras = ["with_mypy", "with_bandit", "with_
 prospector-profile-duplicated = "1.10.5"
 prospector-profile-utils = "1.26.5"
 ruff = "0.14.10"
-pytest = "9.0.1"
+pytest = "9.0.2"
 pytest-cov = "7.0.0"
 types-requests = "2.32.4.20250913"
 types-pyyaml = "6.0.12.20250915"
@@ -92,7 +92,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.0", "filelock==3.20.1"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.2", "filelock==3.20.2"]
 requires-python = ">=3.10"
 
 [project.urls]
