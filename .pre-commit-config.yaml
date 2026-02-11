@@ -55,7 +55,7 @@ repos:
       - id: prospector-to-ruff
         additional_dependencies:
           - prospector-profile-duplicated==1.12.0 # pypi
-          - prospector-profile-utils==1.26.5 # pypi
+          - prospector-profile-utils==1.27.0 # pypi
         args:
           - --test=utils:tests
   - repo: https://github.com/codespell-project/codespell
@@ -102,7 +102,7 @@ repos:
           - --profile=.prospector.yaml
         additional_dependencies:
           - prospector-profile-duplicated==1.12.0 # pypi
-          - prospector-profile-utils==1.26.5 # pypi
+          - prospector-profile-utils==1.27.0 # pypi
           - ruff==0.15.0 # pypi
           - pylint[spelling]==4.0.4 # pypi
         exclude: |-
@@ -121,7 +121,7 @@ repos:
           - --profile=utils:tests
           - --profile=utils:pre-commit
         additional_dependencies:
-          - prospector-profile-utils==1.26.5 # pypi
+          - prospector-profile-utils==1.27.0 # pypi
           - ruff==0.15.0 # pypi
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.0
@@ -148,7 +148,7 @@ repos:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 43.4.1
+    rev: 43.8.1
     hooks:
       - id: renovate-config-validator
   - repo: https://github.com/sbrunner/python-versions-hook
