@@ -40,8 +40,8 @@ validation = ['jsonschema-validator-new']
 
 [tool.poetry.group.dev.dependencies]
 prospector = {  version = "1.18.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
-prospector-profile-duplicated = "1.11.0"
-prospector-profile-utils = "1.26.5"
+prospector-profile-duplicated = "1.12.0"
+prospector-profile-utils = "1.27.0"
 ruff = "0.15.0"
 pytest = "9.0.2"
 pytest-cov = "7.0.0"
@@ -92,7 +92,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.3", "filelock==3.20.3", "virtualenv==20.36.1"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.3", "filelock==3.24.3", "virtualenv==20.39.1"]
 requires-python = ">=3.10"
 
 [project.urls]
