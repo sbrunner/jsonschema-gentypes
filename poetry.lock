@@ -475,15 +475,15 @@ flake8 = "*"
 
 [[package]]
 name = "identify"
-version = "2.6.16"
+version = "2.6.17"
 description = "File identification library for Python"
 optional = true
 python-versions = ">=3.10"
 groups = ["main"]
 markers = "extra == \"tools\""
 files = [
-    {file = "identify-2.6.16-py2.py3-none-any.whl", hash = "sha256:391ee4d77741d994189522896270b787aed8670389bfd60f326d677d64a6dfb0"},
-    {file = "identify-2.6.16.tar.gz", hash = "sha256:846857203b5511bbe94d5a352a48ef2359532bc8f6727b5544077a0dcfb24980"},
+    {file = "identify-2.6.17-py2.py3-none-any.whl", hash = "sha256:be5f8412d5ed4b20f2bd41a65f920990bdccaa6a4a18a08f1eefdcd0bdd885f0"},
+    {file = "identify-2.6.17.tar.gz", hash = "sha256:f816b0b596b204c9fdf076ded172322f2723cf958d02f9c3587504834c8ff04d"},
 ]
 
 [package.extras]
