@@ -4,8 +4,8 @@ Automatically generated file from a JSON schema.
 
 
 from typing import Any, Literal, TypedDict, Union
-
 from typing_extensions import Required
+
 
 ExtentWithUniformAdditionalDimensionsSchema = Union[dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"], "ExtentWithUniformAdditionalDimensionsSchemaTyped"]
 r"""
@@ -73,7 +73,7 @@ class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
     f: "OgcapiCollectionsCollectionidGetQueryF"
 
 
-OgcapiCollectionsCollectionidGetQueryF = Literal['json', 'html']
+OgcapiCollectionsCollectionidGetQueryF = Literal['json'] | Literal['html']
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal['json'] = "json"
 r"""The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal['html'] = "html"
@@ -222,7 +222,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
       - http://www.opengis.net/def/crs/EPSG/0/4326
     """
 
-    dataType: str | int | float | dict[str, Any] | None | bool
+    dataType: str | int | float | dict[str, Any] | None | bool | None
     geometryDimension: int
     r"""
     The geometry dimension of the features shown in this layer (0: points, 1: curves, 2: surfaces, 3: solids), unspecified: mixed or unknown
@@ -516,7 +516,7 @@ example:
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84', 'http://www.opengis.net/def/crs/OGC/0/CRS84h']
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84'] | Literal['http://www.opengis.net/def/crs/OGC/0/CRS84h']
 r"""
 Coordinate reference system of the coordinates in the spatial extent
 (property `bbox`). The default reference system is WGS 84 longitude/latitude.
@@ -709,3 +709,4 @@ r""" Default value of the field path 'OgcapiCollectionsCollectionidGetResponse20
 
 _OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = 'unknown'
 r""" Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 itemType' """
+

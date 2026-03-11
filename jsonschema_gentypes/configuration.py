@@ -2,20 +2,22 @@
 Automatically generated file from a JSON schema.
 """
 
-from typing import Any, Literal, TypedDict
 
+from typing import Any, Literal, TypedDict
 from typing_extensions import Required
 
-AdditionalProperties = Literal["Always", "Only explicit"]
+
+AdditionalProperties = Literal['Always'] | Literal['Only explicit']
 r"""
 Additional properties.
 
 Describe how to deal with additional properties
 """
-ADDITIONALPROPERTIES_ALWAYS: Literal["Always"] = "Always"
+ADDITIONALPROPERTIES_ALWAYS: Literal['Always'] = "Always"
 r"""The values for the 'Additional properties' enum"""
-ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal["Only explicit"] = "Only explicit"
+ADDITIONALPROPERTIES_ONLY_EXPLICIT: Literal['Only explicit'] = "Only explicit"
 r"""The values for the 'Additional properties' enum"""
+
 
 
 class ApiArguments(TypedDict, total=False):
@@ -38,6 +40,7 @@ class ApiArguments(TypedDict, total=False):
 
     Describe the rules to use to get the name of an element
     """
+
 
 
 class Configuration(TypedDict, total=False):
@@ -66,8 +69,9 @@ class Configuration(TypedDict, total=False):
     r""" Required property """
 
 
+
 class GenerateItem(TypedDict, total=False):
-    r"""Generate item."""
+    r""" Generate item. """
 
     source: Required[str]
     r"""
@@ -111,24 +115,28 @@ class GenerateItem(TypedDict, total=False):
     r""" Locally available resources. """
 
 
-GetNameProperties = Literal["Title", "UpperFirst"]
+
+GetNameProperties = Literal['Title'] | Literal['UpperFirst']
 r"""
 Get name properties.
 
 Describe the rules to use to get the name of an element
 """
-GETNAMEPROPERTIES_TITLE: Literal["Title"] = "Title"
+GETNAMEPROPERTIES_TITLE: Literal['Title'] = "Title"
 r"""The values for the 'Get name properties' enum"""
-GETNAMEPROPERTIES_UPPERFIRST: Literal["UpperFirst"] = "UpperFirst"
+GETNAMEPROPERTIES_UPPERFIRST: Literal['UpperFirst'] = "UpperFirst"
 r"""The values for the 'Get name properties' enum"""
+
 
 
 PRE_COMMIT_ARGUMENTS_DEFAULT: list[Any] = []
 r""" Default value of the field path 'Pre-commit configuration arguments' """
 
 
+
 PRE_COMMIT_ENABLE_DEFAULT = False
 r""" Default value of the field path 'Pre-commit configuration enable' """
+
 
 
 class PreCommitConfiguration(TypedDict, total=False):
@@ -168,3 +176,4 @@ class PreCommitConfiguration(TypedDict, total=False):
 
     The hooks to skip, none by default
     """
+
