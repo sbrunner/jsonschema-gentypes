@@ -1,3 +1,8 @@
 * text whitespace=trailing-space,tab-in-indent,cr-at-eol,tabwidth=4 eol=lf
 Makefile text whitespace=indent-with-non-tab,tabwidth=2
 *.rst text conflict-marker-size=100
+
+# Ignore blank-at-eof on generated files.
+jsonschema_gentypes/configuration.py whitespace=-blank-at-eof
+jsonschema_gentypes/openapi.py whitespace=-blank-at-eof
+tests/openapi3.py whitespace=-blank-at-eof

@@ -487,7 +487,7 @@ class TestBasicTypes(TypedDict, total=False):
         "\n".join([d.rstrip() for d in enum_type.definition((3, 8))])
         == '''
 
-Properties = Union[Literal['red'], Literal['amber'], Literal['green']]
+Properties = Literal['red', 'amber', 'green']
 r""" properties. """
 PROPERTIES_RED: Literal['red'] = "red"
 r"""The values for the 'properties' enum"""
@@ -793,7 +793,7 @@ def test_enum() -> None:
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
         == '''
 
-TestBasicTypes = Union[Literal['red'], Literal['amber'], Literal['green']]
+TestBasicTypes = Literal['red', 'amber', 'green']
 r""" test basic types. """
 TESTBASICTYPES_RED: Literal['red'] = "red"
 r"""The values for the 'test basic types' enum"""
@@ -811,7 +811,7 @@ def test_enum_int() -> None:
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
         == '''
 
-TestBasicTypes = Union[Literal[1], Literal[2], Literal[3]]
+TestBasicTypes = Literal[1, 2, 3]
 r""" test basic types. """
 TESTBASICTYPES_1: Literal[1] = 1
 r"""The values for the 'test basic types' enum"""
@@ -829,7 +829,7 @@ def test_enum_bool() -> None:
         "\n".join([d.rstrip() for d in type_.definition((3, 8))])
         == '''
 
-TestBasicTypes = Union[Literal[True], Literal[False]]
+TestBasicTypes = Literal[True, False]
 r""" test basic types. """
 TESTBASICTYPES_TRUE: Literal[True] = True
 r"""The values for the 'test basic types' enum"""

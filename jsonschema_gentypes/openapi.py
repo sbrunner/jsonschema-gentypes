@@ -2,8 +2,8 @@
 Automatically generated file from a JSON schema.
 """
 
-from typing import Any, Literal, TypedDict, Union
 
+from typing import Any, Literal, TypedDict, Union
 from typing_extensions import Required
 
 
@@ -70,8 +70,10 @@ class OpenAPI(TypedDict, total=False):
     """
 
 
+
 _Callbacks = dict[str, "_PathItem"]
 r""" $comment: https://spec.openapis.org/oas/v3.1#callback-object """
+
 
 
 class _Components(TypedDict, total=False):
@@ -105,6 +107,7 @@ class _Contact(TypedDict, total=False):
     r""" format: email """
 
 
+
 _Content = dict[str, "_MediaType"]
 r"""
 $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
@@ -113,12 +116,15 @@ propertyNames:
 """
 
 
+
 _ENCODING_ALLOWRESERVED_DEFAULT = False
 r""" Default value of the field path 'encoding allowReserved' """
 
 
-_ENCODING_STYLE_DEFAULT = "form"
+
+_ENCODING_STYLE_DEFAULT = 'form'
 r""" Default value of the field path 'encoding style' """
+
 
 
 class _Encoding(TypedDict, total=False):
@@ -141,16 +147,18 @@ class _Encoding(TypedDict, total=False):
     r""" default: False """
 
 
-_EncodingStyle = Literal["form", "spaceDelimited", "pipeDelimited", "deepObject"]
+
+_EncodingStyle = Literal['form', 'spaceDelimited', 'pipeDelimited', 'deepObject']
 r""" default: form """
-_ENCODINGSTYLE_FORM: Literal["form"] = "form"
+_ENCODINGSTYLE_FORM: Literal['form'] = "form"
 r"""The values for the 'default: form' enum"""
-_ENCODINGSTYLE_SPACEDELIMITED: Literal["spaceDelimited"] = "spaceDelimited"
+_ENCODINGSTYLE_SPACEDELIMITED: Literal['spaceDelimited'] = "spaceDelimited"
 r"""The values for the 'default: form' enum"""
-_ENCODINGSTYLE_PIPEDELIMITED: Literal["pipeDelimited"] = "pipeDelimited"
+_ENCODINGSTYLE_PIPEDELIMITED: Literal['pipeDelimited'] = "pipeDelimited"
 r"""The values for the 'default: form' enum"""
-_ENCODINGSTYLE_DEEPOBJECT: Literal["deepObject"] = "deepObject"
+_ENCODINGSTYLE_DEEPOBJECT: Literal['deepObject'] = "deepObject"
 r"""The values for the 'default: form' enum"""
+
 
 
 class _Example(TypedDict, total=False):
@@ -170,6 +178,7 @@ class _Example(TypedDict, total=False):
     r""" format: uri-reference """
 
 
+
 class _ExternalDocumentation(TypedDict, total=False):
     r"""
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
@@ -185,12 +194,15 @@ class _ExternalDocumentation(TypedDict, total=False):
     """
 
 
+
 _HEADER_DEPRECATED_DEFAULT = False
 r""" Default value of the field path 'header deprecated' """
 
 
+
 _HEADER_REQUIRED_DEFAULT = False
 r""" Default value of the field path 'header required' """
+
 
 
 class _Header(TypedDict, total=False):
@@ -229,6 +241,7 @@ class _Header(TypedDict, total=False):
     """
 
 
+
 class _Info(TypedDict, total=False):
     r"""
     $comment: https://spec.openapis.org/oas/v3.1#info-object
@@ -264,6 +277,7 @@ class _Info(TypedDict, total=False):
     r""" Required property """
 
 
+
 class _License(TypedDict, total=False):
     r"""
     $comment: https://spec.openapis.org/oas/v3.1#license-object
@@ -281,6 +295,7 @@ class _License(TypedDict, total=False):
     identifier: str
     url: str
     r""" format: uri-reference """
+
 
 
 class _Link(TypedDict, total=False):
@@ -308,6 +323,7 @@ class _Link(TypedDict, total=False):
     """
 
 
+
 class _MediaType(TypedDict, total=False):
     r"""
     $comment: https://spec.openapis.org/oas/v3.1#media-type-object
@@ -319,16 +335,19 @@ class _MediaType(TypedDict, total=False):
     examples: dict[str, "_Example"]
 
 
-_OPENAPI_JSONSCHEMADIALECT_DEFAULT = "https://spec.openapis.org/oas/3.1/dialect/2024-11-10"
+_OPENAPI_JSONSCHEMADIALECT_DEFAULT = 'https://spec.openapis.org/oas/3.1/dialect/2024-11-10'
 r""" Default value of the field path 'OpenAPI jsonSchemaDialect' """
 
 
-_OPENAPI_SERVERS_DEFAULT = [{"url": "/"}]
+
+_OPENAPI_SERVERS_DEFAULT = [{'url': '/'}]
 r""" Default value of the field path 'OpenAPI servers' """
+
 
 
 _OPERATION_DEPRECATED_DEFAULT = False
 r""" Default value of the field path 'operation deprecated' """
+
 
 
 class _Operation(TypedDict, total=False):
@@ -377,8 +396,10 @@ _PARAMETER_DEPRECATED_DEFAULT = False
 r""" Default value of the field path 'parameter deprecated' """
 
 
+
 _PARAMETER_REQUIRED_DEFAULT = False
 r""" Default value of the field path 'parameter required' """
+
 
 
 # | $comment: https://spec.openapis.org/oas/v3.1#parameter-object
@@ -465,76 +486,69 @@ r""" Default value of the field path 'parameter required' """
 # |       style:
 # |         type: string
 # | unevaluatedProperties: False
-_Parameter = TypedDict(
-    "_Parameter",
-    {
-        # | Required property
-        "name": Required[str],
-        # | Required property
-        "in": Required["_ParameterIn"],
-        "description": str,
-        # | default: False
-        "required": bool,
-        # | default: False
-        "deprecated": bool,
-        # | $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
-        # | propertyNames:
-        # |   format: media-range
-        "content": "_Content",
-    },
-    total=False,
-)
+_Parameter = TypedDict('_Parameter', {
+    # | Required property
+    'name': Required[str],
+    # | Required property
+    'in': Required["_ParameterIn"],
+    'description': str,
+    # | default: False
+    'required': bool,
+    # | default: False
+    'deprecated': bool,
+    # | $comment: https://spec.openapis.org/oas/v3.1#fixed-fields-10
+    # | propertyNames:
+    # |   format: media-range
+    'content': "_Content",
+}, total=False)
 
 
-_ParameterIn = Literal["query", "header", "path", "cookie"]
-_PARAMETERIN_QUERY: Literal["query"] = "query"
+_ParameterIn = Literal['query', 'header', 'path', 'cookie']
+_PARAMETERIN_QUERY: Literal['query'] = "query"
 r"""The values for the '_ParameterIn' enum"""
-_PARAMETERIN_HEADER: Literal["header"] = "header"
+_PARAMETERIN_HEADER: Literal['header'] = "header"
 r"""The values for the '_ParameterIn' enum"""
-_PARAMETERIN_PATH: Literal["path"] = "path"
+_PARAMETERIN_PATH: Literal['path'] = "path"
 r"""The values for the '_ParameterIn' enum"""
-_PARAMETERIN_COOKIE: Literal["cookie"] = "cookie"
+_PARAMETERIN_COOKIE: Literal['cookie'] = "cookie"
 r"""The values for the '_ParameterIn' enum"""
+
 
 
 # | $comment: https://spec.openapis.org/oas/v3.1#path-item-object
 # | unevaluatedProperties: False
-_PathItem = TypedDict(
-    "_PathItem",
-    {
-        # | format: uri-reference
-        "$ref": str,
-        "summary": str,
-        "description": str,
-        "servers": list["_Server"],
-        "parameters": list["_Parameter"],
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "get": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "put": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "post": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "delete": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "options": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "head": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "patch": "_Operation",
-        # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
-        # | unevaluatedProperties: False
-        "trace": "_Operation",
-    },
-    total=False,
-)
+_PathItem = TypedDict('_PathItem', {
+    # | format: uri-reference
+    '$ref': str,
+    'summary': str,
+    'description': str,
+    'servers': list["_Server"],
+    'parameters': list["_Parameter"],
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'get': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'put': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'post': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'delete': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'options': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'head': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'patch': "_Operation",
+    # | $comment: https://spec.openapis.org/oas/v3.1#operation-object
+    # | unevaluatedProperties: False
+    'trace': "_Operation",
+}, total=False)
 
 
 _Paths = dict[str, "_PathItem"]
@@ -544,8 +558,10 @@ unevaluatedProperties: False
 """
 
 
+
 _REQUEST_BODY_REQUIRED_DEFAULT = False
 r""" Default value of the field path 'request-body required' """
+
 
 
 class _RequestBody(TypedDict, total=False):
@@ -566,6 +582,7 @@ class _RequestBody(TypedDict, total=False):
 
     required: bool
     r""" default: False """
+
 
 
 class _Response(TypedDict, total=False):
@@ -600,6 +617,7 @@ See: https://github.com/camptocamp/jsonschema-gentypes/issues/7
 """
 
 
+
 class _ResponsesTyped(TypedDict, total=False):
     default: "_Response"
     r"""
@@ -608,8 +626,10 @@ class _ResponsesTyped(TypedDict, total=False):
     """
 
 
+
 _SecurityRequirement = dict[str, list[str]]
 r""" $comment: https://spec.openapis.org/oas/v3.1#security-requirement-object """
+
 
 
 class _SecurityScheme(TypedDict, total=False):
@@ -630,17 +650,18 @@ class _SecurityScheme(TypedDict, total=False):
     description: str
 
 
-_SecuritySchemeType = Literal["apiKey", "http", "mutualTLS", "oauth2", "openIdConnect"]
-_SECURITYSCHEMETYPE_APIKEY: Literal["apiKey"] = "apiKey"
+_SecuritySchemeType = Literal['apiKey', 'http', 'mutualTLS', 'oauth2', 'openIdConnect']
+_SECURITYSCHEMETYPE_APIKEY: Literal['apiKey'] = "apiKey"
 r"""The values for the '_SecuritySchemeType' enum"""
-_SECURITYSCHEMETYPE_HTTP: Literal["http"] = "http"
+_SECURITYSCHEMETYPE_HTTP: Literal['http'] = "http"
 r"""The values for the '_SecuritySchemeType' enum"""
-_SECURITYSCHEMETYPE_MUTUALTLS: Literal["mutualTLS"] = "mutualTLS"
+_SECURITYSCHEMETYPE_MUTUALTLS: Literal['mutualTLS'] = "mutualTLS"
 r"""The values for the '_SecuritySchemeType' enum"""
-_SECURITYSCHEMETYPE_OAUTH2: Literal["oauth2"] = "oauth2"
+_SECURITYSCHEMETYPE_OAUTH2: Literal['oauth2'] = "oauth2"
 r"""The values for the '_SecuritySchemeType' enum"""
-_SECURITYSCHEMETYPE_OPENIDCONNECT: Literal["openIdConnect"] = "openIdConnect"
+_SECURITYSCHEMETYPE_OPENIDCONNECT: Literal['openIdConnect'] = "openIdConnect"
 r"""The values for the '_SecuritySchemeType' enum"""
+
 
 
 class _Server(TypedDict, total=False):
@@ -686,3 +707,4 @@ class _Tag(TypedDict, total=False):
     $comment: https://spec.openapis.org/oas/v3.1#external-documentation-object
     unevaluatedProperties: False
     """
+

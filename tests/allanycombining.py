@@ -2,41 +2,42 @@
 Automatically generated file from a JSON schema.
 """
 
+
 from typing import TypedDict
 
 
 class T1(TypedDict, total=False):
-    r"""t1."""
+    r""" t1. """
 
     t1: bool
 
 
 class T2(TypedDict, total=False):
-    r"""t2."""
+    r""" t2. """
 
     t2: bool
 
 
 class T3(TypedDict, total=False):
-    r"""t3."""
+    r""" t3. """
 
     t3: bool
 
 
 class T4(TypedDict, total=False):
-    r"""t4."""
+    r""" t4. """
 
     t4: bool
 
 
 class T5(TypedDict, total=False):
-    r"""t5."""
+    r""" t5. """
 
     t5: bool
 
 
 class TestCombiningAllofAndAnyof(TypedDict, total=False):
-    r"""Test combining allOf and anyOf."""
+    r""" Test combining allOf and anyOf. """
 
     withTitle: "Withtitle"
     r"""
@@ -48,7 +49,7 @@ class TestCombiningAllofAndAnyof(TypedDict, total=False):
 
 
 class Withtitle(TypedDict, total=False):
-    r"""withTitle."""
+    r""" withTitle. """
 
     t1: bool
     t2: bool

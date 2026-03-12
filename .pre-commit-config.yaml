@@ -1,5 +1,15 @@
 # https://pre-commit.com/hooks.html
 
+exclude: |-
+  (?x)^(
+    jsonschema_gentypes/configuration\.py
+    |jsonschema_gentypes/jsonschema_draft_.*\.py
+    |jsonschema_gentypes/openapi\.py
+    |tests/openapi3\.py
+    |tests/recursion\.py
+    |tests/allanycombining\.py
+  )$
+
 repos:
   - repo: local
     hooks:
@@ -23,8 +33,6 @@ repos:
             |jsonschema_gentypes/openapi-2025-02-13.json
           )$
         verbose: true
-        additional_dependencies:
-          - pre-commit==4.5.1 # pypi
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:

@@ -4,8 +4,8 @@ Automatically generated file from a JSON schema.
 
 
 from typing import Any, Literal, TypedDict, Union
-
 from typing_extensions import Required
+
 
 ExtentWithUniformAdditionalDimensionsSchema = Union[dict[str, "_ExtentWithUniformAdditionalDimensionsSchemaAdditionalproperties"], "ExtentWithUniformAdditionalDimensionsSchemaTyped"]
 r"""
@@ -222,7 +222,7 @@ class OgcapiCollectionsCollectionidGetResponse200(TypedDict, total=False):
       - http://www.opengis.net/def/crs/EPSG/0/4326
     """
 
-    dataType: str | int | float | dict[str, Any] | None | bool
+    dataType: str | int | float | dict[str, Any] | None | bool | None
     geometryDimension: int
     r"""
     The geometry dimension of the features shown in this layer (0: points, 1: curves, 2: surfaces, 3: solids), unspecified: mixed or unknown
@@ -709,3 +709,4 @@ r""" Default value of the field path 'OgcapiCollectionsCollectionidGetResponse20
 
 _OGCAPICOLLECTIONSCOLLECTIONIDGETRESPONSE200_ITEMTYPE_DEFAULT = 'unknown'
 r""" Default value of the field path 'OgcapiCollectionsCollectionidGetResponse200 itemType' """
+
