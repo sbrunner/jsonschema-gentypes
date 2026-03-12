@@ -7,7 +7,7 @@ from typing import Any, Literal, TypedDict
 from typing_extensions import Required
 
 
-AdditionalProperties = Literal['Always'] | Literal['Only explicit']
+AdditionalProperties = Literal['Always', 'Only explicit']
 r"""
 Additional properties.
 
@@ -116,7 +116,7 @@ class GenerateItem(TypedDict, total=False):
 
 
 
-GetNameProperties = Literal['Title'] | Literal['UpperFirst']
+GetNameProperties = Literal['Title', 'UpperFirst']
 r"""
 Get name properties.
 

@@ -5,6 +5,7 @@ import random
 import re
 import textwrap
 import unicodedata
+from collections.abc import Sequence
 from typing import Any, cast
 
 import yaml
@@ -241,7 +242,7 @@ class NamedType(Type):
 class LiteralType(Type):
     """A literal type like: `Literal["text"]`."""
 
-    def __init__(self, const: float | bool | str | None | dict[str, Any] | list[Any]) -> None:
+    def __init__(self, const: Sequence[float | bool | str | None | dict[str, Any] | list[Any]]) -> None:
         """
         Init.
 
@@ -254,7 +255,8 @@ class LiteralType(Type):
     def name(self, python_version: tuple[int, ...]) -> str:
         """Return what we need to use the type."""
         del python_version
-        return f"Literal[{self.const!r}]"
+        const_combined = ", ".join([repr(c) for c in self.const])
+        return f"Literal[{const_combined}]"
 
     def imports(self, python_version: tuple[int, ...]) -> list[tuple[str, str]]:
         """Return the needed imports."""
@@ -560,7 +562,7 @@ class TypeEnum(NamedType):
         self.values = values
         self.value_names = {value: get_name({"title": f"{name} {value}"}, upper=True) for value in values}
         self.descriptions = descriptions
-        self.sub_type: Type = UnionType([LiteralType(value) for value in values])
+        self.sub_type: Type = LiteralType(values)
 
     def depends_on(self, python_version: tuple[int, ...]) -> list["Type"]:
         """Return the needed sub types."""
@@ -578,7 +580,7 @@ class TypeEnum(NamedType):
         for value in self.values:
             name = self.value_names[value]
             formatted_value = f'"{value}"' if isinstance(value, str) else str(value)
-            result.append(f"{name}: {LiteralType(value).name(python_version)} = {formatted_value}")
+            result.append(f"{name}: {LiteralType([value]).name(python_version)} = {formatted_value}")
             name = self.descriptions[0] if self.descriptions else self._name
             name = name.removesuffix(".")
             result.append(f'r"""The values for the \'{name}\' enum"""')

@@ -82,4 +82,4 @@ class APIv6(APIv4):
 
         schema.setdefault("used", set()).add("const")  # type: ignore[typeddict-item]
         const_: int | float | str | bool | None | dict[str, Any] | list[Any] = schema_casted["const"]
-        return LiteralType(const_)
+        return LiteralType([const_])

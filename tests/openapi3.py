@@ -73,7 +73,7 @@ class OgcapiCollectionsCollectionidGetQuery(TypedDict, total=False):
     f: "OgcapiCollectionsCollectionidGetQueryF"
 
 
-OgcapiCollectionsCollectionidGetQueryF = Literal['json'] | Literal['html']
+OgcapiCollectionsCollectionidGetQueryF = Literal['json', 'html']
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_JSON: Literal['json'] = "json"
 r"""The values for the 'OgcapiCollectionsCollectionidGetQueryF' enum"""
 _OGCAPICOLLECTIONSCOLLECTIONIDGETQUERYF_HTML: Literal['html'] = "html"
@@ -516,7 +516,7 @@ example:
 
 
 
-_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84'] | Literal['http://www.opengis.net/def/crs/OGC/0/CRS84h']
+_ExtentWithUniformAdditionalDimensionsSchemaSpatialCrs = Literal['http://www.opengis.net/def/crs/OGC/1.3/CRS84', 'http://www.opengis.net/def/crs/OGC/0/CRS84h']
 r"""
 Coordinate reference system of the coordinates in the spatial extent
 (property `bbox`). The default reference system is WGS 84 longitude/latitude.

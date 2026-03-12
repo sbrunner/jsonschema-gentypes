@@ -148,7 +148,7 @@ class _Encoding(TypedDict, total=False):
 
 
 
-_EncodingStyle = Literal['form'] | Literal['spaceDelimited'] | Literal['pipeDelimited'] | Literal['deepObject']
+_EncodingStyle = Literal['form', 'spaceDelimited', 'pipeDelimited', 'deepObject']
 r""" default: form """
 _ENCODINGSTYLE_FORM: Literal['form'] = "form"
 r"""The values for the 'default: form' enum"""
@@ -503,7 +503,7 @@ _Parameter = TypedDict('_Parameter', {
 }, total=False)
 
 
-_ParameterIn = Literal['query'] | Literal['header'] | Literal['path'] | Literal['cookie']
+_ParameterIn = Literal['query', 'header', 'path', 'cookie']
 _PARAMETERIN_QUERY: Literal['query'] = "query"
 r"""The values for the '_ParameterIn' enum"""
 _PARAMETERIN_HEADER: Literal['header'] = "header"
@@ -650,7 +650,7 @@ class _SecurityScheme(TypedDict, total=False):
     description: str
 
 
-_SecuritySchemeType = Literal['apiKey'] | Literal['http'] | Literal['mutualTLS'] | Literal['oauth2'] | Literal['openIdConnect']
+_SecuritySchemeType = Literal['apiKey', 'http', 'mutualTLS', 'oauth2', 'openIdConnect']
 _SECURITYSCHEMETYPE_APIKEY: Literal['apiKey'] = "apiKey"
 r"""The values for the '_SecuritySchemeType' enum"""
 _SECURITYSCHEMETYPE_HTTP: Literal['http'] = "http"
