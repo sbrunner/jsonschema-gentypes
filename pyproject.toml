@@ -44,8 +44,8 @@ prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
 ruff = "0.15.4"
 pytest = "9.0.2"
-pytest-cov = "7.0.0"
-types-requests = "2.32.4.20260107"
+pytest-cov = "7.1.0"
+types-requests = "2.32.4.20260324"
 types-pyyaml = "6.0.12.20250915"
 
 [tool.poetry-dynamic-versioning]
@@ -92,7 +92,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.3", "filelock==3.25.0", "virtualenv==21.1.0"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.3", "filelock==3.25.2", "virtualenv==21.2.0"]
 requires-python = ">=3.10"
 
 [project.urls]
