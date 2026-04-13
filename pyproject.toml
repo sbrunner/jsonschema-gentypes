@@ -43,7 +43,7 @@ prospector = {  version = "1.18.0", extras = ["with_mypy", "with_bandit", "with_
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
 ruff = "0.15.7"
-pytest = "9.0.2"
+pytest = "9.0.3"
 pytest-cov = "7.1.0"
 types-requests = "2.32.4.20260324"
 types-pyyaml = "6.0.12.20250915"
