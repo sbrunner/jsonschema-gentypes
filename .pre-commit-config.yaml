@@ -111,7 +111,7 @@ repos:
         additional_dependencies:
           - prospector-profile-duplicated==1.12.0 # pypi
           - prospector-profile-utils==1.27.0 # pypi
-          - ruff==0.15.11 # pypi
+          - ruff==0.15.12 # pypi
           - pylint[spelling]==4.0.5 # pypi
         exclude: |-
           (?x)(
@@ -130,9 +130,9 @@ repos:
           - --profile=utils:pre-commit
         additional_dependencies:
           - prospector-profile-utils==1.27.0 # pypi
-          - ruff==0.15.11 # pypi
+          - ruff==0.15.12 # pypi
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.11
+    rev: v0.15.12
     hooks:
       - id: ruff-format
         args:
