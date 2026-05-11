@@ -1,3 +1,48 @@
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+dynamic = ["dependencies", "version"]
+name = "jsonschema-gentypes"
+description = "Tool to generate Python types based on TypedDict from a JSON Schema"
+readme = "README.md"
+keywords = ["jsonschema", "types"]
+license = "BSD-2-Clause"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Software Development :: Code Generators',
+    'Typing :: Typed',
+]
+authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
+packages = [{ include = "jsonschema_gentypes" }]
+include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.0", "virtualenv==21.2.4"]
+requires-python = ">=3.10"
+
+[project.urls]
+repository = "https://github.com/camptocamp/jsonschema-gentypes"
+"Bug Tracker" = "https://github.com/camptocamp/jsonschema-gentypes/issues"
+
+[project.scripts]
+jsonschema-gentypes = "jsonschema_gentypes.cli:main"
+
+[project.optional-dependencies]
+extra = ["pinyin", "Unidecode", "romanize"]
+tools = ["pre-commit"]
+validation = ["jsonschema-validator-new"]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 110
@@ -66,47 +111,3 @@ format-jinja = """
 
 [tool.poetry-plugin-tweak-dependencies-version]
 default = "present"
-
-[project]
-dynamic = ["dependencies", "version"]
-name = "jsonschema-gentypes"
-description = "Tool to generate Python types based on TypedDict from a JSON Schema"
-readme = "README.md"
-keywords = ["jsonschema", "types"]
-license = "BSD-2-Clause"
-classifiers = [
-    'Development Status :: 4 - Beta',
-    'Environment :: Console',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11',
-    'Programming Language :: Python :: 3.12',
-    'Programming Language :: Python :: 3.13',
-    'Topic :: Software Development :: Code Generators',
-    'Typing :: Typed',
-]
-authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
-packages = [{ include = "jsonschema_gentypes" }]
-include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.6.3", "filelock==3.29.0", "virtualenv==21.2.4"]
-requires-python = ">=3.10"
-
-[project.urls]
-repository = "https://github.com/camptocamp/jsonschema-gentypes"
-"Bug Tracker" = "https://github.com/camptocamp/jsonschema-gentypes/issues"
-
-[project.scripts]
-jsonschema-gentypes = "jsonschema_gentypes.cli:main"
-
-[project.optional-dependencies]
-extra = ["pinyin", "Unidecode", "romanize"]
-tools = ["pre-commit"]
-validation = ["jsonschema-validator-new"]
-
-[build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
-build-backend = "poetry.core.masonry.api"
