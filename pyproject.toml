@@ -28,7 +28,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.0", "virtualenv==21.3.3"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.4", "virtualenv==21.5.1"]
 requires-python = ">=3.10"
 
 [project.urls]
@@ -88,7 +88,7 @@ prospector = {  version = "1.18.0", extras = ["with_mypy", "with_bandit", "with_
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
 ruff = "0.15.14"
-pytest = "9.0.3"
+pytest = "9.1.1"
 pytest-cov = "7.1.0"
 types-requests = "2.33.0.20260518"
 types-pyyaml = "6.0.12.20260518"
