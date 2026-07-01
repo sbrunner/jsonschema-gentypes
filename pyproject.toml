@@ -1,48 +1,3 @@
-
-[build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
-build-backend = "poetry.core.masonry.api"
-
-[project]
-dynamic = ["dependencies", "version"]
-name = "jsonschema-gentypes"
-description = "Tool to generate Python types based on TypedDict from a JSON Schema"
-readme = "README.md"
-keywords = ["jsonschema", "types"]
-license = "BSD-2-Clause"
-classifiers = [
-    'Development Status :: 4 - Beta',
-    'Environment :: Console',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11',
-    'Programming Language :: Python :: 3.12',
-    'Programming Language :: Python :: 3.13',
-    'Topic :: Software Development :: Code Generators',
-    'Typing :: Typed',
-]
-authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
-packages = [{ include = "jsonschema_gentypes" }]
-include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.4", "virtualenv==21.5.1"]
-requires-python = ">=3.10"
-
-[project.urls]
-repository = "https://github.com/camptocamp/jsonschema-gentypes"
-"Bug Tracker" = "https://github.com/camptocamp/jsonschema-gentypes/issues"
-
-[project.scripts]
-jsonschema-gentypes = "jsonschema_gentypes.cli:main"
-
-[project.optional-dependencies]
-extra = ["pinyin", "Unidecode", "romanize"]
-tools = ["pre-commit"]
-validation = ["jsonschema-validator-new"]
-
 [tool.ruff]
 target-version = "py310"
 line-length = 110
@@ -84,10 +39,10 @@ extra = ['pinyin', 'Unidecode', 'romanize']
 validation = ['jsonschema-validator-new']
 
 [tool.poetry.group.dev.dependencies]
-prospector = {  version = "1.18.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
+prospector = {  version = "1.19.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
-ruff = "0.15.14"
+ruff = "0.15.19"
 pytest = "9.1.1"
 pytest-cov = "7.1.0"
 types-requests = "2.33.0.20260518"
@@ -111,3 +66,47 @@ format-jinja = """
 
 [tool.poetry-plugin-tweak-dependencies-version]
 default = "present"
+
+[project]
+dynamic = ["dependencies", "version"]
+name = "jsonschema-gentypes"
+description = "Tool to generate Python types based on TypedDict from a JSON Schema"
+readme = "README.md"
+keywords = ["jsonschema", "types"]
+license = "BSD-2-Clause"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Software Development :: Code Generators',
+    'Typing :: Typed',
+]
+authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
+packages = [{ include = "jsonschema_gentypes" }]
+include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.4", "virtualenv==21.5.1"]
+requires-python = ">=3.10"
+
+[project.urls]
+repository = "https://github.com/camptocamp/jsonschema-gentypes"
+"Bug Tracker" = "https://github.com/camptocamp/jsonschema-gentypes/issues"
+
+[project.scripts]
+jsonschema-gentypes = "jsonschema_gentypes.cli:main"
+
+[project.optional-dependencies]
+extra = ["pinyin", "Unidecode", "romanize"]
+tools = ["pre-commit"]
+validation = ["jsonschema-validator-new"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
