@@ -148,7 +148,7 @@ repos:
         files: |-
           ^\.github/publish\.yaml$
   - repo: https://github.com/mheap/json-schema-spell-checker
-    rev: main
+    rev: v2.3.0
     hooks:
       - id: json-schema-spell-checker
         files: ^jsonschema_gentypes/schema\.json$
