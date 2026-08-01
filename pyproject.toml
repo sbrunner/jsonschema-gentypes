@@ -22,13 +22,13 @@ version = "0.0.0"
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
 jsonschema = "4.26.0"
-typing-extensions = "4.15.0"
+typing-extensions = "4.16.0"
 requests = "2.34.2"
 "PyYAML" = "6.0.3"
 pinyin = { version = "0.4.0", optional = true }
 Unidecode = { version = "1.4.0", optional = true }
 romanize = { version = "1.0.2", optional = true }
-pre-commit = { version = "4.6.0", optional = true }
+pre-commit = { version = "4.6.1", optional = true }
 referencing = "0.37.0"
 jsonschema-validator-new = { version = "0.3.2", optional = true }
 
@@ -45,8 +45,8 @@ prospector-profile-utils = "1.27.0"
 ruff = "0.15.19"
 pytest = "9.1.1"
 pytest-cov = "7.1.0"
-types-requests = "2.33.0.20260518"
-types-pyyaml = "6.0.12.20260518"
+types-requests = "2.33.0.20260712"
+types-pyyaml = "6.0.12.20260724"
 
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -92,7 +92,7 @@ classifiers = [
 authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
 packages = [{ include = "jsonschema_gentypes" }]
 include = ["jsonschema_gentypes/py.typed", "jsonschema_gentypes/*.json"]
-dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.29.4", "virtualenv==21.5.1"]
+dependencies = ["jsonschema", "typing-extensions", "requests", "PyYAML", "referencing", "urllib3==2.7.0", "filelock==3.32.0", "virtualenv==21.7.0"]
 requires-python = ">=3.10"
 
 [project.urls]
@@ -108,5 +108,5 @@ tools = ["pre-commit"]
 validation = ["jsonschema-validator-new"]
 
 [build-system]
-requires = ["poetry-core==2.4.0", "poetry-dynamic-versioning==1.10.0"]
+requires = ["poetry-core==2.4.1", "poetry-dynamic-versioning==1.10.0"]
 build-backend = "poetry.core.masonry.api"
