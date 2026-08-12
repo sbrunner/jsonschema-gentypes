@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 from pathlib import Path
 
 from jsonschema_gentypes.cli import process_config

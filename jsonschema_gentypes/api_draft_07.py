@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 """The API version draft 07."""
 
 from jsonschema_gentypes.api_draft_06 import APIv6

@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 from typing import Required, TypedDict
 
 
