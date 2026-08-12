@@ -184,8 +184,10 @@ class APIv4(API):
                 type_.set_comments(
                     [
                         "WARNING: 'items': If list, must have minItems == maxItems.",
-                        ("See: https://json-schema.org/understanding-json-schema/"
-                        "reference/array.html#tuple-validation"),
+                        (
+                            "See: https://json-schema.org/understanding-json-schema/"
+                            "reference/array.html#tuple-validation"
+                        ),
                     ],
                 )
             return type_
