@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 """The API version draft 2019 09."""
 
 import re

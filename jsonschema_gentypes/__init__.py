@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 """Generate the type structure based on the Type class from the JSON schema file."""
 
 import keyword
@@ -242,7 +243,7 @@ class NamedType(Type):
 class LiteralType(Type):
     """A literal type like: `Literal["text"]`."""
 
-    def __init__(self, const: Sequence[float | bool | str | None | dict[str, Any] | list[Any]]) -> None:
+    def __init__(self, const: Sequence[float | bool | str | dict[str, Any] | list[Any] | None]) -> None:
         """
         Init.
 

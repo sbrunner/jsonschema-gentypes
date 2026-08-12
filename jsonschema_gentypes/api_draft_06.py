@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 """The API version draft 06."""
 
 from typing import TYPE_CHECKING, Any, cast
