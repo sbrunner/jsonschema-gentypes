@@ -1,3 +1,4 @@
+# Copyright (c) 2021-2026, Camptocamp SA
 """Generate the Python type files from the JSON schema files."""
 
 import argparse
