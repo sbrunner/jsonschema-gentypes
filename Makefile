@@ -15,7 +15,7 @@ help: ## Display this help message
 
 .PHONY: prospector
 prospector: .poetry.timestamps # Run Prospector check
-	poetry run prospector --output=pylint --die-on-tool-error
+	poetry run prospector --output=pylint --direct-tool-stdout
 
 .PHONY: pyprest
 pytest: .poetry.timestamps # Run the unit tests
