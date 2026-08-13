@@ -47,6 +47,7 @@ pytest = "9.1.1"
 pytest-cov = "7.1.0"
 types-requests = "2.33.0.20260712"
 types-pyyaml = "6.0.12.20260724"
+pylint = "4.0.6"
 
 [tool.poetry-dynamic-versioning]
 enable = true

@@ -2046,4 +2046,4 @@ validation = ["jsonschema-validator-new"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4"
-content-hash = "49907b81879810e3c8fac9e3c74bcea419033faa574fc283165fc9da76e7f77b"
+content-hash = "be0760df5d08168f5569ed11e1d46aab4f721df888974a9c913c6b51b7c14a8f"
