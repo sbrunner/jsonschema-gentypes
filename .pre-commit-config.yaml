@@ -156,6 +156,13 @@ repos:
         args:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
+        additional_dependencies:
+          # mdast-util-to-markdown 2.1.3 encodes the trailing \n added by remark-plain-text
+          # as "&#xA;", which markdown-spellcheck tokenizes as "xA" and reports as misspelled
+          # in every checked string. pre-commit ignores the hook's package-lock.json, so the
+          # transitive dependency must be pinned here. Remove once fixed upstream:
+          # https://github.com/mheap/json-schema-spell-checker
+          - mdast-util-to-markdown@2.1.2
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 44.46.4
     hooks:
