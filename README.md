@@ -57,7 +57,7 @@ jsonschema-gentypes
 The default values are exported in the Python file, then you can do something like that:
 
 ```python
-value_with_default = my_object.get('field_name', my_schema.FIELD_DEFAULT)
+value_with_default = my_object.get("field_name", my_schema.FIELD_DEFAULT)
 ```
 
 ## Limitations
