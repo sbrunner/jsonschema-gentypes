@@ -3,8 +3,7 @@ Automatically generated file from a JSON schema.
 """
 
 
-from typing import Any, Literal, TypedDict, Union
-from typing_extensions import Required
+from typing import Any, Literal, Required, TypedDict, Union
 
 
 class OpenAPI(TypedDict, total=False):
