@@ -39,15 +39,15 @@ extra = ['pinyin', 'Unidecode', 'romanize']
 validation = ['jsonschema-validator-new']
 
 [tool.poetry.group.dev.dependencies]
-prospector = {  version = "1.19.1", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
+prospector = {  version = "1.20.0", extras = ["with_mypy", "with_bandit", "with_pyroma", "with_ruff"] }
 prospector-profile-duplicated = "1.12.0"
 prospector-profile-utils = "1.27.0"
-ruff = "0.16.9"
+ruff = "0.17.2"
 pytest = "9.1.1"
 pytest-cov = "7.1.0"
 types-requests = "2.33.0.20261006"
 types-pyyaml = "6.0.12.20260906"
-pylint = "4.0.9"
+pylint = "4.1.3"
 
 [tool.poetry-dynamic-versioning]
 enable = true
